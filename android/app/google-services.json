@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "583324739776",
+    "firebase_url": "https://jogo-rapido-1d357.firebaseio.com",
+    "project_id": "jogo-rapido-1d357",
+    "storage_bucket": "jogo-rapido-1d357.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583324739776:android:86f9202eff6d12260be525",
+        "android_client_info": {
+          "package_name": "com.jogorapido"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583324739776-c1rvjsshvj8330n36r39t6b2a7k5nsbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jogorapido",
+            "certificate_hash": "c8ff104a12cd41796fe59c092bfa203d6288630f"
+          }
+        },
+        {
+          "client_id": "583324739776-7t00iesj1ljhne7tahr1b2mjjav075vp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ5S0vNmDtqYuzP8O3xe2USVYh9aLd2tk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583324739776-7t00iesj1ljhne7tahr1b2mjjav075vp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

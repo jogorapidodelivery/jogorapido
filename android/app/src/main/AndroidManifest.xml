@@ -1,0 +1,98 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.jogorapido">
+    <!-- INICIO GEOFENCE.-->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- FIM GEOFENCE.-->
+
+    <!-- INICIO PERMISSOES PADRAO.-->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <!-- INICIO PERMISSOES PADRAO.-->
+
+    <!-- INICIO PERMISSOES PARA MAPAS E CAMERA.-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- FIM PERMISSOES PARA MAPAS E CAMERA. -->
+    
+    <!-- INICIO PERMISSOES EXTRAS -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <!-- FIM PERMISSOES EXTRAS -->
+
+    <!-- INICIO CAMERA -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- FIM CAMERA -->
+    
+    <!-- INICIO MAPA
+    <uses-permission android:name="com.gotrainer.permission.MAPS_RECEIVE"/>
+    <permission android:name="com.gotrainer.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    FIM MAPA -->
+
+    <application
+      android:name=".MainApplication"
+      android:label="@string/app_name"
+      android:icon="@mipmap/icone"
+      android:roundIcon="@mipmap/icone_round"
+      android:allowBackup="false"
+      android:usesCleartextTraffic="true"
+      android:theme="@style/AppTheme">
+      <!-- INICIO GEOFENCE-->
+      <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="@string/licenseGeofence" />
+      <!--FIM GEOFENCE -->
+      <!-- INICIO MAPA
+      <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="@string/maps_key"/>
+      FIM MAPA -->
+      <!-- INICIO LOGIN FACEBOOK
+      <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+      FIM LOGIN FACEBOOK -->
+      <!-- INICIO FIREBASE MESSAGING -->
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@mipmap/icone_round"
+      />
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/colorNotifier"
+      />
+      <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
+        <intent-filter>
+          <action android:name="com.google.firebase.MESSAGING_EVENT" />
+        </intent-filter>
+      </service>
+      <service android:name="io.invertase.firebase.messaging.RNFirebaseInstanceIdService">
+        <intent-filter>
+          <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+        </intent-filter>
+      </service>
+      <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
+      <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>
+      <receiver android:enabled="true" android:exported="true"  android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver"/>
+      <!-- FIM FIREBASE MESSAGING -->
+      <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:launchMode="singleTop"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="adjustResize">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+      </activity>
+      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+    </application>
+
+</manifest>

@@ -1,0 +1,82 @@
+import React, { Component, Fragment } from "react";
+import { View, Text } from "react-native";
+import Button from "@sd/components/button";
+import styl from "./styl";
+import Rota from "../rota";
+import { empty } from "@sd/uteis/StringUteis";
+import { coletaCheckIn } from "@actions/";
+import Lista from "../lista/index";
+/*
+data_checkin_cliente:
+    * Tem que estar a menos de X metros do cliente
+    * O data_checkin_cliente tem que ser vazio
+    * Estar na aba detalhamento (1)
+*/
+export default class CheckOutUnidade extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            todosOsProdutosEstaoSelecionados:false,
+            badge: `0/${this.props.produtos.length}`
+        }
+    }
+    _click = () => {
+        const { todosOsProdutosEstaoSelecionados } = this.state;
+        const { coleta: { coleta_id }, distanciaMinEstabelecimentoOk, navigation, onChange, distancia_checkin } = this.props;
+        if (distanciaMinEstabelecimentoOk) {
+            if (todosOsProdutosEstaoSelecionados) {
+                coletaCheckIn({
+                    body_rsa: {
+                        coleta_id,
+                        coluna: "data_checkout_unidade"
+                    }
+                }).then(onChange).catch(({ mensagem }) => {
+                    navigation.push("alerta", {
+                        params: {
+                            titulo: "Jogo Rápido",
+                            mensagem
+                        }
+                    })
+                })
+            } else {
+                navigation.push("alerta", {
+                    params: {
+                        titulo: "Jogo Rápido",
+                        mensagem: "É necessário confirmar que pegou todos os produtos"
+                    }
+                })
+            }
+        } else {
+            navigation.push("alerta", {
+                params: {
+                    titulo: "Jogo Rápido",
+                    mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${distancia_checkin} metros.`
+                }
+            })
+        }
+    }
+    _liberarCheckOut = ({ actived, badge }) => {
+        this.setState({ todosOsProdutosEstaoSelecionados: actived, badge })
+    }
+    render() {
+        const { todosOsProdutosEstaoSelecionados, badge} = this.state;
+        const { produtos, distanciaMinEstabelecimentoOk} = this.props;
+        return <Fragment>
+            <Lista titulo="Produto" onPress={this._liberarCheckOut.bind(this)} data={produtos} />
+            <View style={styl.container}>
+                <View style={styl.warpFase}>
+                    <Text style={styl.icon}></Text>
+                    <Text style={styl.parte}>{badge}</Text>
+                </View>
+                <Button
+                    onPress={this._click}
+                    text={{
+                        value:"Checkout estabelecimento",
+                        color: "07"
+                    }}
+                    bg={distanciaMinEstabelecimentoOk && todosOsProdutosEstaoSelecionados? "14" : "15"}
+                />
+            </View>
+        </Fragment>
+    }
+}

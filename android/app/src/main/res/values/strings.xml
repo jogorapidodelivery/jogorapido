@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Jogo Rápido</string>
+    <string name="default_notification_channel_id">Jogo Rápido</string>
+    <string name="licenseGeofence">4df5082c96b065657aae4421694d70c0ab9d31a9e53696a4a4dc073a6a6c7856</string>
+</resources>
