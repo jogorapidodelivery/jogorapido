@@ -11,6 +11,7 @@ let plugins = [[
       "@sd": "./sd",
       "@src": "./src",
       "@images": "./assets/images",
+      "@sounds": "./assets/sounds",
       "@actions": "./src/apis/actions",
       "@constants": "./src/apis/constants",
       "@reducers": "./src/apis/reducers",

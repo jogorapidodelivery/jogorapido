@@ -46,6 +46,14 @@ import { cor } from "@root/app.json";
 //         console.log("task background notifier store null")
 //     }
 // }
+import Sound from "react-native-sound";
+Sound.setCategory("Playback");
+var aguia = new Sound("aguia.mp3", Sound.MAIN_BUNDLE, (error) => {// 
+    if (error) {
+        aguia = undefined;
+        return;
+    }
+});
 const prepareParams = ({ data: response }, type) => {
     const { status, acao, coleta_id } = response;
     if (!empty(GrupoRotas.store)) {
@@ -68,19 +76,25 @@ const prepareParams = ({ data: response }, type) => {
 }
 const createNotifier = (coleta_id) => {
     const notification = new firebase.notifications.Notification({
-        // sound: 'aguia.pm3',
+        sound: 'aguia.pm3',
         show_in_foreground: true
-    });
-    notification.setNotificationId('notificationId');
-    notification.setTitle(`A coleta #${coleta_id} está aguardando sua decisão`);
-
-    notification.android.setChannelId("default_notification_channel_id");
-    notification.android.setSmallIcon('notifier');
-    notification.android.setAutoCancel(false);
-    notification.android.setColor(cor["08"]);
-    notification.android.setColorized(true);
-    notification.android.setPriority(firebase.notifications.Android.Priority.High);
-    notification.android.setProgress(100, 0, false);
+    })
+        .setNotificationId('notificationId')
+        .setTitle(`A coleta #${coleta_id} estaá aguardando sua decisão`)
+    if (Platform.OS === "android") {
+        notification.android.setChannelId("default_notification_channel_id");
+        notification.android.setSmallIcon('notifier');
+        notification.android.setAutoCancel(false);
+        notification.android.setColor(cor["08"]);
+        notification.android.setColorized(true);
+        notification.android.setNumber(10);
+        notification.android.setVibrate([200, 200, 200, 200]);
+        notification.android.setCategory('progress')
+        notification.android.setPriority(firebase.notifications.Android.Priority.High);
+        notification.android.setProgress(100, 0, false);
+        notification.android.setOnlyAlertOnce(false);
+        notification.android.setLocalOnly(false);
+    }
     return notification;
 }
 let timerInProcess = undefined;
@@ -95,6 +109,7 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
             GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
             firebase.notifications().removeAllDeliveredNotifications();
             if (timerInProcess) clearInterval(timerInProcess);
+            if (aguia !== undefined) aguia.stop();
             console.log("destroy loop interval triggerNotifier");
             _resolve()
         } else {
@@ -103,7 +118,7 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
             firebase.notifications().displayNotification(notification);
         }
         counter++;
-    }, 1000);
+    }, __DEV__ ? 1000 : 1000);
 }
 const switchActions = (response, status, acao, type) => {
     switch (acao) {
@@ -129,8 +144,16 @@ const switchActions = (response, status, acao, type) => {
     }
     return false
 }
+
 firebase.messaging().onMessage(message => {
-    console.log("background message received")
+    console.log("background message received");
+    if (aguia !== undefined) aguia.play((success) => {
+        if (success) {
+            console.log('successfully finished playing');
+        } else {
+            console.log('playback failed due to audio decoding errors');
+        }
+    });
     const post = prepareParams(message, { type: "DISPLAY" });
     if (post === undefined) return Promise.resolve();
     const { response, tempo_aceite, status, acao, coleta_id, type } = post;
@@ -139,6 +162,7 @@ firebase.messaging().onMessage(message => {
         const notification = createNotifier(coleta_id);
         dispatchNotifier(notification, tempo_aceite, () => {
             console.log("destroy a coleta")
+            if (aguia !== undefined) aguia.stop();
         })
     } else {
         _resolve()
@@ -146,6 +170,15 @@ firebase.messaging().onMessage(message => {
 })
 export default async message => {
     console.log("background message received")
+    if (aguia !== undefined) {
+        aguia.play((success) => {
+            if (success) {
+                console.log('successfully finished playing');
+            } else {
+                console.log('playback failed due to audio decoding errors');
+            }
+        });
+    }
     const post = prepareParams(message, {type:"BACKGROUND"});
     if (post === undefined) return Promise.resolve();
     const { response, tempo_aceite, status, acao, coleta_id, type} = post;
