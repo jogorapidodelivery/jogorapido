@@ -20,8 +20,10 @@ export default class BaseScreen extends PureComponent {
             scrollY: new Animated.Value(0)
         }
     }
-    componentDidUpdate(){
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    componentDidUpdate(prevProps, prevState){
+        if (prevProps !== prevState) {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+        }
     }
     _clickScrollTop = () => {
         if (this.listView) this.listView.getNode().scrollTo({ y: 0, animated: true });

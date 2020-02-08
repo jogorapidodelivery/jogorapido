@@ -9,6 +9,7 @@
 
     <!-- INICIO PERMISSOES PADRAO.-->
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- INICIO PERMISSOES PADRAO.-->
 
     <!-- INICIO PERMISSOES PARA MAPAS E CAMERA.-->
@@ -60,7 +61,11 @@
       <!-- INICIO FIREBASE MESSAGING -->
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@mipmap/icone_round"
+        android:resource="@drawable/notifier"
+      />
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_channel_id"
+        android:value="@string/default_notification_channel_id"
       />
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_color"
@@ -78,7 +83,15 @@
       </service>
       <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
       <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>
-      <receiver android:enabled="true" android:exported="true"  android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver"/>
+      
+      <receiver android:enabled="true" android:exported="true"  android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver">
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED"/>
+          <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+          <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+          <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+      </receiver>
       <!-- FIM FIREBASE MESSAGING -->
       <activity
         android:name=".MainActivity"

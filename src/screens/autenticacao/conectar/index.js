@@ -8,8 +8,6 @@ import Form from "@sd/components/form";
 import Input from "@sd/components/form/input";
 import { stylDefault } from "@src/stylDefault";
 import { actionLogin } from "@actions/";
-import { GrupoRotas } from "@sd/navigation/revestir";
-import { bgLocationFetch } from "@libs/geofence";
 import { openPageStart } from "../command";
 export default class Conectar extends PureComponent {
     constructor(props) {

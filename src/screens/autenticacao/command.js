@@ -7,7 +7,7 @@ export const openPageStart = async (navigation, delay = 0) => {
     let params = {};
     const state = GrupoRotas.store.getState();
     if (getItemByKeys(state, "autenticacao.usuario_id") !== undefined) {
-        const { autenticacao: { email: usuario, usuario_id, email_verificado, coleta } } = state;
+        const { autenticacao: { tempo_aceite, email: usuario, usuario_id, email_verificado, coleta } } = state;
         if (usuario_id) await bgLocationFetch({ usuario_id });
         if (email_verificado) {
             if (coleta !== undefined) {

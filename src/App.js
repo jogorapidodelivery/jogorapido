@@ -1,6 +1,6 @@
 import { SDNavigation } from "@sd/navigation"
+import { empty } from "@sd/uteis/StringUteis";
 import { GrupoRotas } from "@sd/navigation/revestir";
-import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import reducers from "@reducers/";
 import Autenticacao from "@screens/autenticacao";
 import Alerta from "@modal/alerta";
@@ -19,9 +19,10 @@ import { initFirebase } from "@sd/uteis/Firebase";
 import Coletar from "@screens/coleta-e-entrega";
 import MeusDadosChecarTokenEmail from "@screens/home/meus-dados/checar-token-email/index";
 import MeusDadosAlterarSenha from "@screens/home/meus-dados/alterar-senha/index";
-import { COLETA_NOVA, COLETA_ATUALIZAR_STATUS } from '@constants/';
+import { COLETA_NOVA, COLETA_ATUALIZAR_STATUS, ENTREGADOR_ATUALIZAR_ESCALA } from '@constants/';
 import moment from "moment"
 import ptLocale from "moment/locale/pt";
+import { triggerNotifier } from "./libs/triggerNotifier";
 moment.updateLocale("pt", ptLocale)
 SDNavigation.registerScreens({
     autenticacao: { name: "autenticacao", screen: Autenticacao },
@@ -65,31 +66,11 @@ SDNavigation.addModal([
     "carregando",
     "confirma"
 ])
-initFirebase((response) => {
-    const state = GrupoRotas.store.getState();
-    console.log("[initFirebase] switch case response")
-    // response = { "acao": "nova_coleta", "bairro_cliente": "Vila Pedroso altera", "bairro_unidade": "Setor Bueno", "cep_cliente": "74770160", "cep_unidade": "74230-100", "cidade_cliente": "GOIANIA", "cidade_unidade": "Goiânia", "cliente": "VILMAR", "coleta_id": "11", "complemento_cliente": "complemento alter", "complemento_unidade": "", "data_agendamento": "2020-02-03", "data_cadastro": "2020-01-30 08:15:38-03", "distancia_unidade_cliente": "17.84", "endereco_cliente": "ENDERECO PRINCIPAL", "endereco_unidade": "Rua T 63", "hora_agendamento": "23:00", "latitude_cliente": "-16.6603317", "latitude_unidade": "-16.7138298", "longitude_cliente": "-49.1816084", "longitude_unidade": "-49.2707126", "numero_cliente": "sn alter", "numero_unidade": "", "pedido_id": "824", "ponto_referencia_cliente": "", "ponto_referencia_unidade": "", "status": "Pendente", "status_color": "#f39c12", "tempo_rota_unidade_cliente": "29 minutos", "total_pedido": "209.34", "uf_cliente": "GO", "uf_unidade": "GO", "unidade": "SITIO DIGITAL", "valor_frete": "19.84" }
-    const usuario_id = getItemByKeys(state, "autenticacao.usuario_id");
-    if (usuario_id) {
-        const status = getItemByKeys(response, "status");
-        switch (status) {
-            case "Pendente":
-                GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
-                SDNavigation.navegar.navigate("home");
-                break;
-            case "Confirmado":
-                GrupoRotas.store.dispatch({ type: COLETA_ATUALIZAR_STATUS, response });
-                SDNavigation.navegar.navigate("coletar");
-                break;
-            default:
-                break;
-        }
-    }
-    console.log(response);
-})
+initFirebase();
 
 //inicio geofence
 // import BackgroundGeolocation from "react-native-background-geolocation";
+
 
 
 

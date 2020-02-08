@@ -5,7 +5,7 @@ export const PUBLIC_KEY_RSA = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BA
 import Ajax from "./Ajax"
 const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID = 0, _callBackDestroy = undefined) => {
 	const _ajax = _args => {
-		console.log("_ajax", _args);
+		// console.log("_ajax", _args);
 		let destroy = Ajax(_args, r => {
 			_resolve(r)
 		}, r => {
@@ -18,14 +18,14 @@ const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID
 		_ajax(_obj)
 	} else {
 		const _dataEncrypt = JSON.stringify(_obj.body_rsa)
-		console.log(`${_loggerID}) START RSA`, _dataEncrypt)
+		// console.log(`${_loggerID}) START RSA`, _dataEncrypt)
 		RSA.encrypt(_dataEncrypt, PUBLIC_KEY_RSA).then(_result => {
 			if (empty(_result)) {
 				const _rTmp = { status: "erro", mensagem: "Não foi possível criptografar os dados a ser enviados." }
-				console.log(`${_loggerID}) RSA FAILED`, _rTmp)
+				// console.log(`${_loggerID}) RSA FAILED`, _rTmp)
 				_reject(_rTmp)
 			} else {
-				console.log(`${_loggerID}) RSA SUCCESS`, { postdata: _result })
+				// console.log(`${_loggerID}) RSA SUCCESS`, { postdata: _result })
 				_obj.body_post.postdata = _result
 				_ajax(_obj)
 			}

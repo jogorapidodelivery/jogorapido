@@ -1,4 +1,4 @@
-import { COLETA_LIMPAR, COLETA_CHECKIN, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, ALTERAR_SENHA, AUTENTICAR, CHECAR_SIMBOLO_EMAIL, RECUPERAR_SENHA, CONECTAR, CRIAR_CONTA, CONECTAR_FACEBOOK} from '@constants/';
+import { ENTREGADOR_GEOFENCE, ENTREGADOR_ATUALIZAR_ESCALA, COLETA_LIMPAR, COLETA_CHECKIN, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, ALTERAR_SENHA, AUTENTICAR, CHECAR_SIMBOLO_EMAIL, RECUPERAR_SENHA, CONECTAR, CRIAR_CONTA, CONECTAR_FACEBOOK} from '@constants/';
 import {combineReducers} from 'redux';
 
 import { encodeCipherCaesar } from "@sd/uteis/CipherCaesar";
@@ -12,6 +12,7 @@ const intervaloData = (start, end) => {
     const _dif = moment(start).diff(moment(end));
     return moment.duration(_dif).humanize();
 }
+
 const formatDateCheckIn = coleta => {
     let horaChegadaUnidade, horaSaidaUnidade, horaChegadaCliente, horaSaidaCliente;
     if (empty(coleta)) return { horaChegadaUnidade, horaSaidaUnidade, horaChegadaCliente, horaSaidaCliente}
@@ -38,8 +39,21 @@ export default combineReducers({
             [CHECAR_SIMBOLO_EMAIL]: (state, _action) => {
                 return state;
             },
+            [ENTREGADOR_GEOFENCE]: (state, _action) => {
+                return state;
+            },
+            [ENTREGADOR_ATUALIZAR_ESCALA]: (state, { response}) => {
+                console.log(response);
+                if (response.disponibilidade) {
+                    response.disponibilidade = response.disponibilidade.map(v => {
+                        v.horario = `${moment(v.hora_inicio, "H:mm:ss").format("H")}h ${moment(v.hora_fim, "H:mm:ss").format("H")}h`;
+                        return v
+                    })
+                }
+                return { ...state, ...response};
+            },
             [[ALTERAR_SENHA, CONECTAR, AUTENTICAR]]: (state, {response, posted:{senha, usuario}}) => {
-                AsyncStorage.setItem(AUTENTICAR, encodeCipherCaesar({ senha, usuario }));
+                
                 response.total_frete_semana = moeda(response.total_frete_semana, "");
                 if (response.disponibilidade) {
                     response.disponibilidade = response.disponibilidade.map(v => {
@@ -55,6 +69,7 @@ export default combineReducers({
                     response.coleta = formatDateCheckIn(response.coleta)
                     
                 }
+                AsyncStorage.setItem(AUTENTICAR, encodeCipherCaesar({ senha, usuario }));
                 return { ...state, ...response, usuario, senha};
             },
             [COLETA_CHECKIN]: (state, { response: { data }, posted: { coluna } }) => {
@@ -75,6 +90,8 @@ export default combineReducers({
             },
             [COLETA_NOVA]: (state, { response}) => {
                 if (response.coleta) {
+                    const { coleta: { coleta_id } } = response;
+                    AsyncStorage.setItem(COLETA_NOVA, encodeCipherCaesar({ coleta_id, usuario }));
                     if (response.coleta.valor_frete) {
                         response.coleta.valor_frete = moeda(response.coleta.valor_frete);
                         response.coleta.total_pedido = moeda(response.coleta.total_pedido);

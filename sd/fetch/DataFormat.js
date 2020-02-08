@@ -1,10 +1,10 @@
 import { Platform } from "react-native";
-const { baseApp, timeoutSlow, timeoutLong, geolocation: { latitude, longitude } } = require("@root/app.json")
+const { baseApp, timeoutSlow, timeoutLong } = require("@root/app.json")
 import { empty } from "@sd/uteis/StringUteis";
 export let globalParams = {
     app_id: "",
-    latitude: latitude,
-    longitude: longitude
+    latitude: 0,
+    longitude: 0
 }
 const _getDefaultParams = () => {
     const data = new Date();

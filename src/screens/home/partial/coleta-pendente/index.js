@@ -7,6 +7,7 @@ import { cor, tempoParaAceite } from "@root/app.json";
 import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaAtualizarStatus } from "@actions/";
 import OpenMap from "react-native-open-map";
+import { triggerDestroyTimerProgress } from "@libs/triggerNotifier";
 export const _addressOpenMapsDefaultProps = {
     title: "Jogo Rápido",
     cancelText: "Cancelar",
@@ -15,22 +16,18 @@ export const _addressOpenMapsDefaultProps = {
 }
 
 export default class ColetaPendente extends PureComponent {
-    _abrirPedido = ({acao}) => {
+    _abrirPedido = (_r) => {
         const { coleta_id } = this.props;
         const status_coleta_id = 2;
         const body_rsa = { status_coleta_id, coleta_id }
-        if (acao === "cancelar") {
-            this.props.play();
-        } else {
-            coletaAtualizarStatus({ body_rsa}).then(() => {
-                this.props.navigation.navigate("coletar");
-            }).catch(_err => {
-                console.log(_err);
-            })
-        }
+        coletaAtualizarStatus({ body_rsa }).then(() => {
+            triggerDestroyTimerProgress();
+            this.props.navigation.navigate("coletar");
+        }).catch(_err => {
+            console.log(_err);
+        })
     }
     _submit = () => {
-        this.props.pause();
         this.props.navigation.push("confirma", {
             params:{
                 titulo:"Confirmar corrida",
@@ -50,9 +47,7 @@ export default class ColetaPendente extends PureComponent {
             }
         })
     }
-    componentDidMount() {
-        this.props.reset();
-    }
+    
     _openMaps = _maps => {
         OpenMap.show(_maps);
     }
@@ -66,7 +61,6 @@ export default class ColetaPendente extends PureComponent {
     }
     render() {
         const {
-            progresso,
             latitude_cliente,
             longitude_cliente,
             latitude_unidade,
@@ -90,7 +84,7 @@ export default class ColetaPendente extends PureComponent {
             ..._addressOpenMapsDefaultProps
         }
         return <View style={styl.container}>
-            <Text style={stylDefault.h1}>Coleta pendente #{coleta_id}{pedido_id ? `-${pedido_id}` : ""}</Text>
+            <Text style={stylDefault.h1}>Coleta pendente #{coleta_id}</Text>
             <View style={styl.warp}>
                 {this._renderInputFake("", "08", unidade, styl.containerInputFakeFirst, _addressUnidade)}
                 <Text style={[stylDefault.icon, styl.iconAte]}></Text>
@@ -107,9 +101,8 @@ export default class ColetaPendente extends PureComponent {
                         value: "",
                         color: "07"
                     }}
-                    bg="21"
+                    bg="12"
                     onPress={this._submit}
-                    gradientLocations={[0, progresso || 0, progresso || 0,1]}
                 />
             </ViewAnimatable>
         </View>

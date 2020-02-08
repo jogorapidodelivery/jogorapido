@@ -7,6 +7,9 @@ export const bgLocationFetch = async usuario_id => {
     const postdata = await RSA.encrypt(JSON.stringify(usuario_id), PUBLIC_KEY_RSA);
     if (postdata && postdata.length > 5) {
         console.log("ligando cercas e monitorando localização")
+        BackgroundGeolocation.onHttp((response) => {
+            console.log("[http] response: ", response.success, response.status, response.responseText);
+        });
         BackgroundGeolocation.ready({
             autoSync: true,
             distanceFilter: 10,

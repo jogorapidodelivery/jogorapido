@@ -1,9 +1,11 @@
+import firebase from "react-native-firebase";
 import { AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
 import {actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from "@sd/uteis/CipherCaesar";
 export const actionAutenticar = () => {
     return new Promise((_resolve, _reject) => {
+        firebase.notifications().removeAllDeliveredNotifications();
         AsyncStorage.getItem(AUTENTICAR).then(value => {
             if(value != null) {
                 const body_rsa = decodeCipherCaesar(value);
