@@ -7,6 +7,7 @@ import permissions from "@sd/uteis/permissions/index";
 import Button from "@sd/components/button";
 import Info from "@screens/partial/info";
 import { openPageStart } from "./command";
+import { View as ViewAnimatable } from "react-native-animatable";
 export default class Autenticacao extends Component {
   static mapStateToProps = ["autenticacao.email", "autenticacao.senha"];
   constructor(props){
@@ -59,9 +60,9 @@ export default class Autenticacao extends Component {
   }
   render() {
     const {falhas} = this.state
-    return <View style={styl.container}>
+    return <ViewAnimatable useNativeDriver={true} delay={200} animation="flipInY" style={styl.container}>
       <Image source={require("@images/logo-splash.png")} style={styl.bgIos} resizeMode="contain"/>
       {falhas.length === 0 ? this._renderLoader : this.renderFalhas}
-    </View>
+    </ViewAnimatable>
   }
 }

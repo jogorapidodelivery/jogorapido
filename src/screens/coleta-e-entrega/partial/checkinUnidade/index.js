@@ -5,6 +5,7 @@ import styl from "./styl";
 import Rota from "../rota";
 import { empty } from "@sd/uteis/StringUteis";
 import { coletaCheckIn } from "@actions/";
+import { View as ViewAnimatable } from "react-native-animatable";
 /*
 data_checkin_unidade:
     * Tem que estar a menos de X metros do estabelecimento
@@ -39,7 +40,7 @@ export default class CheckInUnidade extends PureComponent {
     }
     render() {
         const { coleta: { data_checkin_unidade }, distanciaMinEstabelecimentoOk} = this.props
-        return <Fragment>
+        return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Rota coleta={this.props.coleta} />
             {empty(data_checkin_unidade) && <View style={styl.container}>
                 <Button
@@ -51,6 +52,6 @@ export default class CheckInUnidade extends PureComponent {
                     bg={distanciaMinEstabelecimentoOk ? "14" : "15"}
                 />
             </View>}
-        </Fragment>
+        </ViewAnimatable>
     }
 }

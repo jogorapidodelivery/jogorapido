@@ -1,7 +1,8 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import Button from "@sd/components/button";
 import { coletaCheckIn } from "@actions/";
 import Lista from "../lista/index";
+import { View as ViewAnimatable } from "react-native-animatable";
 /*
 data_checkout_unidade:
     * Tem que estar a menos de X metros do estabelecimento
@@ -37,7 +38,7 @@ export default class CheckInCliente extends Component {
     }
     render() {
         const { produtos, coleta: { valor_frete, total_pedido }, distanciaMinClienteOk} = this.props;
-        return <Fragment>
+        return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Motoqueiro", textOrMoney: valor_frete}]} />
             <Button
                 onPress={this._click}
@@ -47,6 +48,6 @@ export default class CheckInCliente extends Component {
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}
             />
-        </Fragment>
+        </ViewAnimatable>
     }
 }

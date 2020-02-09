@@ -2,8 +2,7 @@ import React, { Component, Fragment } from "react";
 import { View, Text } from "react-native";
 import Button from "@sd/components/button";
 import styl from "./styl";
-import Rota from "../rota";
-import { empty } from "@sd/uteis/StringUteis";
+import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaCheckIn } from "@actions/";
 import Lista from "../lista/index";
 /*
@@ -61,7 +60,7 @@ export default class CheckOutUnidade extends Component {
     render() {
         const { todosOsProdutosEstaoSelecionados, badge} = this.state;
         const { produtos, distanciaMinEstabelecimentoOk} = this.props;
-        return <Fragment>
+        return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Lista titulo="Produto" onPress={this._liberarCheckOut.bind(this)} data={produtos} />
             <View style={styl.container}>
                 <View style={styl.warpFase}>
@@ -77,6 +76,6 @@ export default class CheckOutUnidade extends Component {
                     bg={distanciaMinEstabelecimentoOk && todosOsProdutosEstaoSelecionados? "14" : "15"}
                 />
             </View>
-        </Fragment>
+        </ViewAnimatable>
     }
 }

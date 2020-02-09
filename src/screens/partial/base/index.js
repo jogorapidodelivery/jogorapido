@@ -20,11 +20,11 @@ export default class BaseScreen extends PureComponent {
             scrollY: new Animated.Value(0)
         }
     }
-    componentDidUpdate(prevProps, prevState){
-        if (prevProps !== prevState) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-        }
-    }
+    // componentDidUpdate(prevProps, prevState){
+    //     if (prevProps !== prevState) {
+    //         LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    //     }
+    // }
     _clickScrollTop = () => {
         if (this.listView) this.listView.getNode().scrollTo({ y: 0, animated: true });
     }
@@ -65,7 +65,8 @@ export default class BaseScreen extends PureComponent {
             <LinearGradient
                 start={{ x: 0, y: 0 }}
                 end={{ x: .5, y: .7 }}
-                colors={[cor["08"], cor["13"], cor["22"], cor["07"]]}
+                // colors={[cor["08"], cor["13"], cor["22"], cor["07"]]}
+                colors={["#6763DE", "#6C63FF"]}
                 style={styl.gradiente}
             >
             {/* <View style={[styl.gradiente, { backgroundColor: cor["08"]}]}> */}

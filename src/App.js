@@ -19,10 +19,8 @@ import { initFirebase } from "@sd/uteis/Firebase";
 import Coletar from "@screens/coleta-e-entrega";
 import MeusDadosChecarTokenEmail from "@screens/home/meus-dados/checar-token-email/index";
 import MeusDadosAlterarSenha from "@screens/home/meus-dados/alterar-senha/index";
-import { COLETA_NOVA, COLETA_ATUALIZAR_STATUS, ENTREGADOR_ATUALIZAR_ESCALA } from '@constants/';
 import moment from "moment"
 import ptLocale from "moment/locale/pt";
-import { triggerNotifier } from "./libs/triggerNotifier";
 moment.updateLocale("pt", ptLocale)
 SDNavigation.registerScreens({
     autenticacao: { name: "autenticacao", screen: Autenticacao },

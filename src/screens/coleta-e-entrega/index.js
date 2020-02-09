@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Text } from "react-native";
 import BaseScreen from "@screens/partial/base";
 import { stylDefault } from "@src/stylDefault";
@@ -72,13 +72,30 @@ export default class Coleta extends Component {
     changeCheckInUnidade = () => {
         this.setState({ abaSelecionada: 1 });
     }
+    get renderCheckIn() {
+        const { sd, navigation } = this.props
+        const { coleta, produtos, distancia_checkin } = sd;
+        const { data_checkin_unidade, data_checkout_unidade, data_checkin_cliente } = coleta;
+        const { abaSelecionada, distanciaMinEstabelecimentoOk, distanciaMinClienteOk } = this.state;
+        if (abaSelecionada === 0) {
+            return <CheckInUnidade coleta={coleta} distancia_checkin={distancia_checkin} onChange={this.changeCheckInUnidade.bind(this)} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />
+        } else if (!empty(coleta) && !empty(produtos)){
+            if (!empty(data_checkin_unidade) && empty(data_checkout_unidade)) {
+                return <CheckOutUnidade coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />
+            } else if (!empty(data_checkout_unidade) && empty(data_checkin_cliente)){
+                return <CheckInCliente coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinClienteOk={distanciaMinClienteOk} />
+            } else if (!empty(data_checkin_cliente)) {
+                return <CheckOutCliente coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinClienteOk={distanciaMinClienteOk} />
+            }
+        }
+        return <Fragment/>
+    }
     render() {
-        const {sd, navigation} = this.props
-        const { coleta, produtos, distancia_checkin} = sd;
-        const { coleta_id, pedido_id, data_checkin_unidade, data_checkout_unidade, data_checkin_cliente } = coleta;
-        const { abaSelecionada, distanciaMinEstabelecimentoOk, distanciaMinClienteOk, distanciaEmLinhaEstabelecimento, distanciaEmLinhaCliente } = this.state;
+        const {sd} = this.props
+        const { coleta} = sd;
+        const { coleta_id, pedido_id } = coleta;
+        const { distanciaEmLinhaEstabelecimento, distanciaEmLinhaCliente } = this.state;
         return <BaseScreen
-            // headerFix={status === "Pendente" ? <ColetaPendenteProgressHeader tempoRestante={tempo_aceite - progresso} /> : undefined}
             style={styl.container}
             tituloBold="INFORMAÇÕES"
             titulo="DO PEDIDO"
@@ -91,10 +108,7 @@ export default class Coleta extends Component {
             {distanciaEmLinhaCliente && __DEV__ && <Text style={[stylDefault.span, styl.h2]}>Dist. cliente{distanciaEmLinhaCliente}m</Text>}
             {distanciaEmLinhaEstabelecimento && __DEV__ && <Text style={[stylDefault.span, styl.h2]}>Dist. Estabelecimento{distanciaEmLinhaEstabelecimento}m</Text>}
             <Aba {...this.state} onPress={this._toogleTab.bind(this)}/>
-            {abaSelecionada === 0 && <CheckInUnidade coleta={coleta} distancia_checkin={distancia_checkin} onChange={this.changeCheckInUnidade.bind(this)} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk}/>}
-            {abaSelecionada === 1 && !empty(data_checkin_unidade) && empty(data_checkout_unidade) && !empty(produtos) && !empty(coleta) && <CheckOutUnidade coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk}/>}
-            {abaSelecionada === 1 && !empty(data_checkout_unidade) && empty(data_checkin_cliente) && !empty(produtos) && !empty(coleta) && <CheckInCliente coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinClienteOk={distanciaMinClienteOk}/>}
-            {abaSelecionada === 1 && !empty(data_checkin_cliente) && !empty(produtos) && !empty(coleta) && <CheckOutCliente coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinClienteOk={distanciaMinClienteOk}/>}
+            {this.renderCheckIn}
             <Button onPress={whatsapp} style={styl.btnAjuda} text={{ value: "Preciso de ajuda", color: "07" }} leftIcon={{ value: "", color: "07" }} styleName="pequeno" bg="09"/>
         </BaseScreen>
     }

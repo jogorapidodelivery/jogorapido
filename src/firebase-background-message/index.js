@@ -1,60 +1,28 @@
 import firebase from "react-native-firebase";
 import { GrupoRotas } from "@sd/navigation/revestir";
 // import { SDNavigation } from "@sd/navigation";
-// import { triggerNotifier } from "../libs/triggerNotifier";
 import { empty } from "@sd/uteis/StringUteis";
 import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
-// const callBackListener = ({ data: response}, type) => {
-//     firebase.notifications().removeAllDeliveredNotifications();
-//     if (!empty(GrupoRotas.store)) {
-//         const state = GrupoRotas.store.getState();
-//         if (!empty(state.autenticacao)) {
-//             const { autenticacao: { usuario_id, tempo_aceite } } = state;
-//             if (usuario_id) {
-//                 const { status, acao, coleta_id } = response;
-//                 console.log({ type: "TASK BACKGROUND", status, acao, coleta_id, usuario_id, tempo_aceite })
-                // switch (acao) {
-                //     case "nova_coleta":
-                //         switch (status) {
-                //             case "Pendente":
-                //                 GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
-                //                 triggerNotifier(tempo_aceite, coleta_id)
-                //                 if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
-                //                 break;
-                //             case "Confirmado":
-                //                 GrupoRotas.store.dispatch({ type: COLETA_ATUALIZAR_STATUS, response });
-                //                 if (type === "DISPLAY") SDNavigation.navegar.navigate("coletar");
-                //                 break;
-                //             default:
-                //                 break;
-                //         }
-                //         break;
-                //     case "atualizar_escala":
-                //         GrupoRotas.store.dispatch({ type: ENTREGADOR_ATUALIZAR_ESCALA, response });
-                //         break;
-                //     default:
-                //         break;
-                // }
-//             } else {
-//                 console.log("task background notifier redux autenticacao.usuario_id null")
-//             }
-//         } else {
-//             console.log("task background notifier redux autenticacao null")
-//         }
-//     } else {
-//         console.log("task background notifier store null")
-//     }
-// }
 import Sound from "react-native-sound";
 Sound.setCategory("Playback");
-var aguia = new Sound("aguia.mp3", Sound.MAIN_BUNDLE, (error) => {// 
+let aguia = new Sound("aguia.mp3", Sound.MAIN_BUNDLE, (error) => {
     if (error) {
         aguia = undefined;
         return;
     }
 });
+let timerInProcess = undefined;
+let inProgress = false;
+let channel;
+if (Platform.OS === "android") {
+    channel = new firebase.notifications.Android.Channel('receber-coleta-aguia', 'Grupo de coleta', firebase.notifications.Android.Importance.High);
+    channel.setSound(null);
+    firebase.notifications().android.createChannel(channel);
+}
 const prepareParams = ({ data: response }, type) => {
+    if (inProgress) return undefined
+    inProgress = true;
     const { status, acao, coleta_id } = response;
     if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
@@ -62,63 +30,72 @@ const prepareParams = ({ data: response }, type) => {
             const { autenticacao: { tempo_aceite } } = state;
             if (tempo_aceite) {
                 return { response, tempo_aceite, status, acao, coleta_id, type}
-            } else {
-                console.log("task background notifier redux autenticacao.usuario_id null")
-                return undefined;
             }
-        } else {
-            console.log("task background notifier redux autenticacao null");
-            return undefined;
         }
     }
-    console.log("task background notifier store null");
     return undefined
 }
-const createNotifier = (coleta_id) => {
+export const triggerDestroyTimerProgress = () => {
+    if (timerInProcess) clearInterval(timerInProcess);
+    firebase.notifications().removeAllDeliveredNotifications();
+    if (aguia !== undefined) aguia.stop();
+    inProgress = false;
+}
+const createNotifier = (coleta_id, tempo_aceite) => {
     const notification = new firebase.notifications.Notification({
-        sound: 'aguia.pm3',
+        notificationId:"notificationId",
+        title: `A coleta #${coleta_id} está aguardando sua decisão`,
         show_in_foreground: true
-    })
-        .setNotificationId('notificationId')
-        .setTitle(`A coleta #${coleta_id} estaá aguardando sua decisão`)
+    });
+    notification.setSound(channel.sound);
     if (Platform.OS === "android") {
-        notification.android.setChannelId("default_notification_channel_id");
-        notification.android.setSmallIcon('notifier');
-        notification.android.setAutoCancel(false);
-        notification.android.setColor(cor["08"]);
-        notification.android.setColorized(true);
-        notification.android.setNumber(10);
-        notification.android.setVibrate([200, 200, 200, 200]);
-        notification.android.setCategory('progress')
-        notification.android.setPriority(firebase.notifications.Android.Priority.High);
-        notification.android.setProgress(100, 0, false);
-        notification.android.setOnlyAlertOnce(false);
-        notification.android.setLocalOnly(false);
+        const horaNotificacao = (new Date()).getTime()
+        notification
+            .android.setVibrate([100,200,100,200])
+            .android.setChannelId(channel.channelId)
+            .android.setSmallIcon('notifier')
+            .android.setAutoCancel(false)// Definir esse sinalizador fará com que a notificação seja cancelada automaticamente quando o usuário clicar no painel.
+            .android.setOnlyAlertOnce(false)// prioriza mostrar a notificação com visual mais som
+            .android.setLocalOnly(false)// ?
+            .android.setShowWhen(true)// Se aparece data e hora
+            .android.setColor(cor["10"])
+            .android.setColorized(true)
+            .android.setTimeoutAfter(1000 * tempo_aceite)// Especifica o horário em segundos em que esta notificação deve ser cancelada, se ainda não estiver cancelada.
+            .android.setWhen(horaNotificacao)// Especifica a hora que foi notificado
+            .android.setVisibility(true)// mostrar na tela de bloqueio
+            .android.setUsesChronometer(true)// transforma a notificação em um cronometro
+            .android.setPriority(firebase.notifications.Android.Priority.High);
     }
     return notification;
 }
-let timerInProcess = undefined;
-let inProgress = false
 const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
+    firebase.notifications().removeAllDeliveredNotifications();
     firebase.notifications().displayNotification(notification);
     let counter = 0;
     if (timerInProcess) clearInterval(timerInProcess);
-    console.log("antes de ligar o setInterval")
-    timerInProcess = setInterval(() => {
-        if (counter >= tempo_aceite) {
-            GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-            firebase.notifications().removeAllDeliveredNotifications();
-            if (timerInProcess) clearInterval(timerInProcess);
-            if (aguia !== undefined) aguia.stop();
-            console.log("destroy loop interval triggerNotifier");
-            _resolve()
+    if (aguia !== undefined) aguia.play((success) => {
+        if (success) {
+            console.log('successfully finished playing');
         } else {
-            console.log("atualizando progress:", Math.round(counter / tempo_aceite * 100));
+            console.log('playback failed due to audio decoding errors');
+        }
+    });
+    timerInProcess = setInterval(() => {
+        console.log({ counter, tempo_aceite})
+        if (counter > tempo_aceite) {
+            if (timerInProcess) clearInterval(timerInProcess);
+            inProgress = false;
+            _resolve()
+        } else if (counter == tempo_aceite) {
+            notification.android.setProgress(0, 0, true).android.setColor(cor["12"]);
+            notification.setTitle("Tempo esgotado. Seja mais rápido da próxima vez");
+            firebase.notifications().displayNotification(notification);
+        } else {
             notification.android.setProgress(100, Math.round(counter / tempo_aceite * 100), false);
             firebase.notifications().displayNotification(notification);
         }
         counter++;
-    }, __DEV__ ? 1000 : 1000);
+    }, 1000);
 }
 const switchActions = (response, status, acao, type) => {
     switch (acao) {
@@ -146,49 +123,36 @@ const switchActions = (response, status, acao, type) => {
 }
 
 firebase.messaging().onMessage(message => {
-    console.log("background message received");
-    if (aguia !== undefined) aguia.play((success) => {
-        if (success) {
-            console.log('successfully finished playing');
-        } else {
-            console.log('playback failed due to audio decoding errors');
-        }
-    });
     const post = prepareParams(message, { type: "DISPLAY" });
-    if (post === undefined) return Promise.resolve();
-    const { response, tempo_aceite, status, acao, coleta_id, type } = post;
-    const triggerNotifier = switchActions(response, status, acao, type);
-    if (triggerNotifier) {
-        const notification = createNotifier(coleta_id);
-        dispatchNotifier(notification, tempo_aceite, () => {
-            console.log("destroy a coleta")
-            if (aguia !== undefined) aguia.stop();
-        })
-    } else {
-        _resolve()
+    if (post !== undefined) {
+        const { response, tempo_aceite, status, acao, coleta_id, type } = post;
+        const triggerNotifier = switchActions(response, status, acao, type);
+        if (triggerNotifier) {
+            const notification = createNotifier(coleta_id, tempo_aceite);
+            dispatchNotifier(notification, tempo_aceite, () => {
+                GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
+                console.log("destroy a coleta")
+                if (aguia !== undefined) aguia.stop();
+            })
+        }
     }
 })
 export default async message => {
-    console.log("background message received")
-    if (aguia !== undefined) {
-        aguia.play((success) => {
-            if (success) {
-                console.log('successfully finished playing');
-            } else {
-                console.log('playback failed due to audio decoding errors');
-            }
-        });
-    }
-    const post = prepareParams(message, {type:"BACKGROUND"});
-    if (post === undefined) return Promise.resolve();
-    const { response, tempo_aceite, status, acao, coleta_id, type} = post;
-    return new Promise((_resolve) => {
+    const post = prepareParams(message, { type: "DISPLAY" });
+    if (post !== undefined) {
+        const { response, tempo_aceite, status, acao, coleta_id, type } = post;
         const triggerNotifier = switchActions(response, status, acao, type);
         if (triggerNotifier) {
-            const notification = createNotifier(coleta_id);
-            dispatchNotifier(notification, tempo_aceite, _resolve)
-        } else {
-            _resolve()
+            const notification = createNotifier(coleta_id, tempo_aceite);
+            return new Promise((_resolve) => {
+                dispatchNotifier(notification, tempo_aceite, () => {
+                    GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
+                    console.log("destroy a coleta")
+                    if (aguia !== undefined) aguia.stop();
+                    _resolve();
+                })
+            })
         }
-    })
+    }
+    return Promise.resolve();
 }

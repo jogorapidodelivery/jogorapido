@@ -7,7 +7,7 @@ import { cor, tempoParaAceite } from "@root/app.json";
 import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaAtualizarStatus } from "@actions/";
 import OpenMap from "react-native-open-map";
-import { triggerDestroyTimerProgress } from "@libs/triggerNotifier";
+import { triggerDestroyTimerProgress } from "../../../../firebase-background-message/index";
 export const _addressOpenMapsDefaultProps = {
     title: "Jogo Rápido",
     cancelText: "Cancelar",
@@ -101,7 +101,7 @@ export default class ColetaPendente extends PureComponent {
                         value: "",
                         color: "07"
                     }}
-                    bg="12"
+                    bg="14"
                     onPress={this._submit}
                 />
             </ViewAnimatable>
