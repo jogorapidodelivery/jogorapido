@@ -1,16 +1,19 @@
 import firebase from "react-native-firebase";
 import { GrupoRotas } from "@sd/navigation/revestir";
-// import { SDNavigation } from "@sd/navigation";
 import { empty } from "@sd/uteis/StringUteis";
 import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
 import Sound from "react-native-sound";
 Sound.setCategory("Playback");
-let aguia = new Sound("aguia.mp3", Sound.MAIN_BUNDLE, (error) => {
+let aguia = new Sound("http://177.101.149.36/aguia_small.mp3", Sound.MAIN_BUNDLE, (error) => {
     if (error) {
+        console.log("ERRO AU CARREGAR O SOM INICIO");
+        console.log(error)
+        console.log("ERRO AU CARREGAR O SOM FIM");
         aguia = undefined;
         return;
     }
+    aguia.setNumberOfLoops(-1);
 });
 let timerInProcess = undefined;
 let inProgress = false;
@@ -20,7 +23,9 @@ if (Platform.OS === "android") {
     channel.setSound(null);
     firebase.notifications().android.createChannel(channel);
 }
-const prepareParams = ({ data: response }, type) => {
+const prepareParams = ({ data, _data }, type) => {
+    const response = data || _data;
+    console.log({metodo:"prepareParams", response});
     if (inProgress) return undefined
     inProgress = true;
     const { status, acao, coleta_id } = response;
@@ -60,7 +65,7 @@ const createNotifier = (coleta_id, tempo_aceite) => {
             .android.setShowWhen(true)// Se aparece data e hora
             .android.setColor(cor["10"])
             .android.setColorized(true)
-            .android.setTimeoutAfter(1000 * tempo_aceite)// Especifica o horário em segundos em que esta notificação deve ser cancelada, se ainda não estiver cancelada.
+            .android.setTimeoutAfter(1000 * 5)// Especifica o horário em segundos em que esta notificação deve ser cancelada, se ainda não estiver cancelada.
             .android.setWhen(horaNotificacao)// Especifica a hora que foi notificado
             .android.setVisibility(true)// mostrar na tela de bloqueio
             .android.setUsesChronometer(true)// transforma a notificação em um cronometro
@@ -98,10 +103,13 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
     }, 1000);
 }
 const switchActions = (response, status, acao, type) => {
+    console.log("switchActions");
+    console.log({ status, acao, type})
     switch (acao) {
         case "nova_coleta":
             switch (status) {
                 case "Pendente":
+                    console.log("nova coleta porra")
                     GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
                     return true
@@ -121,8 +129,9 @@ const switchActions = (response, status, acao, type) => {
     }
     return false
 }
-
 firebase.messaging().onMessage(message => {
+    console.log("firebase.messaging().onMessage()");
+    console.log({ message});
     const post = prepareParams(message, { type: "DISPLAY" });
     if (post !== undefined) {
         const { response, tempo_aceite, status, acao, coleta_id, type } = post;
@@ -131,13 +140,14 @@ firebase.messaging().onMessage(message => {
             const notification = createNotifier(coleta_id, tempo_aceite);
             dispatchNotifier(notification, tempo_aceite, () => {
                 GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-                console.log("destroy a coleta")
                 if (aguia !== undefined) aguia.stop();
             })
         }
     }
 })
 export default async message => {
+    console.log("export default async message");
+    console.log({ message})
     const post = prepareParams(message, { type: "DISPLAY" });
     if (post !== undefined) {
         const { response, tempo_aceite, status, acao, coleta_id, type } = post;
@@ -147,7 +157,6 @@ export default async message => {
             return new Promise((_resolve) => {
                 dispatchNotifier(notification, tempo_aceite, () => {
                     GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-                    console.log("destroy a coleta")
                     if (aguia !== undefined) aguia.stop();
                     _resolve();
                 })

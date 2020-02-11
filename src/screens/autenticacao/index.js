@@ -2,11 +2,14 @@ import React, { Component, Fragment } from "react";
 import { ActivityIndicator, View, Image, Linking, LayoutAnimation } from "react-native";
 import styl from "./styl";
 import { cor } from "@root/app.json";
+import { empty } from "@sd/uteis/StringUteis";
 import {actionAutenticar} from "@actions/";
 import permissions from "@sd/uteis/permissions/index";
 import Button from "@sd/components/button";
 import Info from "@screens/partial/info";
 import { openPageStart } from "./command";
+import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
+import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 import { View as ViewAnimatable } from "react-native-animatable";
 export default class Autenticacao extends Component {
   static mapStateToProps = ["autenticacao.email", "autenticacao.senha"];
@@ -18,7 +21,11 @@ export default class Autenticacao extends Component {
   }
   componentDidMount(){
     permissions().then(() => {
-      actionAutenticar().then(() => {
+      actionAutenticar().then(({ response: { coleta: data } }) => {
+        if (!empty(data)) {
+          data.acao = "nova_coleta";
+          setTimeout(() => SharedEventEmitter.emit('onMessage', new RemoteMessage({ data })), 800);
+        }
         openPageStart(this.props.navigation, 500);
       }).catch(() => {
         openPageStart(this.props.navigation, 0);

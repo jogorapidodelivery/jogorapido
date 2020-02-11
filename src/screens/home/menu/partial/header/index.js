@@ -2,8 +2,10 @@ import React, { PureComponent } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import styl from "./styl";
 import { stylDefault } from "@src/stylDefault";
+import { empty } from "@sd/uteis/StringUteis";
 export default class Header extends PureComponent {
     render() {
+        const { email, telefone, foto, nome } = this.props.data
         return <View style={styl.container}>
             <View style={styl.warp}>
                 <View style={styl.warpAsa}>
@@ -12,7 +14,8 @@ export default class Header extends PureComponent {
                     </View>
                 </View>
                 <TouchableOpacity style={styl.warpFoto}>
-                    <Image resizeMode="cover" style={styl.foto} source={{ uri:"https://abrilguiadoestudante.files.wordpress.com/2018/04/redaccca7acc83o-estudante.jpg?quality=100&strip=info&resize=150,100"}}/>
+                    {empty(foto) && <Text style={styl.moto}></Text>}
+                    {!empty(foto) && <Image resizeMode="cover" style={styl.foto} source={{ uri: foto}}/>}
                 </TouchableOpacity>
                 <TouchableOpacity style={styl.updateFoto}>
                     <View style={styl.bgAsa}>
@@ -21,12 +24,12 @@ export default class Header extends PureComponent {
                 </TouchableOpacity>
             </View>
             <TouchableOpacity style={styl.btn}>
-                <Text style={[stylDefault.p, styl.p]}>joisiney@gmail.com</Text>
+                <Text style={[stylDefault.p, styl.p]}>{email}</Text>
                 <Text style={styl.icon}></Text>
             </TouchableOpacity>
-            <Text style={[stylDefault.h1, styl.nome]}>Joisiney Leandro Silva</Text>
+            <Text style={[stylDefault.h1, styl.nome]}>{nome}</Text>
             <TouchableOpacity style={styl.btn}>
-                <Text style={[stylDefault.p, styl.p]}>62 9 8157.2461</Text>
+                <Text style={[stylDefault.p, styl.p]}>{telefone}</Text>
                 <Text style={styl.icon}></Text>
             </TouchableOpacity>
         </View>

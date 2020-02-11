@@ -9,6 +9,9 @@ import Input from "@sd/components/form/input";
 import { stylDefault } from "@src/stylDefault";
 import { actionLogin } from "@actions/";
 import { openPageStart } from "../command";
+import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
+import { SharedEventEmitter} from "react-native-firebase/dist/utils/events";
+import { empty } from "@sd/uteis/StringUteis";
 export default class Conectar extends PureComponent {
     constructor(props) {
         super(props)
@@ -26,19 +29,25 @@ export default class Conectar extends PureComponent {
         }
     }
     _submit = _callBackUnlock => {
-        this.form.check().then(actionLogin).then(() => {
-            openPageStart(this.props.navigation)
-            _callBackUnlock();
-        }).catch(({status, mensagem}) => {
-            _callBackUnlock();
-            if (status === "erro") {
+        this.form.check().then((res) => {
+            actionLogin(res).then(({ response: { coleta:data}}) => {
+                if (!empty(data)) {
+                    data.acao = "nova_coleta";
+                    setTimeout(() => SharedEventEmitter.emit('onMessage', new RemoteMessage({ data })), 800);
+                }
+                openPageStart(this.props.navigation)
+                _callBackUnlock();
+            }).catch(({ mensagem}) => {
                 this.props.navigation.push("alerta", {
                     params: {
                         titulo: "Jogo Rápido",
                         mensagem
                     }
                 })
-            }
+                _callBackUnlock();
+            })
+        }).catch(() => {
+            _callBackUnlock();
         })
         
     }
@@ -62,8 +71,8 @@ export default class Conectar extends PureComponent {
             header={<HeaderLogo />}
             style={styl.warpBase}
             headerHeight={HeaderLogo.heightContainer}>
-            <Input style={styl.warpInput} form={this.form} type="email" postName="usuario" postType="rsa" placeHouder="E-mail" underline={{ color:"06" }} />
-            <Input style={[styl.spacePassword, styl.warpInput]} form={this.form} type={passWordStyle.type} compare="senhaCompare" postName="senha" postType="rsa" placeHouder="Senha" underline={{ color:"06" }} rightIcon={{ ...passWordStyle, onPress:this._toogleType }} />
+            <Input value={__DEV__ ? "joisiney@gmail.com" : ""} style={styl.warpInput} form={this.form} type="email" postName="usuario" postType="rsa" placeHouder="E-mail" underline={{ color:"06" }} />
+            <Input value={__DEV__ ? "020406" : ""} style={[styl.spacePassword, styl.warpInput]} form={this.form} type={passWordStyle.type} compare="senhaCompare" postName="senha" postType="rsa" placeHouder="Senha" underline={{ color:"06" }} rightIcon={{ ...passWordStyle, onPress:this._toogleType }} />
             <Button nome="Entrar" text={{ value: "Entrar", color:"07" }} onPressAwait={this._submit} bg="14" />
             <Button nome="Opa! esqueci minha senha?" text={{ value: "Opa! esqueci minha senha?", color:"03", style:styl.textoSenha }} onPress={() => this.props.navigation.navigate("recuperarSenha")} />
             {false && <Button nome="Facebook" text={{ value: <Text><Text style={stylDefault.normal}>Entrar com </Text>Facebook</Text>, color:"07" }} onPressAwait={actionUnlook => { if (false) actionUnlook()}} bg="11" style={styl.btnLoginSocial} />}

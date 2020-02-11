@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
-const { baseApp, timeoutSlow, timeoutLong } = require("@root/app.json")
+import { baseApp, timeoutSlow, timeoutLong } from "@root/app.json";
+import { version } from "@root/package.json";
 import { empty } from "@sd/uteis/StringUteis";
 export let globalParams = {
     app_id: "",
@@ -18,6 +19,7 @@ const _getDefaultParams = () => {
         current_time: `${_h}:${_mn}:${_s}`,
         data_celular: `${_a}-${_m}-${_d} ${_h}:${_mn}:${_s}`,
         os: Platform.OS,
+        version,
         ...globalParams
     }
 }

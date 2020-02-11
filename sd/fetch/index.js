@@ -5,7 +5,6 @@ export const PUBLIC_KEY_RSA = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BA
 import Ajax from "./Ajax"
 const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID = 0, _callBackDestroy = undefined) => {
 	const _ajax = _args => {
-		// console.log("_ajax", _args);
 		let destroy = Ajax(_args, r => {
 			_resolve(r)
 		}, r => {
@@ -108,8 +107,8 @@ export const fetchItemsRow = (_itens) => {
 		const _params = _filter({
 			payload: _dataRowPosts
 		});
-		fetchItem(_params, false, counterLog++).then(({ data, posted, mensagem, status }) => {
-			_dataRowPosts[posted.key] = { status: status, mensagem: mensagem, data: data, posted: posted }
+		fetchItem(_params, false, counterLog++).then(({ response, posted, mensagem, status }) => {
+			_dataRowPosts[posted.type] = { status, mensagem, response, posted }
 			if (_itens.length > 0) _rowFetchPosts(_resolve, _reject, _dataRowPosts)
 			else {
 				_resolve(_dataRowPosts);
@@ -144,27 +143,23 @@ export const fetchItemsParallel = _itens => {
 		const _total = _itens.length - 1;
 		let _counterThen = 0;
 		let _counterCatch = 0;
-		let _state = {
-			// ERROR:{}
-		}
-		const _listTmp = _itens.map((_v, _key) => {
-			const _filter = _v;
+		const _listTmp = _itens.map((_filter, _key) => {
 			const _params = _filter({
 				payload: _dataRowPosts
 			});
 			const _p = new Promise((_resolve, _reject) => {
 				_encryptAjax(_resolve, _reject, _params, false, _key);
 			});
-			_p.then((_r = { posted:{key:0}}) => {
-				_state[_r.posted.key] = _r;
+			_p.then(({ response, posted, mensagem, status }) => {
+				_dataRowPosts[posted.type] = { status, mensagem, response, posted }
 				if (_total == _counterThen + _counterCatch) {
-					_resolve(_state);
+					_resolve(_dataRowPosts);
 				}
 				_counterThen++;
 			}).catch(_e => {
 				// _state.ERROR[_e.posted.key] = _e
 				if (_total == _counterThen + _counterCatch) {
-					_resolve(_state);
+					_resolve(_dataRowPosts);
 				}
 				_counterCatch++;
 			});

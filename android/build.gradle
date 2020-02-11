@@ -8,6 +8,8 @@ buildscript {
         compileSdkVersion = 28
         targetSdkVersion = 28
         supportLibVersion = "28.0.0"
+        // androidXAnnotation = "1.1.0"// add no lugar de supportLibVersion
+        // androidXBrowser = "1.0.0" // add no lugar de supportLibVersion
         playServicesVersion = "16.+"
         androidMapsUtilsVersion = "0.5+"
         appCompatVersion = "1.0.2"

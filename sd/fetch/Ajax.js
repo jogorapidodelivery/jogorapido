@@ -61,16 +61,23 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             controller = undefined
         }
         if (!empty(_obj.body_post.postdata)) delete _obj.body_post.postdata
-        const { action, key, body_view, body_post, body_rsa } = _obj
-        const { data, mensagem, status } = response
+        const { action, type, body_view, body_post, body_rsa } = _obj
+        let { key } = _obj;
+        key = key || str2slug(action);
+        const { data, mensagem, status } = response;
+        console.log("ajax:", {type, key});
         const _r = {
             posted: {
                 action,
-                key: key || str2slug(action),
+                type,
+                key,
                 ...body_view,
                 ...body_post,
                 ...body_rsa
-            }, response:data, mensagem, status
+            },
+            response:data,
+            mensagem,
+            status
         }
         if ("sucesso".indexOf(response.status) !== -1) {
             _resolve(_r)

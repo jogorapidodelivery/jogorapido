@@ -9,7 +9,6 @@ export default class Ul extends PureComponent {
         return <Text style={[stylDefault.p, styl.container]}>
             <Text style={stylDefault.bold}>{titulo}{"\n"}</Text>
             {lis.map((_v, _k) => {
-                console.log("-->", _v);
                 return <Text key={`li-${_k}`}><Text style={styl.counter}>{_k + 1}) </Text>{_v}{_k !== t ? "\n" : ""}</Text>
             })}
         </Text>

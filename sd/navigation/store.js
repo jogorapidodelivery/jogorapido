@@ -1,4 +1,4 @@
-import { createStore, compose, applyMiddleware } from 'redux';
+import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 // import thunkMiddleware from "redux-thunk"
 import { Platform, NativeModules } from 'react-native';
@@ -17,4 +17,6 @@ if (__DEV__) {
         // thunkMiddleware
     );
 }
-export const SDCreateStore = reducers => createStore(reducers, undefined, _op);
+export const SDCreateStore = reducers => {
+    return createStore(combineReducers(reducers), undefined, _op);
+};

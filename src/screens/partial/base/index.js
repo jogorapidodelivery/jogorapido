@@ -1,5 +1,5 @@
-import React, { PureComponent } from "react";
-import { Animated, View, Text, Dimensions, KeyboardAvoidingView, Platform, LayoutAnimation } from "react-native";
+import React, { Component } from "react";
+import { RefreshControl, Animated, View, Text, Dimensions, KeyboardAvoidingView, Platform, LayoutAnimation } from "react-native";
 import styl from "./styl";
 import LinearGradient from 'react-native-linear-gradient';
 import Button from "@sd/components/button";
@@ -12,19 +12,21 @@ const behavior = Platform.select({
 })
 const heightGoBack = 15;
 const heightHeader = 20;
-export default class BaseScreen extends PureComponent {
+export default class BaseScreen extends Component {
     listView = undefined;
     constructor(props) {
         super(props)
         this.state = {
+            refreshingActived:false,
             scrollY: new Animated.Value(0)
         }
     }
-    // componentDidUpdate(prevProps, prevState){
-    //     if (prevProps !== prevState) {
-    //         LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-    //     }
-    // }
+    _onRefresh = () => {
+        this.setState({ refreshingActived:true});
+        this.props.onRefresh(() => {
+            this.setState({ refreshingActived:false});
+        })
+    }
     _clickScrollTop = () => {
         if (this.listView) this.listView.getNode().scrollTo({ y: 0, animated: true });
     }
@@ -40,7 +42,8 @@ export default class BaseScreen extends PureComponent {
         </View>
     }
     render() {
-        const { children, header, headerFix } = this.props;
+        const { refreshingActived} = this.state
+        const { children, header, headerFix, onRefresh } = this.props;
         const headerHeight = header ? this.props.headerHeight : normalize(50);
         const { scrollY } = this.state;
         const translateY = scrollY.interpolate({
@@ -64,15 +67,16 @@ export default class BaseScreen extends PureComponent {
         return <KeyboardAvoidingView style={styl.container} behavior={behavior} enabled>
             <LinearGradient
                 start={{ x: 0, y: 0 }}
-                end={{ x: .5, y: .7 }}
-                // colors={[cor["08"], cor["13"], cor["22"], cor["07"]]}
-                colors={["#6763DE", "#6C63FF"]}
+                end={{ x: .2, y: .5 }}
+                colors={cor["24"]}
                 style={styl.gradiente}
             >
-            {/* <View style={[styl.gradiente, { backgroundColor: cor["08"]}]}> */}
                 {headerFix}
                 <View style={styl.warpContent}>
                     <Animated.ScrollView
+                        refreshControl={
+                            onRefresh ? <RefreshControl style={{zIndex:999}} refreshing={refreshingActived} onRefresh={this._onRefresh} /> : null
+                        }
                         ref={ref => this.listView = ref}
                         overScrollMode="never"
                         scrollEventThrottle={16}
@@ -112,7 +116,6 @@ export default class BaseScreen extends PureComponent {
                     </Animated.View>
                 </View>
             </LinearGradient>
-            {/* </View> */}
         </KeyboardAvoidingView>
     }
 }

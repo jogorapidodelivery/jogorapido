@@ -43,6 +43,9 @@ export default StyleSheet.create({
         position:"relative"
     },
     warpFoto:{
+        backgroundColor: cor["25"],
+        justifyContent:"center",
+        alignContent:"center",
         height: normalize(120),
         width: normalize(120),
         borderRadius: normalize(60),
@@ -79,10 +82,17 @@ export default StyleSheet.create({
         fontFamily:"icomoon",
         fontSize:normalize(size["07"])
     },
+    moto: {
+        color: cor["07"],
+        textAlign:"center",
+        fontFamily: "icomoon",
+        fontSize: normalize(110)
+    },
     p:{
         color:cor["07"]
     },
     nome:{
+        textTransform:"capitalize",
         marginTop:0,
         marginBottom:0,
         textAlign: "center",

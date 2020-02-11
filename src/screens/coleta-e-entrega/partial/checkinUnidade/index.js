@@ -19,9 +19,9 @@ export default class CheckInUnidade extends PureComponent {
             coletaCheckIn({
                 body_rsa: {
                     coleta_id,
-                    coluna:"data_checkin_unidade"
+                    coluna: "data_checkin_unidade"
                 }
-            }).then(onChange).catch(({mensagem}) => {
+            }).then(onChange).catch(({ mensagem }) => {
                 navigation.push("alerta", {
                     params: {
                         titulo: "Jogo Rápido",

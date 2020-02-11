@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { LayoutAnimation} from "react-native";
 import { GrupoRotas } from "@sd/navigation/revestir";
 import HeaderLogo from "@screens/partial/header-logo";
 import BaseScreen from "@screens/partial/base";
@@ -9,6 +10,7 @@ import { COLETA_LIMPAR } from "@constants/";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 import AlertTipoToast from "@src/components/alert-toast";
+import { actionAutenticar } from "@actions/";
 export default class Home extends PureComponent {
     static mapStateToProps = [
         "autenticacao.usuario_id",
@@ -29,6 +31,7 @@ export default class Home extends PureComponent {
         const data_checkout_cliente = getItemByKeys(this.props, "sd.coleta.data_checkout_cliente");
         if (!empty(data_checkout_cliente)) {
             this.intervalAlert = setTimeout(() => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                 GrupoRotas.store.dispatch({ type:COLETA_LIMPAR });
             }, 5000);
         }
@@ -41,6 +44,17 @@ export default class Home extends PureComponent {
         }
         return undefined;
     }
+    _updateColeta = (onComplete) => {
+        actionAutenticar().then((_r) => {
+            console.log(_r);
+            this.componentDidMount();
+            onComplete();
+        }).catch(() => {
+            console.log("Falha ao atualizar os dados da coleta")
+            onComplete();
+        });
+        
+    }
     render() {
         const {navigation} = this.props;
         const status = getItemByKeys(this.props, "sd.coleta.status")
@@ -49,6 +63,7 @@ export default class Home extends PureComponent {
         const corridas_semana = getItemByKeys(this.props, "sd.corridas_semana")
         const total_frete_semana = getItemByKeys(this.props, "sd.total_frete_semana")
         return <BaseScreen
+            onRefresh={this._updateColeta}
             navigation={navigation}
             headerFix={this.renderHeaderFix}
             header={<HeaderLogo navigation={navigation} />}

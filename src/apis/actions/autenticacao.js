@@ -1,6 +1,6 @@
 import firebase from "react-native-firebase";
 import { AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
-import {actionFetchItem} from "@sd/uteis/CreateActions";
+import { actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from "@sd/uteis/CipherCaesar";
 export const actionAutenticar = () => {
@@ -17,6 +17,7 @@ export const actionAutenticar = () => {
         }).catch(() => _reject());
     })
 };
+// COLETA_NOVA
 export const actionLogin = actionFetchItem(CONECTAR, "usuario/login");
 export const actionRecuperarSenha = actionFetchItem(RECUPERAR_SENHA, "usuario/recuperar-senha");
 export const actionChecarTokenEmail = actionFetchItem(CHECAR_SIMBOLO_EMAIL, "usuario/checar-token-email");

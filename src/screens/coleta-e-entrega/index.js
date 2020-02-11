@@ -13,10 +13,11 @@ import CheckOutUnidade from "./partial/checkoutUnidade/index";
 import CheckInCliente from "./partial/checkinCliente/index";
 import CheckOutCliente from "./partial/checkoutCliente/index";
 import { destroyFence, addFence } from "@sd/uteis/permissions/index";
+import { coletaBuscarProdutos } from "@actions/";
 export default class Coleta extends Component {
     static mapStateToProps = ["autenticacao.usuario_id", "autenticacao.coleta", "autenticacao.produtos", "autenticacao.distancia_checkin"]
     static mapTransformProps = props => {
-        props.produtos = props.produtos.map(({produto, qtd, sub_total}) => {
+        props.produtos = empty(props.produtos) ? [] : props.produtos.map(({produto, qtd, sub_total}) => {
             return {
                 titulo: produto,
                 textOrMoney: moeda(sub_total),
@@ -29,8 +30,8 @@ export default class Coleta extends Component {
     constructor(props){
         super(props);
         destroyFence();
-        const { coleta: { unidade, latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, cliente }, distancia_checkin } = this.props.sd;
-        const { dentroDoRaio: distanciaMinClienteOk, distancia: distanciaEmLinhaCliente} = addFence({ name: cliente, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin, callBack: this.fenceCliente.bind(this) })
+        const { coleta: { unidade, coleta_id, latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, cliente }, distancia_checkin } = this.props.sd;
+        const { dentroDoRaio: distanciaMinClienteOk, distancia: distanciaEmLinhaCliente} = addFence({ name: cliente, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin * 10, callBack: this.fenceCliente.bind(this) })
         const { dentroDoRaio: distanciaMinEstabelecimentoOk, distancia: distanciaEmLinhaEstabelecimento } = addFence({ name: unidade, latitude: latitude_unidade, longitude: longitude_unidade, raio: distancia_checkin, callBack: this.fenceEstabelecimento.bind(this) })
         this.state = {
             abas: ["INFORMAÇÕES", "DETALHAMENTO"],
@@ -41,6 +42,13 @@ export default class Coleta extends Component {
             distanciaEmLinhaEstabelecimento,
             distanciaMinEstabelecimentoOk
         }
+        coletaBuscarProdutos({
+            body_rsa:{
+                coleta_id
+            }
+        }).catch(() => {
+            props.navigation.push("login")
+        })
     }
     fenceEstabelecimento = ({ dentroDoRaio: distanciaMinEstabelecimentoOk, distancia: distanciaEmLinhaEstabelecimento}) => {
         if (this.state.distanciaMinEstabelecimentoOk !== distanciaMinEstabelecimentoOk) {
@@ -79,7 +87,7 @@ export default class Coleta extends Component {
         const { abaSelecionada, distanciaMinEstabelecimentoOk, distanciaMinClienteOk } = this.state;
         if (abaSelecionada === 0) {
             return <CheckInUnidade coleta={coleta} distancia_checkin={distancia_checkin} onChange={this.changeCheckInUnidade.bind(this)} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />
-        } else if (!empty(coleta) && !empty(produtos)){
+        } else if (!empty(coleta) && produtos.length > 0){
             if (!empty(data_checkin_unidade) && empty(data_checkout_unidade)) {
                 return <CheckOutUnidade coleta={coleta} produtos={produtos} distancia_checkin={distancia_checkin} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />
             } else if (!empty(data_checkout_unidade) && empty(data_checkin_cliente)){
@@ -91,7 +99,7 @@ export default class Coleta extends Component {
         return <Fragment/>
     }
     render() {
-        const {sd} = this.props
+        const {sd} = this.props;
         const { coleta} = sd;
         const { coleta_id, pedido_id } = coleta;
         const { distanciaEmLinhaEstabelecimento, distanciaEmLinhaCliente } = this.state;
@@ -109,7 +117,7 @@ export default class Coleta extends Component {
             {distanciaEmLinhaEstabelecimento && __DEV__ && <Text style={[stylDefault.span, styl.h2]}>Dist. Estabelecimento{distanciaEmLinhaEstabelecimento}m</Text>}
             <Aba {...this.state} onPress={this._toogleTab.bind(this)}/>
             {this.renderCheckIn}
-            <Button onPress={whatsapp} style={styl.btnAjuda} text={{ value: "Preciso de ajuda", color: "07" }} leftIcon={{ value: "", color: "07" }} styleName="pequeno" bg="09"/>
+            <Button onPress={whatsapp} style={styl.btnAjuda} text={{ value: "Preciso de ajuda", color: "07" }} leftIcon={{ value: "", color: "07" }} styleName="pequeno" bg="09"/> 
         </BaseScreen>
     }
 }

@@ -12,7 +12,7 @@ export default StyleSheet.create({
         width: normalize(130),
         height: normalize(130),
         borderRadius: normalize(radius["02"]),
-        backgroundColor: cor["19"],
+        backgroundColor: cor["24"][0],
         justifyContent: "center",
         alignItems: "center"
     },
