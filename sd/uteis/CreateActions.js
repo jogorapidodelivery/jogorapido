@@ -31,7 +31,6 @@ export const mergeHandleActions = (...args) => {
     })
     const _ac = {}
     Object.keys(_merge).forEach(key => {
-        console.log(key, bootProps[key])
         _ac[key] = combineHandleActions(key, _merge[key], bootProps[key])
     })
     return _ac
@@ -103,8 +102,6 @@ export const actionFetchParallel = (_args/*[{type:LOGIN, stateWarpKey:"autentica
         const post = _args.map((v, key) => (() => ({ ...params[key], ...v, key:v.key})));
         if (loading) SDNavigation.navegar.push("carregando");
         fetchItemsParallel(post).then((_response) => {
-            console.log("fetchItemsParallel")
-            console.log(_response)
             if (loading) {
                 SDNavigation.navegar.pop();
                 setTimeout(() => {
@@ -139,15 +136,10 @@ export const actionFetchRow = (_args/*[{type:LOGIN, stateWarpKey:"autenticacao",
  *				senha: "020406"
  *			}
  *		}), */
-        console.log("_args")
-        console.log(_args)
-        console.log("params")
-        console.log(params)
+        
         return false
         if (loading) SDNavigation.navegar.push("carregando");
         fetchItemsRow(post).then((_response) => {
-            console.log("fetchItemsParallel")
-            console.log(_response)
             if (loading) {
                 SDNavigation.navegar.pop();
                 setTimeout(() => {
@@ -187,11 +179,6 @@ export const actionFetchRow = (_args/*[{type:LOGIN, stateWarpKey:"autenticacao",
                     senha: "020405"
                 }
             })] */
-/**store.dispatch({
-  type: 'ADD_TODO',
-  text: 'Read the docs'
-})
-console.log(store.getState()) */
 
 /**
 fetchItem({

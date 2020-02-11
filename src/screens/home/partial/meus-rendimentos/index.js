@@ -6,7 +6,6 @@ import styl from "./styl";
 export default class MeusRendimentos extends PureComponent {
     render() {
         const { corridas_semana, total_frete_semana} = this.props
-        console.log({ corridas_semana})
         return <Fragment>
             <Text style={[stylDefault.h1, styl.meusRendimentos]}>Nesta semana</Text>
             <View style={styl.container}>

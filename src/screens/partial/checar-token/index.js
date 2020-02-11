@@ -25,7 +25,6 @@ export default class ChecarToken extends PureComponent {
                 usuario
             }
         }).then(_s => {
-            console.log(_s);
             const { p1, p2, p3, p4} = _s.body_rsa;
             _s.body_rsa.token_email = `${p1}${p2}${p3}${p4}`;
             onSubmit(_s)

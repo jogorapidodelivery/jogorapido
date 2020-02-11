@@ -65,7 +65,6 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
         let { key } = _obj;
         key = key || str2slug(action);
         const { data, mensagem, status } = response;
-        console.log("ajax:", {type, key});
         const _r = {
             posted: {
                 action,

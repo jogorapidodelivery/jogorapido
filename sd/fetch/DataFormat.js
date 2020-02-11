@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 import { baseApp, timeoutSlow, timeoutLong } from "@root/app.json";
-import { version } from "@root/package.json";
 import { empty } from "@sd/uteis/StringUteis";
 export let globalParams = {
     app_id: "",
@@ -19,7 +18,6 @@ const _getDefaultParams = () => {
         current_time: `${_h}:${_mn}:${_s}`,
         data_celular: `${_a}-${_m}-${_d} ${_h}:${_mn}:${_s}`,
         os: Platform.OS,
-        version,
         ...globalParams
     }
 }
@@ -39,12 +37,14 @@ export default (_obj, _loggerID = 0) => {
                     for (let c in v2) {
                         const v3 = v2[c]
                         if (empty(v3)) continue
-                        if (__DEV__) _urlDebug += `&${a}[${b}][${c}]=${escape(v3)}`
+                        // if (__DEV__) _urlDebug += `&${a}[${b}][${c}]=${escape(v3)}`
+                        _urlDebug += `&${a}[${b}][${c}]=${escape(v3)}`
                         _data.append(`${a}[${b}][${c}]`, v3)
                     }
                     continue
                 }
-                if (__DEV__) _urlDebug += `&${a}[${b}]=${escape(v2)}`
+                // if (__DEV__) _urlDebug += `&${a}[${b}]=${escape(v2)}`
+                _urlDebug += `&${a}[${b}]=${escape(v2)}`
                 _data.append(`${a}[${b}]`, v2)
             }
             continue
@@ -53,7 +53,8 @@ export default (_obj, _loggerID = 0) => {
                 for (let d in value) {
                     const v4 = value[d]
                     if (empty(v4)) continue
-                    if (__DEV__) _urlDebug += `&${a}[${d}]=${escape(v4)}`
+                    // if (__DEV__) _urlDebug += `&${a}[${d}]=${escape(v4)}`
+                    _urlDebug += `&${a}[${d}]=${escape(v4)}`
                     _data.append(`${a}[${d}]`, v4)
                 }
                 continue
@@ -61,7 +62,8 @@ export default (_obj, _loggerID = 0) => {
                 timeout = timeoutLong
             }
         }
-        if (__DEV__) _urlDebug += `&${a}=${escape(value)}`
+        // if (__DEV__) _urlDebug += `&${a}=${escape(value)}`
+        _urlDebug += `&${a}=${escape(value)}`
         _data.append(a, value)
     }
     console.log(`${_loggerID}) FORMAT POST`, { get: _urlDebug })

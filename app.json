@@ -1,13 +1,10 @@
 {
   "name": "jogorapido",
   "displayName": "Jogo Rápido",
+  "applestoryid": "?",
+  "googleplayid": "com.jogorapido",
+  "facebookID": "?",
   "baseApp": "http://177.101.149.36/app/",
-  "geolocation": {
-    "latitude": -16.6868912,
-    "longitude": -49.2647943,
-    "latitudeDelta": 0.0922,
-    "longitudeDelta": 0.0421
-  },
   "tempoParaAceite": 60,
   "cor": {
     "01": "rgba(69,69,69,.1)",

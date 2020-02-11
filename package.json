@@ -1,6 +1,6 @@
 {
   "name": "jogorapido",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,7 +11,8 @@
     "postinstall": "jetifier -r && rndebugger-open",
     "rndebugger": "rndebugger-open",
     "android-release": "react-native run-android --variant=release",
-    "debugger": "open 'rndebugger://set-debugger-loc?host=localhost&port=8081'"
+    "debugger": "open 'rndebugger://set-debugger-loc?host=localhost&port=8081'",
+    "logcat": "(cd ./android && adb logcat *:S ReactNative:V ReactNativeJS:V)"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
@@ -20,6 +21,7 @@
     "abortcontroller-polyfill": "^1.4.0",
     "base-64": "^0.1.0",
     "moment": "^2.24.0",
+    "pad": "^3.2.0",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-android-location-services-dialog-box": "^2.8.2",

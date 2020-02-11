@@ -46,7 +46,6 @@ export default class Home extends PureComponent {
     }
     _updateColeta = (onComplete) => {
         actionAutenticar().then((_r) => {
-            console.log(_r);
             this.componentDidMount();
             onComplete();
         }).catch(() => {

@@ -63,7 +63,6 @@ export default class Lista extends Component {
         if (empty(total)) {
             total = this.state.data.reduce((accumulator, { textOrMoney, actived }) => {
                 const add = actived ? toNumber(textOrMoney) : 0;
-                console.log({ textOrMoney, actived, accumulator, add })
                 return accumulator + add
             }, 0);
             if (total === 0) return <Fragment />

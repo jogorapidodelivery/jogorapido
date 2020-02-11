@@ -2,6 +2,9 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
+//Biblioteca para atualizar a versão do APP automaticamente
+import groovy.json.JsonSlurper
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -123,6 +126,23 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  */
 def enableHermes = project.ext.react.get("enableHermes", false);
 
+
+// Inicio de funcões de atualização de nome e código de versão;
+def getVersionName() {
+    def inputFile = new File("../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
+def getVersionCode() {
+    def (major, minor, patch) = getVersionName().tokenize('.');
+    def r = major + minor.padLeft(3, "0") + patch.padLeft(4, "0");
+    System.out.println("VERSION CODE");
+    System.out.println(r);
+    return Integer.parseInt(r);
+}
+def vName = getVersionName()
+def vCode = getVersionCode()
+// Fim de funcões de atualização de nome e código de versão;
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -137,8 +157,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // resConfigs "en", "pt"
         multiDexEnabled true
-        versionCode 102
-        versionName "1.0.2"
+        versionCode vCode
+        versionName vName
     }
     splits {
         abi {
