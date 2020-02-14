@@ -1,6 +1,6 @@
 import firebase from "react-native-firebase";
 import { Platform, Linking, Alert} from "react-native";
-import { AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
+import { ONLINE, AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
 import { actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from "@sd/uteis/CipherCaesar";
@@ -34,10 +34,8 @@ export const actionAutenticar = () => {
             console.log("falha ao remover as notificações", e)
         }
         AsyncStorage.getItem(AUTENTICAR).then(value => {
-            console.log("auto-login-async-storage:", value)
             if(value != null) {
                 const body_rsa = decodeCipherCaesar(value);
-                console.log("auto-login-chiphed-decode:", body_rsa)
                 const _action = actionFetchItem(AUTENTICAR, "usuario/login", false);
                 _action({ body_rsa }).then((_response) => {
                     const { response: { versao_app } } = _response;
@@ -63,3 +61,4 @@ export const actionRecuperarSenha = actionFetchItem(RECUPERAR_SENHA, "usuario/re
 export const actionChecarTokenEmail = actionFetchItem(CHECAR_SIMBOLO_EMAIL, "usuario/checar-token-email");
 export const actionAlterarSenha = actionFetchItem(ALTERAR_SENHA, "usuario/alterar-senha");
 export const actionValidarEmail = actionFetchItem(VALIDAR_EMAIL, "usuario/validar-email");
+export const actionOnline = actionFetchItem(ONLINE, "usuario/online", false, false);

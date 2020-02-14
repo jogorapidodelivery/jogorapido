@@ -1,7 +1,8 @@
 import { RSA } from "react-native-rsa-native"
 import BackgroundGeolocation from "react-native-background-geolocation";
-import { baseApp} from "@root/app.json";
 import { PUBLIC_KEY_RSA } from "@sd/fetch";
+import { baseUrl } from "@root/app.json";
+const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
 // async await
 export const bgLocationFetch = async usuario_id => {
     const postdata = await RSA.encrypt(JSON.stringify(usuario_id), PUBLIC_KEY_RSA);

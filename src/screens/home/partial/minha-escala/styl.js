@@ -12,12 +12,14 @@ export default StyleSheet.create({
     },
     containerItem:{
         flexBasis: 0,
+        flexGrow: 1,
+        margin: normalize(spaces["01"] / 2),
+    },
+    containerItemWarp:{
         flexDirection:"row",
         alignItems: "center",
         backgroundColor: cor["06"],
-        flexGrow: 1,
         borderRadius:normalize(radius["01"]),
-        margin: normalize(spaces["01"] / 2),
         padding: normalize(spaces["01"])
     },
     titulo:{

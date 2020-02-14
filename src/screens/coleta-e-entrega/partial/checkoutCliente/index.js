@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Button from "@sd/components/button";
-import { coletaCheckIn } from "@actions/";
+import { coletaCheckOutCliente } from "@actions/";
 import Lista from "../lista/index";
 import { empty } from "@sd/uteis/StringUteis";
 import { View as ViewAnimatable } from "react-native-animatable";
@@ -11,11 +11,13 @@ data_checkout_cliente:
     * O data_checkout_cliente tem que vazio
     * Estar na aba detalhamento (1)
 */
+
 export default class CheckOutCliente extends Component {
     _click = () => {
         const { coleta: { coleta_id }, distanciaMinClienteOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinClienteOk) {
-            coletaCheckIn({
+
+            coletaCheckOutCliente({
                 body_rsa: {
                     coleta_id,
                     coluna: "data_checkout_cliente"
@@ -46,7 +48,7 @@ export default class CheckOutCliente extends Component {
             {empty(data_checkout_cliente) && <Button
                 onPress={this._click}
                 text={{
-                    value: "Saindo do cliente",
+                    value: "Finalizar Pedido",
                     color: "07"
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}

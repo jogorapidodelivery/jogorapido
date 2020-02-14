@@ -1,7 +1,9 @@
 import mountFormData from "./DataFormat"
 import { empty, str2slug } from "@sd/uteis/StringUteis"
 
-const { baseApp } = require("@root/app.json")
+import { baseUrl } from "@root/app.json";
+const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
+
 /*
 analiszar isto aqui também
 https://www.npmjs.com/package/react-native-cache-store
@@ -106,7 +108,7 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
         }
         const _strTmp = _err.message.toLowerCase();
         if (_strTmp.indexOf("network request failed") !== -1) {
-            _tmp.mensagem = "Falha na solicitação de rede";
+            _tmp.mensagem = "Falha na solicitação de rede. Tente novamente";
         } else if (_strTmp.indexOf("unexpected token < in json") !== -1) {
             _tmp.mensagem = "A informação retornada pelo servidor não tem formato JSON válido";
         }

@@ -17,34 +17,58 @@ let aguia = new Sound("http://177.101.149.36/aguia_small.mp3", Sound.MAIN_BUNDLE
     }
     aguia.setNumberOfLoops(-1);
 });
+let timerMin;
 let timerInProcess = undefined;
-let inProgress = false;
 let channel;
 if (Platform.OS === "android") {
     channel = new firebase.notifications.Android.Channel('receber-coleta-aguia', 'Grupo de coleta', firebase.notifications.Android.Importance.High);
     channel.setSound(null);
     firebase.notifications().android.createChannel(channel);
 }
+/*
+Cron atualizar status
+http://jogorapido.sitiodigital.local/app/usuario/checar-status
+
+cron enviar notificação
+http://jogorapido.sitiodigital.local/app/coleta/notificar-coletas
+
+http://jogorapido.sitiodigital.local/admin/entregador
+
+http://192.168.0.188:65006/uno/admin/expedicao-delivery
+ */
 const prepareParams = ({ data, _data }, type) => {
     const response = data || _data;
-    if (inProgress) return undefined
-    inProgress = true;
     let { status, acao, coleta_id, data_hora_atual, data_notificacao } = response;
-    if (!empty(GrupoRotas.store)) {
+    if (empty(data_hora_atual) || empty(data_notificacao) || empty(coleta_id)) {
+        console.log({ falha:"PARAMS BRIGATÓRIOS VAZIO", status, acao, coleta_id, data_hora_atual, data_notificacao})
+    } else if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
         if (!empty(state.autenticacao)) {
             let { autenticacao: { tempo_aceite } } = state;
             if (tempo_aceite) {
-                if(__DEV__) data_hora_atual = "2020-02-13 20:33:45";
-                if (__DEV__) data_notificacao = "2020-02-13 20:33:00";
-                const mill = moment(data_hora_atual).diff(moment(data_notificacao)) / 1000;
+                const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
                 const novoTempo = tempo_aceite - mill;
                 if (novoTempo > 0 && novoTempo <= tempo_aceite) {
-                    tempo_aceite = novoTempo
+                    tempo_aceite = novoTempo;
+                    console.log({ acao:"ATUALIZA O REDUX COM OS DADOS", tempo_aceite, status, acao, coleta_id, type})
                     return { response, tempo_aceite, status, acao, coleta_id, type}
+                } else {
+                    console.log("2) FOREGROUND FORA DO INTERVALO", {
+                        novoTempo,
+                        tempo_aceite,
+                        mill,
+                        data_hora_atual,
+                        data_notificacao
+                    })
                 }
+            } else {
+                console.log("2) FOREGROUND tempo_aceite EMPTY")
             }
+        } else {
+            console.log("2) FOREGROUND autenticacao EMPTY")
         }
+    } else {
+        console.log("2) FOREGROUND STORE EMPTY")
     }
     return undefined
 }
@@ -52,7 +76,6 @@ export const triggerDestroyTimerProgress = () => {
     if (timerInProcess) clearInterval(timerInProcess);
     firebase.notifications().removeAllDeliveredNotifications();
     if (aguia !== undefined) aguia.stop();
-    inProgress = false;
 }
 const createNotifier = (coleta_id, tempo_aceite) => {
     const notification = new firebase.notifications.Notification({
@@ -82,22 +105,13 @@ const createNotifier = (coleta_id, tempo_aceite) => {
     return notification;
 }
 const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
-    firebase.notifications().removeAllDeliveredNotifications();
-    firebase.notifications().displayNotification(notification);
-    let counter = 0;
-    if (timerInProcess) clearInterval(timerInProcess);
-    if (aguia !== undefined) aguia.play((success) => {
-        if (success) {
-            console.log('successfully finished playing');
-        } else {
-            console.log('playback failed due to audio decoding errors');
-        }
-    });
-    timerInProcess = setInterval(() => {
-        console.log({ method:"interval", counter, tempo_aceite})
+    const startTimer = (new Date()).getTime()
+    const loopInterval = () => {
+        const endtimer = (new Date()).getTime();
+        const counter = (endtimer - startTimer) / 1000;
+        console.log({ method: "interval", counter, tempo_aceite });
         if (counter > tempo_aceite) {
             if (timerInProcess) clearInterval(timerInProcess);
-            inProgress = false;
             _resolve()
         } else if (counter == tempo_aceite) {
             notification.android.setProgress(0, 0, true).android.setColor(cor["12"]);
@@ -107,15 +121,28 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
             notification.android.setProgress(100, Math.round(counter / tempo_aceite * 100), false);
             firebase.notifications().displayNotification(notification);
         }
-        counter++;
-    }, 1000);
+    }
+    firebase.notifications().removeAllDeliveredNotifications();
+    firebase.notifications().displayNotification(notification);
+    if (timerInProcess) clearInterval(timerInProcess);
+    if (aguia !== undefined) aguia.play((success) => {
+        if (success) {
+            console.log('successfully finished playing');
+        } else {
+            console.log('playback failed due to audio decoding errors');
+        }
+    });
+    timerInProcess = setInterval(loopInterval, 1000);
+    loopInterval();
 }
+
 const switchActions = (response, status, acao, type) => {
     switch (acao) {
         case "nova_coleta":
             switch (status) {
                 case "Pendente":
-                    console.log("nova coleta porra")
+                    console.log("REIVER NOTIFICACAO BG AQUI")
+                    console.log(response);
                     GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
                     return true

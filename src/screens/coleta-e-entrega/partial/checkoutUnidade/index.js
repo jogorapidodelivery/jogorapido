@@ -70,7 +70,7 @@ export default class CheckOutUnidade extends Component {
                 <Button
                     onPress={this._click}
                     text={{
-                        value:"Saindo do estabelecimento",
+                        value:"Saindo do Estabelecimento",
                         color: "07"
                     }}
                     bg={distanciaMinEstabelecimentoOk && todosOsProdutosEstaoSelecionados? "14" : "15"}

@@ -36,7 +36,7 @@ SDNavigation.registerScreens({
     coletar: { name: "coletar", screen: Coletar },
     meusDadosChecarTokenEmail: { name: "meusDadosChecarTokenEmail", screen: MeusDadosChecarTokenEmail },
     meusDadosAlterarSenha: { name: "meusDadosAlterarSenha", screen: MeusDadosAlterarSenha }
-})
+});
 
 SDNavigation.addModal([
     SDNavigation.addSwitch([
@@ -61,6 +61,6 @@ SDNavigation.addModal([
     "alerta",
     "carregando",
     "confirma"
-])
+]);
 initFirebase();
-export default SDNavigation.initProject(reducers)
+export default SDNavigation.initProject(reducers);

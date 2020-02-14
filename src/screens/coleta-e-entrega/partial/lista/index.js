@@ -17,13 +17,19 @@ export default class Lista extends Component {
         }
     }
     _press = ({ index}) => {
-        const { onPress } = this.props;
         const {data} = this.state;
         data[index].actived = !(data[index].actived === undefined ? false : data[index].actived);
-        const selecteds = data.filter(({actived}) => actived).length;
-        const totalLista = data.length
-        this.state.data = data;
-        onPress({ actived: selecteds === totalLista, badge: `${selecteds}/${totalLista}`})
+        this.componentDidMount();
+    }
+    componentDidMount() {
+        const { onPress } = this.props;
+        if (onPress) {
+            const { data } = this.state;
+            const selecteds = data.filter(({ actived }) => actived).length;
+            const totalLista = data.length
+            this.state.data = data;
+            onPress({ actived: selecteds === totalLista, badge: `${selecteds}/${totalLista}` })
+        }
     }
     _renderConteudo = ({ titulo, textOrMoney, textSub, colorTextOrMoney, actived }, index) => {
         const totalLista = this.state.data.length - 1;

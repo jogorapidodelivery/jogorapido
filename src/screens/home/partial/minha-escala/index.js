@@ -7,11 +7,13 @@ import styl from "./styl";
 import { empty } from "@sd/uteis/StringUteis";
 export default class MinhaEscala extends PureComponent {
     _renderScale = ({ item: { icone, cor, data, disponibilidade, horario }, index}) => {
-        return <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={1000 + (200 * index)} style={[styl.containerItem, { opacity: empty(data) ? .2 : 1 }]}>
-            <Text style={[stylDefault.icon, { color: cor}]}>{icone}</Text>
-            <View>
-                <Text style={[stylDefault.span, styl.titulo]}>{disponibilidade}</Text>
-                <Text style={stylDefault.span}>{horario}</Text>
+        return <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={1000 + (200 * index)} style={styl.containerItem}>
+            <View style={[styl.containerItemWarp, { opacity: empty(data) ? .2 : 1 }]}>
+                <Text style={[stylDefault.icon, { color: cor}]}>{icone}</Text>
+                <View>
+                    <Text style={[stylDefault.span, styl.titulo]}>{disponibilidade}</Text>
+                    <Text style={stylDefault.span}>{horario}</Text>
+                </View>
             </View>
         </AnimatableView>
     }

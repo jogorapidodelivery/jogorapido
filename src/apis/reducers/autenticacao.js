@@ -46,7 +46,6 @@ export default {
                         return v
                     })
                 }
-                // state = coleta.reducers.autenticacao.COLETA_NOVA(state, response);
                 if (response.coleta) {
                     if (response.coleta.status === "Pendente") {
                         delete response.coleta;

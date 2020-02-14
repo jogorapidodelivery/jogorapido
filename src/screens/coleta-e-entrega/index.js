@@ -28,7 +28,7 @@ export default class Coleta extends Component {
         })
         return props
     }
-    constructor(props){
+    constructor(props) {
         super(props);
         destroyFence();
         const { coleta: { unidade, coleta_id, latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, cliente }, distancia_checkin } = this.props.sd;
@@ -65,8 +65,9 @@ export default class Coleta extends Component {
         destroyFence();
     }
     _toogleTab = abaSelecionada => {
-        const { data_checkin_unidade} = this.props.sd.coleta
-        if (!empty(data_checkin_unidade)) {
+        const { data_checkin_unidade} = this.props.sd.coleta;
+        console.log({ action:"toogleTab", data_checkin_unidade, abaSelecionada});
+        if (!empty(data_checkin_unidade) || this.state.abaSelecionada === 1) {
             this.setState({ abaSelecionada });
         } else {
             this.props.navigation.push("alerta", {
@@ -85,6 +86,7 @@ export default class Coleta extends Component {
         const { sd, navigation } = this.props
         const { coleta, produtos, distancia_checkin } = sd;
         const { data_checkin_unidade, data_checkout_unidade, data_checkin_cliente } = coleta;
+        console.log({ action:"renderCheckIn", data_checkin_unidade, data_checkout_unidade, data_checkin_cliente});
         const { abaSelecionada, distanciaMinEstabelecimentoOk, distanciaMinClienteOk } = this.state;
         if (abaSelecionada === 0) {
             return <CheckInUnidade coleta={coleta} distancia_checkin={distancia_checkin} onChange={this.changeCheckInUnidade.bind(this)} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />
@@ -102,7 +104,9 @@ export default class Coleta extends Component {
     render() {
         const {sd} = this.props;
         const { coleta} = sd;
+        if (empty(coleta))return <Fragment/>
         const { coleta_id, pedido_id } = coleta;
+        if (empty(coleta_id))return <Fragment/>
         const { distanciaEmLinhaEstabelecimento, distanciaEmLinhaCliente } = this.state;
         return <BaseScreen
             style={styl.container}

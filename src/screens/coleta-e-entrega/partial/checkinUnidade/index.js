@@ -39,14 +39,14 @@ export default class CheckInUnidade extends PureComponent {
         }
     }
     render() {
-        const { coleta: { data_checkin_unidade }, distanciaMinEstabelecimentoOk} = this.props
+        const { coleta: { data_checkin_unidade }, distanciaMinEstabelecimentoOk, navigation} = this.props
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
-            <Rota coleta={this.props.coleta} />
+            <Rota coleta={this.props.coleta} navigation={navigation} />
             {empty(data_checkin_unidade) && <View style={styl.container}>
                 <Button
                     onPress={this._click}
                     text={{
-                        value:"Cheguei estabelecimento",
+                        value:"Cheguei Estabelecimento",
                         color: "07"
                     }}
                     bg={distanciaMinEstabelecimentoOk ? "14" : "15"}

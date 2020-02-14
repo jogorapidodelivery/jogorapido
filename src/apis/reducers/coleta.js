@@ -1,6 +1,6 @@
 
 import { formatDateCheckIn } from "../commands/coleta";
-import { COLETA_BUSCAR_PRODUTOS, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, COLETA_CHECKIN, COLETA_LIMPAR } from "@constants/";
+import { COLETA_CHECKOUT_CLIENTE, COLETA_BUSCAR_PRODUTOS, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, COLETA_CHECKIN, COLETA_LIMPAR } from "@constants/";
 import { moeda } from "@sd/uteis/form/MaskString";
 export default {
     defaultProps: {
@@ -9,8 +9,13 @@ export default {
     reducers: {
         autenticacao:{
             [COLETA_CHECKIN]: (state, { response: { data }, posted: { coluna } }) => {
+                console.log({ reducer: COLETA_CHECKIN, data, coluna});
+                console.log({ state})
                 state.coleta[coluna] = data;
                 return { ...state};
+            },
+            [COLETA_CHECKOUT_CLIENTE]: (state) => {
+                return { ...state, coleta:undefined, produtos:undefined};
             },
             [COLETA_BUSCAR_PRODUTOS]: (state, { response: { produtos}, posted}) => {
                 return { ...state, produtos};

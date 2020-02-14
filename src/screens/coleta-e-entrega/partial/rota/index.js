@@ -76,27 +76,7 @@ export default class Rota extends PureComponent {
             latitude, longitude,
             ..._addressOpenMapsDefaultProps
         }
-        this.props.navigation.push("confirma", {
-            params: {
-                button:{
-                    text: {
-                        value: "OK",
-                        color: "07"
-                    },
-                    rightIcon: {
-                        value: "",
-                        color: "07"
-                    },
-                    bg: "16",
-                    onPress: ({ acao}) => {
-                        if (acao !== "cancelar") {
-                            OpenMap.show(_data)
-                        }
-                    }
-                },
-                mensagem: `A rota que será aberta corresponde ao cep de ${autor}`
-            }
-        });
+        OpenMap.show(_data);
     }
     render() {
         return [this.dadosUnidade, this.dadosCliente].map(({ distancia, tempo, titulo, destino, latitude, longitude, chegada, espera}, key) => <Fragment key={`entrega-${key}`}>

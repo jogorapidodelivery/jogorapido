@@ -43,7 +43,7 @@ export default StyleSheet.create({
         height: normalize(24),
         borderBottomEndRadius: normalize(24),
         borderBottomLeftRadius: normalize(24),
-        marginBottom:normalize(10),
+        marginBottom:normalize(6),
         backgroundColor:cor["19"]
     },
     warpTextTop:{

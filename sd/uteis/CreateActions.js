@@ -47,11 +47,19 @@ export const actionFetchItem = (type, action, loading = true, hasDispatchRedux =
                 SDNavigation.navegar.pop();
                 setTimeout(() => {
                     if (hasDispatchRedux) GrupoRotas.store.dispatch({ type, response, posted });
+                    else {
+                        // console.log("NÃO ATUALIZA O REDUX");
+                        // console.log({ type, response, posted });
+                    }
                     _resolve({type, response, posted})
                 }, 800);
             }
             else {
                 if (hasDispatchRedux) GrupoRotas.store.dispatch({type, response, posted});
+                else {
+                    // console.log("NÃO ATUALIZA O REDUX");
+                    // console.log({ type, response, posted });
+                }
                 _resolve({type, response, posted});
             }
         }).catch(_err => {

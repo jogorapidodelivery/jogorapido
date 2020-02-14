@@ -17,16 +17,18 @@ export const _addressOpenMapsDefaultProps = {
 }
 
 export default class ColetaPendente extends PureComponent {
-    _abrirPedido = (_r) => {
-        const { coleta_id } = this.props;
-        const status_coleta_id = 2;
-        const body_rsa = { status_coleta_id, coleta_id }
-        coletaAtualizarStatus({ body_rsa }).then(() => {
-            triggerDestroyTimerProgress();
-            this.props.navigation.navigate("coletar");
-        }).catch(_err => {
-            console.log(_err);
-        })
+    _abrirPedido = ({ acao}) => {
+        if (acao !== "cancelar") {
+            const { coleta_id } = this.props;
+            const status_coleta_id = 2;
+            const body_rsa = { status_coleta_id, coleta_id }
+            coletaAtualizarStatus({ body_rsa }).then(() => {
+                triggerDestroyTimerProgress();
+                this.props.navigation.navigate("coletar");
+            }).catch(_err => {
+                console.log(_err);
+            })
+        }
     }
     _submit = () => {
         this.props.navigation.push("confirma", {
@@ -84,6 +86,7 @@ export default class ColetaPendente extends PureComponent {
             longitude: longitude_cliente,
             ..._addressOpenMapsDefaultProps
         }
+        // <Text style={stylDefault.normal}>( {valor_frete} )</Text>
         return <View style={styl.container}>
             <AnimatableText animation="fadeInUp" useNativeDriver={true} style={stylDefault.h1}>Coleta pendente #{coleta_id}</AnimatableText>
             <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={300} style={styl.warp}>
@@ -95,11 +98,11 @@ export default class ColetaPendente extends PureComponent {
             <ViewAnimatable useNativeDriver={true} animation="flipInX" delay={800}>
                 <Button
                     text={{
-                        value: <Text>Aceitar <Text style={stylDefault.normal}>( {valor_frete} )</Text></Text>,
+                        value: <Text>Aceitar <Text style={stylDefault.normal}>corrida</Text></Text>,
                         color: "07"
                     }}
-                    leftIcon={{
-                        value: "",
+                    rightIcon={{
+                        value: "",
                         color: "07"
                     }}
                     bg="14"

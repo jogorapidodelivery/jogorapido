@@ -1,5 +1,6 @@
 import { Platform } from "react-native";
-import { baseApp, timeoutSlow, timeoutLong } from "@root/app.json";
+import { baseUrl, timeoutSlow, timeoutLong } from "@root/app.json";
+const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
 import { empty } from "@sd/uteis/StringUteis";
 export let globalParams = {
     app_id: "",

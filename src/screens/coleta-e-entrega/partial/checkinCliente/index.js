@@ -43,7 +43,7 @@ export default class CheckInCliente extends Component {
             <Button
                 onPress={this._click}
                 text={{
-                    value: "Cheguei cliente",
+                    value: "Cheguei Cliente",
                     color: "07"
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}

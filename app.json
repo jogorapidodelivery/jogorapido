@@ -4,7 +4,10 @@
   "applestoryid": "?",
   "googleplayid": "com.jogorapido",
   "facebookID": "?",
-  "baseApp": "http://177.101.149.36/app/",
+  "baseUrl": {
+    "on":"http://177.101.149.36/app/",
+    "off":"http://jogorapido.sitiodigital.local/app/"
+  },
   "tempoParaAceite": 60,
   "cor": {
     "01": "rgba(69,69,69,.1)",
@@ -21,7 +24,7 @@
       "#DEDEDE"
     ],
     "08": "#7530C8",
-    "19": "rgba(116, 48, 200, .9)",
+    "19": "rgba(116, 48, 200, .6)",
     "14": [
       "#772FC3",
       "#40BEFF"

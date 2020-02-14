@@ -1,18 +1,16 @@
 import React, { PureComponent } from "react";
-import { LayoutAnimation} from "react-native";
-import { GrupoRotas } from "@sd/navigation/revestir";
+import { AppState } from "react-native"
 import HeaderLogo from "@screens/partial/header-logo";
 import BaseScreen from "@screens/partial/base";
 import ColetaPendente from "./partial/coleta-pendente";
 import MinhaEscala from "./partial/minha-escala";
 import MeusRendimentos from "./partial/meus-rendimentos";
-import { COLETA_LIMPAR } from "@constants/";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
-import AlertTipoToast from "@src/components/alert-toast";
-import { actionAutenticar, actionColetaAtualizar } from "@actions/";
+import { actionColetaAtualizar } from "@actions/";
 import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
 import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
+
 export default class Home extends PureComponent {
     static mapStateToProps = [
         "autenticacao.usuario_id",
@@ -25,33 +23,42 @@ export default class Home extends PureComponent {
     constructor(props) {
         super(props)
     }
-    intervalAlert = undefined
-    componentWillUnmount() {
-        if (this.intervalAlert === undefined) clearTimeout(this.intervalAlert)
-    }
+    ativarBg = false;
     componentDidMount() {
-        const data_checkout_cliente = getItemByKeys(this.props, "sd.coleta.data_checkout_cliente");
-        if (!empty(data_checkout_cliente)) {
-            this.intervalAlert = setTimeout(() => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                GrupoRotas.store.dispatch({ type:COLETA_LIMPAR });
-            }, 5000);
-        }
+        this.ativarBg = false;
         this._updateColeta();
+        AppState.addEventListener('change', this._updateOnline);
     }
-    
-    get renderHeaderFix() {
-        const data_checkout_cliente = getItemByKeys(this.props, "sd.coleta.data_checkout_cliente")
-        if (!empty(data_checkout_cliente)) {
-            return <AlertTipoToast titulo="Meus parabéns, você finalizou sua entrega. Aguarde que em breve tem mais."/>
+    componentWillUnmount() {
+        try{
+            AppState.removeEventListener('change', this._updateOnline);
+        } catch(e) {
+
         }
-        return undefined;
+    }
+    _updateOnline = (status) => {
+        if (this.ativarBg && status === "active") {
+            const { navigation: { push}, sd: { usuario_id } } = this.props;
+            actionColetaAtualizar({
+                body_rsa: {
+                    usuario_id,
+                }
+            }).catch(({ mensagem }) => {
+                push("alerta", {
+                    params: {
+                        titulo: "Jogo Rápido",
+                        mensagem
+                    }
+                })
+            })
+        }
+        this.ativarBg = true;
     }
     _updateColeta = (onComplete) => {
         const { sd: { usuario_id} } = this.props;
         actionColetaAtualizar({
             body_rsa: {
-                usuario_id
+                usuario_id,
             }
         }).then(({response}) => {
             const coleta_id = getItemByKeys(response || {}, "coleta_id")
@@ -61,7 +68,15 @@ export default class Home extends PureComponent {
                 if (onComplete) onComplete();
             } else if (onComplete) onComplete();
         }).catch(({mensagem}) => {
-            if (onComplete) onComplete();
+            if (onComplete) {
+                this.props.navigation.push("alerta", {
+                    params: {
+                        titulo: "Jogo Rápido",
+                        mensagem
+                    }
+                })
+                onComplete();
+            }
         })        
     }
     render() {
@@ -73,7 +88,6 @@ export default class Home extends PureComponent {
         return <BaseScreen
             onRefresh={this._updateColeta}
             navigation={navigation}
-            headerFix={this.renderHeaderFix}
             header={<HeaderLogo navigation={navigation} />}
             headerHeight={HeaderLogo.heightContainer}
         >
