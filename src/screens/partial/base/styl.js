@@ -5,36 +5,69 @@ export default StyleSheet.create({
     container:{
         flexGrow:1
     },
-    gradiente:{
+    // { height: 260, top: 0, resizeMode: 'contain', backgroundColor:"orange" }
+    // style={styl.warpBackground} imageStyle={styl.imageBackground}
+    
+    warpBackground:{
         flex:1
     },
-    warpContent:{
-        flex:1
+    imageBackground:{
+        resizeMode: "cover",
+        bottom:null,
+        height:normalize(260)
     },
-    setaClose: {
-        fontFamily: "icomoon",
-        color: cor["06"],
-        textAlign: "center",
-        fontSize: normalize(size["08"])
+    // ***********
+    warpButtomClose:{
+        zIndex: 20,
+        position: "absolute",
+        left: 0,
+        right: 0,
+        height: normalize(55)
     },
-    awareScrollView:{
+    warpTop:{
         flex:1,
+        justifyContent:"flex-end",
+        alignItems:"center"
+    },
+    bgTop:{
+        position:"absolute",
+        zIndex:1,
+        top:0,
+        left:0,
+        right:0,
+        height:25,
+        backgroundColor:cor["19"]
+    },
+    warpIconTop:{
+        width: normalize(50),
+        height: normalize(24),
+        borderBottomEndRadius: normalize(24),
+        borderBottomLeftRadius: normalize(24),
+        marginBottom:normalize(10),
+        backgroundColor:cor["19"]
+    },
+    warpTextTop:{
+        fontFamily:"icomoon",
+        color:cor["07"],
+        textAlign:"center",
+        top:-normalize(5),
+        fontSize:normalize(40)
+    },
+    // ***********
+    awareScrollView:{
         borderTopEndRadius: 10,
         borderTopLeftRadius: 10,
     },
     warp: {
         flex: 1,
+        zIndex:10,
         borderTopEndRadius: 10,
         borderTopLeftRadius: 10,
         backgroundColor: cor["07"],
         paddingHorizontal: normalize(spaces["02"]),
     },
     warpHeaderAnn:{
-        position:"absolute",
-        width:"100%",
-        top:0,
-        borderRadius:1,
-        left:0
+        zIndex:1
     },
     header:{
         height:normalize(hButton["02"]),

@@ -12,7 +12,6 @@ const checarSeAppEstaAtualizado = versao_app => {
     if (!empty(versao_app)) {
         const v = `${version}`.replace(/\s/gi, "").split(".")
         const currentVersion = Number(`${v[0]}${pad(3, v[1], "0")}${pad(4, v[2], "0")}`)
-        console.log({ currentVersion, versao_app})
         if (currentVersion < versao_app) {
             Alert.alert("ATUALIZAÇÃO DISPONÍVEL", "Nova vesão do Jogo Rápido disponível. Manter seu aplicativo atualizado garante uma boa experiência de navegação. Deseja atualizar?", [
                 { text: "Agora não", style: "cancel" },

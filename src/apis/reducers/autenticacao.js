@@ -48,11 +48,15 @@ export default {
                 }
                 // state = coleta.reducers.autenticacao.COLETA_NOVA(state, response);
                 if (response.coleta) {
-                    if (response.coleta.valor_frete) {
-                        response.coleta.valor_frete = moeda(response.coleta.valor_frete);
-                        response.coleta.total_pedido = moeda(response.coleta.total_pedido);
+                    if (response.coleta.status === "Pendente") {
+                        delete response.coleta;
+                    } else {
+                        if (response.coleta.valor_frete) {
+                            response.coleta.valor_frete = moeda(response.coleta.valor_frete);
+                            response.coleta.total_pedido = moeda(response.coleta.total_pedido);
+                        }
+                        response.coleta = formatDateCheckIn(response.coleta)
                     }
-                    response.coleta = formatDateCheckIn(response.coleta)
                 }
                 if (!empty(senha) && !empty(usuario)) {
                     const _chifed = encodeCipherCaesar({ senha, usuario });

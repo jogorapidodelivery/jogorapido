@@ -1,17 +1,14 @@
 import React, { Component } from "react";
-import { RefreshControl, Animated, View, Text, Dimensions, KeyboardAvoidingView, Platform, LayoutAnimation } from "react-native";
+import { RefreshControl, TouchableOpacity, Animated, View, Text, Dimensions, KeyboardAvoidingView, Platform, StyleSheet, ImageBackground } from "react-native";
 import styl from "./styl";
-import LinearGradient from 'react-native-linear-gradient';
 import Button from "@sd/components/button";
-import { cor } from "@root/app.json";
 const { height: hWindow } = Dimensions.get("window");
-import { normalize } from "@sd/uteis/NumberUteis";
+import { normalize } from "@sd/uteis/NumberUteis"; 
 const behavior = Platform.select({
     android: "height",
     ios: "padding"
 })
-const heightGoBack = 15;
-const heightHeader = 20;
+const heightHeader = 25;
 export default class BaseScreen extends Component {
     listView = undefined;
     constructor(props) {
@@ -28,6 +25,7 @@ export default class BaseScreen extends Component {
         })
     }
     _clickScrollTop = () => {
+        console.log("aqui")
         if (this.listView) this.listView.getNode().scrollTo({ y: 0, animated: true });
     }
     get renderHeader() {
@@ -47,75 +45,56 @@ export default class BaseScreen extends Component {
         const headerHeight = header ? this.props.headerHeight : normalize(50);
         const { scrollY } = this.state;
         const translateY = scrollY.interpolate({
-            inputRange: [0, headerHeight],
+            inputRange: [headerHeight, headerHeight + 50],
             outputRange: [-60, 0],
             extrapolate: 'clamp'
         });
-        const scale = scrollY.interpolate({
+        const opacity = scrollY.interpolate({
             inputRange: [0, headerHeight],
-            outputRange: [1, .8],
-            extrapolate: 'clamp'
-        });
-        const translateY2 = scrollY.interpolate({
-            inputRange: [headerHeight * .2, headerHeight],
-            outputRange: [headerFix ? 0 : heightGoBack, -(headerHeight)],
+            outputRange: [1, 0],
             extrapolate: 'clamp'
         });
         const event = Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true });
         const minHeight = hWindow - headerHeight;
-        const paddingBottom = headerHeight + heightHeader;
+        const paddingBottom = heightHeader + 20;
+        marginTop = headerHeight;
         return <KeyboardAvoidingView style={styl.container} behavior={behavior} enabled>
-            <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: .2, y: .5 }}
-                colors={cor["24"]}
-                style={styl.gradiente}
-            >
+            <ImageBackground source={require("@images/gradiente.png")} style={styl.warpBackground} imageStyle={styl.imageBackground}>
                 {headerFix}
-                <View style={styl.warpContent}>
-                    <Animated.ScrollView
-                        refreshControl={
-                            onRefresh ? <RefreshControl style={{zIndex:999}} refreshing={refreshingActived} onRefresh={this._onRefresh} /> : null
-                        }
-                        ref={ref => this.listView = ref}
-                        overScrollMode="never"
-                        scrollEventThrottle={16}
-                        showsVerticalScrollIndicator={false}
-                        style={[styl.awareScrollView, { paddingTop: headerHeight - heightGoBack - (headerFix ? heightHeader : 0), top: heightHeader + heightGoBack }]}
-                        onScroll={event}
-                    >
-                        <View style={[styl.warp, this.props.style, { minHeight, paddingBottom }]}>
-                            {children}
-                        </View>
-                    </Animated.ScrollView>
+                <Animated.ScrollView
+                    refreshControl={
+                        onRefresh ? <RefreshControl refreshing={refreshingActived} onRefresh={this._onRefresh} /> : null
+                    }
+                    ref={ref => this.listView = ref}
+                    overScrollMode="never"
+                    scrollEventThrottle={16}
+                    stickyHeaderIndices={[0]}
+                    showsVerticalScrollIndicator={false}
+                    style={[styl.awareScrollView, { top: heightHeader}]}
+                    onScroll={event}
+                >
                     <Animated.View style={[styl.warpHeaderAnn, {
-                        transform: [{
-                            translateY: translateY2
-                        }, { perspective: scale }],
+                        opacity, 
+                        top:0,
+                        left:0,
+                        right:0,
+                        position: "absolute"
                     }]}>
                         {header === undefined ? this.renderHeader : header}
                     </Animated.View>
-                    <Animated.View style={{
-                        position: "absolute",
-                        top: 0,
-                        transform: [{
-                            translateY
-                        }],
-                        width: "100%",
-                    }}>
-                        <Button
-                            onPress={this._clickScrollTop}
-                            style={{
-                                alignItems: "center"
-                            }}
-                            leftIcon={{
-                                value: "",
-                                color: "07"
-                            }}
-                        />
-                    </Animated.View>
-                </View>
-            </LinearGradient>
+                    <View style={[styl.warp, this.props.style, { minHeight, paddingBottom, marginTop }]}>
+                        {children}
+                    </View>
+                </Animated.ScrollView>
+                <Animated.View style={[styl.warpButtomClose, { transform: [{ translateY }] }]}>
+                    <TouchableOpacity onPress={this._clickScrollTop} style={styl.warpTop}>
+                        <View style={styl.bgTop}/>
+                        <View style={styl.warpIconTop}>
+                            <Text style={styl.warpTextTop}></Text>
+                        </View>
+                    </TouchableOpacity>
+                </Animated.View>
+            </ImageBackground>
         </KeyboardAvoidingView>
     }
 }

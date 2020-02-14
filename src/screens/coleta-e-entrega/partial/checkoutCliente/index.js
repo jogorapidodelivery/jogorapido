@@ -42,11 +42,11 @@ export default class CheckOutCliente extends Component {
     render() {
         const { produtos, coleta: { valor_frete, total_pedido, data_checkout_cliente }, distanciaMinClienteOk} = this.props;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
-            <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Motoqueiro", textOrMoney: valor_frete}]} />
+            <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Taxa entrega", textOrMoney: valor_frete}]} />
             {empty(data_checkout_cliente) && <Button
                 onPress={this._click}
                 text={{
-                    value: "Checkout cliente",
+                    value: "Saindo do cliente",
                     color: "07"
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}

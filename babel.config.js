@@ -26,9 +26,19 @@ let plugins = [[
 ]
 ];
 if (process.env.NODE_ENV === 'production') {
-  // plugins.push("transform-remove-console")
+  plugins.push("transform-remove-console")
 }
 module.exports = {
   presets: ["module:metro-react-native-babel-preset"],
   plugins: plugins
 }
+/*
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<item android:drawable="@color/splashBackground"/>
+<item>
+  <bitmap
+      android:src="@drawable/logo"
+      android:gravity="center"/>
+</item>
+</layer-list> */

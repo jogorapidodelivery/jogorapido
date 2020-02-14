@@ -46,7 +46,7 @@ export default class CheckInUnidade extends PureComponent {
                 <Button
                     onPress={this._click}
                     text={{
-                        value:"Checkin estabelecimento",
+                        value:"Cheguei estabelecimento",
                         color: "07"
                     }}
                     bg={distanciaMinEstabelecimentoOk ? "14" : "15"}

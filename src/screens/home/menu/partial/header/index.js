@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import styl from "./styl";
 import { stylDefault } from "@src/stylDefault";
 import { empty } from "@sd/uteis/StringUteis";
+const _asa = require("@images/asa.png")
 export default class Header extends PureComponent {
     render() {
         const { email, telefone, foto, nome } = this.props.data
@@ -10,7 +11,7 @@ export default class Header extends PureComponent {
             <View style={styl.warp}>
                 <View style={styl.warpAsa}>
                     <View style={styl.bgAsa}>
-                        <Image style={styl.iconAsa} resizeMode="contain" source={require("@images/asa.png")}/>
+                        <Image style={styl.iconAsa} resizeMode="contain" source={_asa}/>
                     </View>
                 </View>
                 <TouchableOpacity style={styl.warpFoto}>

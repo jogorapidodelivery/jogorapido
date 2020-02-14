@@ -8,6 +8,7 @@ import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaAtualizarStatus } from "@actions/";
 import OpenMap from "react-native-open-map";
 import { triggerDestroyTimerProgress } from "../../../../firebase-background-message/index";
+import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
 export const _addressOpenMapsDefaultProps = {
     title: "Jogo Rápido",
     cancelText: "Cancelar",
@@ -84,14 +85,14 @@ export default class ColetaPendente extends PureComponent {
             ..._addressOpenMapsDefaultProps
         }
         return <View style={styl.container}>
-            <Text style={stylDefault.h1}>Coleta pendente #{coleta_id}</Text>
-            <View style={styl.warp}>
+            <AnimatableText animation="fadeInUp" useNativeDriver={true} style={stylDefault.h1}>Coleta pendente #{coleta_id}</AnimatableText>
+            <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={300} style={styl.warp}>
                 {this._renderInputFake("", "08", unidade, styl.containerInputFakeFirst, _addressUnidade)}
                 <Text style={[stylDefault.icon, styl.iconAte]}></Text>
                 {this._renderInputFake("", "10", cliente, {}, _addressCliente)}
-            </View>
-            <Text style={[stylDefault.span, styl.distancia]}><Text style={styl.bold}>{tempo_rota_unidade_cliente}</Text> ( {distancia_unidade_cliente} km )</Text>
-            <ViewAnimatable useNativeDriver={true} animation="shake" iterationCount="infinite" iterationDelay={1000 * (tempoParaAceite/6)}>
+            </AnimatableView>
+            <AnimatableText animation="fadeInUp" useNativeDriver={true} delay={500} style={[stylDefault.span, styl.distancia]}><Text style={styl.bold}>{tempo_rota_unidade_cliente}</Text> ( {distancia_unidade_cliente} km )</AnimatableText>
+            <ViewAnimatable useNativeDriver={true} animation="flipInX" delay={800}>
                 <Button
                     text={{
                         value: <Text>Aceitar <Text style={stylDefault.normal}>( {valor_frete} )</Text></Text>,

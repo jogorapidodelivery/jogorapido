@@ -39,11 +39,11 @@ export default class CheckInCliente extends Component {
     render() {
         const { produtos, coleta: { valor_frete, total_pedido }, distanciaMinClienteOk} = this.props;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
-            <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Motoqueiro", textOrMoney: valor_frete}]} />
+            <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Taxa entrega", textOrMoney: valor_frete}]} />
             <Button
                 onPress={this._click}
                 text={{
-                    value: "Checkin cliente",
+                    value: "Cheguei cliente",
                     color: "07"
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}

@@ -35,7 +35,7 @@ export const mergeHandleActions = (...args) => {
     })
     return _ac
 }
-export const actionFetchItem = (type, action, loading = true) => {
+export const actionFetchItem = (type, action, loading = true, hasDispatchRedux = true) => {
     return (params/*{ignorarError:, body_rsa:{}, body_post:{}, body_view:{}} */) => new Promise((_resolve, _reject) => {
         if (loading) SDNavigation.navegar.push("carregando");
         fetchItem({
@@ -46,12 +46,12 @@ export const actionFetchItem = (type, action, loading = true) => {
             if (loading) {
                 SDNavigation.navegar.pop();
                 setTimeout(() => {
-                    GrupoRotas.store.dispatch({ type, response, posted });
+                    if (hasDispatchRedux) GrupoRotas.store.dispatch({ type, response, posted });
                     _resolve({type, response, posted})
                 }, 800);
             }
             else {
-                GrupoRotas.store.dispatch({type, response, posted});
+                if (hasDispatchRedux) GrupoRotas.store.dispatch({type, response, posted});
                 _resolve({type, response, posted});
             }
         }).catch(_err => {

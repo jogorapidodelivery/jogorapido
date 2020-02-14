@@ -6,9 +6,4 @@
       android:src="@drawable/logo"
       android:gravity="center"/>
 </item>
-<item android:bottom="60dp">
-  <bitmap
-      android:src="@drawable/version"
-      android:gravity="center_horizontal|bottom"/>
-</item>
 </layer-list>

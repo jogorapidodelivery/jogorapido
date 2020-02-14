@@ -13,6 +13,7 @@ import CheckOutUnidade from "./partial/checkoutUnidade/index";
 import CheckInCliente from "./partial/checkinCliente/index";
 import CheckOutCliente from "./partial/checkoutCliente/index";
 import { destroyFence, addFence } from "@sd/uteis/permissions/index";
+import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
 import { coletaBuscarProdutos } from "@actions/";
 export default class Coleta extends Component {
     static mapStateToProps = ["autenticacao.usuario_id", "autenticacao.coleta", "autenticacao.produtos", "autenticacao.distancia_checkin"]
@@ -111,13 +112,15 @@ export default class Coleta extends Component {
             {/* <Lista titulo="Informações de cobrança" isLink={false} data={[chegada, saida, motiqueiro, {
                 textOrMoney: "até 3x no cartão de crédito"
             }]}/> */}
-            <Text style={[stylDefault.h1, (pedido_id ? { marginBottom:0} : {})]}>Coleta #{coleta_id}</Text>
+            <AnimatableText animation="fadeInUp" useNativeDriver={true} style={[stylDefault.h1, (pedido_id ? { marginBottom: 0 } : {})]}>Coleta #{coleta_id}</AnimatableText>
             {pedido_id && <Text style={[stylDefault.span, styl.h2]}>Pedido #{pedido_id}</Text>}
             {distanciaEmLinhaCliente && __DEV__ && <Text style={[stylDefault.span, styl.h2]}>Dist. cliente{distanciaEmLinhaCliente}m</Text>}
             {distanciaEmLinhaEstabelecimento && __DEV__ && <Text style={[stylDefault.span, styl.h2]}>Dist. Estabelecimento{distanciaEmLinhaEstabelecimento}m</Text>}
             <Aba {...this.state} onPress={this._toogleTab.bind(this)}/>
             {this.renderCheckIn}
-            <Button onPress={whatsapp} style={styl.btnAjuda} text={{ value: "Preciso de ajuda", color: "07" }} leftIcon={{ value: "", color: "07" }} styleName="pequeno" bg="09"/> 
+            <AnimatableView animation="flipInX" useNativeDriver={true} delay={900}>
+                <Button onPress={whatsapp} style={styl.btnAjuda} text={{ value: "Preciso de ajuda", color: "07" }} leftIcon={{ value: "", color: "07" }} styleName="pequeno" bg="09"/> 
+            </AnimatableView>
         </BaseScreen>
     }
 }

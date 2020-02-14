@@ -1,9 +1,11 @@
 import firebase from "react-native-firebase";
 import { GrupoRotas } from "@sd/navigation/revestir";
 import { empty } from "@sd/uteis/StringUteis";
+import { LayoutAnimation} from "react-native";
 import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
 import Sound from "react-native-sound";
+import moment from "moment";
 Sound.setCategory("Playback");
 let aguia = new Sound("http://177.101.149.36/aguia_small.mp3", Sound.MAIN_BUNDLE, (error) => {
     if (error) {
@@ -25,16 +27,22 @@ if (Platform.OS === "android") {
 }
 const prepareParams = ({ data, _data }, type) => {
     const response = data || _data;
-    console.log({metodo:"prepareParams", response});
     if (inProgress) return undefined
     inProgress = true;
-    const { status, acao, coleta_id } = response;
+    let { status, acao, coleta_id, data_hora_atual, data_notificacao } = response;
     if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
         if (!empty(state.autenticacao)) {
-            const { autenticacao: { tempo_aceite } } = state;
+            let { autenticacao: { tempo_aceite } } = state;
             if (tempo_aceite) {
-                return { response, tempo_aceite, status, acao, coleta_id, type}
+                if(__DEV__) data_hora_atual = "2020-02-13 20:33:45";
+                if (__DEV__) data_notificacao = "2020-02-13 20:33:00";
+                const mill = moment(data_hora_atual).diff(moment(data_notificacao)) / 1000;
+                const novoTempo = tempo_aceite - mill;
+                if (novoTempo > 0 && novoTempo <= tempo_aceite) {
+                    tempo_aceite = novoTempo
+                    return { response, tempo_aceite, status, acao, coleta_id, type}
+                }
             }
         }
     }
@@ -86,7 +94,7 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
         }
     });
     timerInProcess = setInterval(() => {
-        console.log({ counter, tempo_aceite})
+        console.log({ method:"interval", counter, tempo_aceite})
         if (counter > tempo_aceite) {
             if (timerInProcess) clearInterval(timerInProcess);
             inProgress = false;
@@ -103,8 +111,6 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
     }, 1000);
 }
 const switchActions = (response, status, acao, type) => {
-    console.log("switchActions");
-    console.log({ status, acao, type})
     switch (acao) {
         case "nova_coleta":
             switch (status) {
@@ -130,8 +136,6 @@ const switchActions = (response, status, acao, type) => {
     return false
 }
 firebase.messaging().onMessage(message => {
-    console.log("firebase.messaging().onMessage()");
-    console.log({ message});
     const post = prepareParams(message, { type: "DISPLAY" });
     if (post !== undefined) {
         const { response, tempo_aceite, status, acao, coleta_id, type } = post;
@@ -139,6 +143,7 @@ firebase.messaging().onMessage(message => {
         if (triggerNotifier) {
             const notification = createNotifier(coleta_id, tempo_aceite);
             dispatchNotifier(notification, tempo_aceite, () => {
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                 GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
                 if (aguia !== undefined) aguia.stop();
             })
@@ -146,8 +151,6 @@ firebase.messaging().onMessage(message => {
     }
 })
 export default async message => {
-    console.log("export default async message");
-    console.log({ message})
     const post = prepareParams(message, { type: "DISPLAY" });
     if (post !== undefined) {
         const { response, tempo_aceite, status, acao, coleta_id, type } = post;

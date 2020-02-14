@@ -8,10 +8,7 @@ import permissions from "@sd/uteis/permissions/index";
 import Button from "@sd/components/button";
 import Info from "@screens/partial/info";
 import { openPageStart } from "./command";
-import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
-import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 import { View as ViewAnimatable } from "react-native-animatable";
-import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 export default class Autenticacao extends Component {
   static mapStateToProps = ["autenticacao.email", "autenticacao.senha"];
   constructor(props){
@@ -23,14 +20,6 @@ export default class Autenticacao extends Component {
   componentDidMount(){
     permissions().then(() => {
       actionAutenticar().then(({ response}) => {
-        // getItemByKeys = (_obj, _like, _empty = undefined)
-        const data = getItemByKeys(response || {}, "coleta")
-        console.log("DEPOIS DO FILTRO")
-        console.log(data);
-        if (!empty(data)) {
-          data.acao = "nova_coleta";
-          setTimeout(() => SharedEventEmitter.emit('onMessage', new RemoteMessage({ data })), 800);
-        }
         openPageStart(this.props.navigation, 500);
       }).catch(() => {
         openPageStart(this.props.navigation, 0);

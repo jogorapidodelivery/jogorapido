@@ -10,7 +10,9 @@ import { COLETA_LIMPAR } from "@constants/";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 import AlertTipoToast from "@src/components/alert-toast";
-import { actionAutenticar } from "@actions/";
+import { actionAutenticar, actionColetaAtualizar } from "@actions/";
+import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
+import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 export default class Home extends PureComponent {
     static mapStateToProps = [
         "autenticacao.usuario_id",
@@ -35,6 +37,7 @@ export default class Home extends PureComponent {
                 GrupoRotas.store.dispatch({ type:COLETA_LIMPAR });
             }, 5000);
         }
+        this._updateColeta();
     }
     
     get renderHeaderFix() {
@@ -45,19 +48,25 @@ export default class Home extends PureComponent {
         return undefined;
     }
     _updateColeta = (onComplete) => {
-        actionAutenticar().then((_r) => {
-            this.componentDidMount();
-            onComplete();
-        }).catch(() => {
-            console.log("Falha ao atualizar os dados da coleta")
-            onComplete();
-        });
-        
+        const { sd: { usuario_id} } = this.props;
+        actionColetaAtualizar({
+            body_rsa: {
+                usuario_id
+            }
+        }).then(({response}) => {
+            const coleta_id = getItemByKeys(response || {}, "coleta_id")
+            if (!empty(coleta_id)) {
+                response.acao = "nova_coleta";
+                SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: response }));
+                if (onComplete) onComplete();
+            } else if (onComplete) onComplete();
+        }).catch(({mensagem}) => {
+            if (onComplete) onComplete();
+        })        
     }
     render() {
         const {navigation} = this.props;
         const status = getItemByKeys(this.props, "sd.coleta.status")
-        // const tempo_aceite = getItemByKeys(this.props, "sd.tempo_aceite")
         const disponibilidade = getItemByKeys(this.props, "sd.disponibilidade")
         const corridas_semana = getItemByKeys(this.props, "sd.corridas_semana")
         const total_frete_semana = getItemByKeys(this.props, "sd.total_frete_semana")
@@ -72,8 +81,8 @@ export default class Home extends PureComponent {
                 {...this.props.sd.coleta}
                 navigation={navigation}
             />}
-            <MinhaEscala navigation={navigation} disponibilidade={disponibilidade}/>
-            <MeusRendimentos corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>
+            {status !== "Pendente" && <MinhaEscala navigation={navigation} disponibilidade={disponibilidade}/>}
+            {status !== "Pendente" && <MeusRendimentos corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>}
         </BaseScreen>
     }
 }
