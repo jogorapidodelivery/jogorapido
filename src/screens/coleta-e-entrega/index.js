@@ -66,7 +66,6 @@ export default class Coleta extends Component {
     }
     _toogleTab = abaSelecionada => {
         const { data_checkin_unidade} = this.props.sd.coleta;
-        console.log({ action:"toogleTab", data_checkin_unidade, abaSelecionada});
         if (!empty(data_checkin_unidade) || this.state.abaSelecionada === 1) {
             this.setState({ abaSelecionada });
         } else {
@@ -86,7 +85,6 @@ export default class Coleta extends Component {
         const { sd, navigation } = this.props
         const { coleta, produtos, distancia_checkin } = sd;
         const { data_checkin_unidade, data_checkout_unidade, data_checkin_cliente } = coleta;
-        console.log({ action:"renderCheckIn", data_checkin_unidade, data_checkout_unidade, data_checkin_cliente});
         const { abaSelecionada, distanciaMinEstabelecimentoOk, distanciaMinClienteOk } = this.state;
         if (abaSelecionada === 0) {
             return <CheckInUnidade coleta={coleta} distancia_checkin={distancia_checkin} onChange={this.changeCheckInUnidade.bind(this)} navigation={navigation} distanciaMinEstabelecimentoOk={distanciaMinEstabelecimentoOk} />

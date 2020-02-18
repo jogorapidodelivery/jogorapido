@@ -16,20 +16,16 @@ const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID
 	if (empty(_obj.body_rsa)) {
 		_ajax(_obj)
 	} else {
-		const _dataEncrypt = JSON.stringify(_obj.body_rsa)
-		// console.log(`${_loggerID}) START RSA`, _dataEncrypt)
+		const _dataEncrypt = JSON.stringify(_obj.body_rsa);
 		RSA.encrypt(_dataEncrypt, PUBLIC_KEY_RSA).then(_result => {
 			if (empty(_result)) {
 				const _rTmp = { status: "erro", mensagem: "Não foi possível criptografar os dados a ser enviados." }
-				// console.log(`${_loggerID}) RSA FAILED`, _rTmp)
 				_reject(_rTmp)
 			} else {
-				// console.log(`${_loggerID}) RSA SUCCESS`, { postdata: _result })
 				_obj.body_post.postdata = _result
 				_ajax(_obj)
 			}
 		}).catch(_err => {
-			console.log(`${_loggerID}) RSA FAILED`, _err)
 			_reject({ status: "erro", mensagem: _err.message })
 		})
 	}
@@ -46,9 +42,9 @@ const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID
  *			senha:"020406"
  *		}
  *	}).then(_r => {
- *		console.log("then")
+ *		
  *	}).catch(_err => {
- *		console.log("catch")
+ *		
  *	})
  * @param _obj - { ignorarError?: boolean action?: String key?: String body_view?: any, body_rsa?: any, body_post?: any }
  * @param _endGroupLogger  - Variavel de uso interno. Ela serve para impedir que os console.groupEnd seja executado ou não
@@ -83,9 +79,9 @@ export const fetchItem = (_obj, _endGroupLogger = true, _loggerID = 0) => {
  *				senha: "020405"
  *			}
  *		})]).then(_r => {
- *			console.log("then", _r)
+ *			
  *	}).catch(_err => {
- *		console.log("catch")
+ *		
  *	})
  * @param _itens - [
  *		() => ({

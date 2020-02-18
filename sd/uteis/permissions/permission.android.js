@@ -3,7 +3,6 @@ export default (_resolve, _reject, _currentLocation) => {
     let falhaEmPermissoes = []
     const _accessCamera = () => {
         request(PERMISSIONS.ANDROID.CAMERA).then((camera) => {
-            console.log(camera, RESULTS)
             if (camera !== RESULTS.GRANTED) falhaEmPermissoes.push("câmera")
             if (falhaEmPermissoes.length > 0) _reject(falhaEmPermissoes);
             else {

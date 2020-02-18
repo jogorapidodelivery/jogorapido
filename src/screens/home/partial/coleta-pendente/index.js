@@ -7,7 +7,7 @@ import { cor, tempoParaAceite } from "@root/app.json";
 import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaAtualizarStatus } from "@actions/";
 import OpenMap from "react-native-open-map";
-import { triggerDestroyTimerProgress } from "../../../../firebase-background-message/index";
+import { triggerDestroyTimerProgress } from "@libs/dispatchNotify";
 import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
 export const _addressOpenMapsDefaultProps = {
     title: "Jogo Rápido",
@@ -26,7 +26,7 @@ export default class ColetaPendente extends PureComponent {
                 triggerDestroyTimerProgress();
                 this.props.navigation.navigate("coletar");
             }).catch(_err => {
-                console.log(_err);
+                console.warn(_err);
             })
         }
     }

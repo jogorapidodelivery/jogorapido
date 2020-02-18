@@ -2,18 +2,28 @@ import { RSA } from "react-native-rsa-native"
 import BackgroundGeolocation from "react-native-background-geolocation";
 import { PUBLIC_KEY_RSA } from "@sd/fetch";
 import { baseUrl } from "@root/app.json";
+import { empty } from "../../sd/uteis/StringUteis";
 const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
-// async await
+import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
+import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 export const bgLocationFetch = async usuario_id => {
     const postdata = await RSA.encrypt(JSON.stringify(usuario_id), PUBLIC_KEY_RSA);
     if (postdata && postdata.length > 5) {
-        console.log("ligando cercas e monitorando localização")
         BackgroundGeolocation.onHttp((response) => {
-            console.log("[http] response: ", response.success, response.status, response.responseText);
+            if (!empty(response.responseText) && response.responseText.length > 20) {
+                try{
+                    let {data} = JSON.parse(response.responseText);
+                    if (!empty(data)) {
+                        data.acao = "nova_coleta";
+                        SharedEventEmitter.emit('onMessage', new RemoteMessage({ data }));
+                    }
+                } catch(e) {
+                }
+            }
         });
         BackgroundGeolocation.ready({
             autoSync: true,
-            distanceFilter: 10,
+            distanceFilter: 20,
             batchSync: true,
             maxBatchSize: 50,
             locationTemplate: '{"lat":<%= latitude %>,"lng":<%= longitude %>}',
@@ -29,29 +39,5 @@ export const bgLocationFetch = async usuario_id => {
                 BackgroundGeolocation.start(function () {});
             }
         })
-    } else {
-        console.warn("falha ao criptografar no RSA geofence")
     }
 }
-// BackgroundGeolocation.addGeofences([{
-        //     identifier: "New World",
-        //     radius: 200,
-        //     latitude: -16.7139,
-        //     longitude: -49.2707,
-        //     notifyOnEntry: true,
-        //     notifyOnExit: true,
-        // }, {
-        //     identifier: "Della",
-        //     radius: 200,
-        //     latitude: -16.7135,
-        //     longitude: -49.2743,
-        //     notifyOnEntry: true,
-        //     notifyOnExit: true
-        // }]).then((success) => {
-        //     console.log("[addGeofences] success", success);
-        // }).catch((error) => {
-        //     console.log("[addGeofences] FAILURE: ", error);
-        // });
-        // BackgroundGeolocation.onHttp((response) => {
-        //     console.log("[http] response: ", response.success, response.status, response.responseText);
-        // });

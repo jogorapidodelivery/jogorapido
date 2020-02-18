@@ -25,7 +25,6 @@ export default class BaseScreen extends Component {
         })
     }
     _clickScrollTop = () => {
-        console.log("aqui")
         if (this.listView) this.listView.getNode().scrollTo({ y: 0, animated: true });
     }
     get renderHeader() {

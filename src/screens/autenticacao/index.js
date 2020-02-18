@@ -19,7 +19,7 @@ export default class Autenticacao extends Component {
   }
   componentDidMount(){
     permissions().then(() => {
-      actionAutenticar().then(({ response}) => {
+      actionAutenticar().then(() => {
         openPageStart(this.props.navigation, 500);
       }).catch(() => {
         openPageStart(this.props.navigation, 0);
@@ -31,7 +31,7 @@ export default class Autenticacao extends Component {
   }
   _confirmarCodigo = () => {
     Linking.openSettings().catch((_err) => {
-      console.log("catch", _err)
+      console.warn("catch", _err)
     })
   }
   get _renderLoader(){

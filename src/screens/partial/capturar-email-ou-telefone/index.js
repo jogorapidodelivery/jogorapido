@@ -41,7 +41,7 @@ export default class CapturarEmailOuTelefone extends PureComponent {
         this.form.check(defaultPost).then(_s => {
             onSubmit(_s)
         }).catch(_e => {
-            console.log("check.catch", _e)
+            console.warn("check.catch", _e)
         })
     }
     get propsIsInputPassword() {

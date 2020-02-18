@@ -18,7 +18,7 @@ Caso de uso:
         value: "Sem counter esc",
         color:"07"
     }}
-    onPress={() => console.log("não bloqueante")}
+    onPress={() => {}}
     onPressAwait={actionUnlook => actionUnlook()}
     leftIcon={{
         value: "",

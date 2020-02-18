@@ -31,9 +31,7 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
         controller.abort()
         interval = undefined
         controller = undefined
-    }, timeout)
-    // console.log(`${baseApp}${_obj.action}`);
-    // console.log(_params);
+    }, timeout);
     fetch(`${baseApp}${_obj.action}`, _params).then((response) => {
         if (!empty(interval)) {
             clearTimeout(interval)
@@ -48,15 +46,14 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             mensagem: `Página não encontrada status[${response.status}]`
         })
     }).then(string => {
-        // console.log(string)
         try {
             return JSON.parse(string);
         } catch (e) {
+            console.warn(string);
             Promise.reject({ body: string, type: 'unparsable' });
         }
 
     }).then(response => {
-        // console.log("response", response)
         if (!empty(interval)) {
             clearTimeout(interval)
             interval = undefined
@@ -87,13 +84,13 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             _reject(_r)
         }
     }).catch(_err => {
-        console.log("catch _err", _err.text);
+        console.warn("catch _err", _err.text);
         if (!empty(interval)) {
             clearTimeout(interval)
             interval = undefined
             controller = undefined
         }
-        console.log(`${_loggerID}) LOAD FAILED`, { stack: _err.stack, mensagem: _err.message });
+        console.warn(`${_loggerID}) LOAD FAILED`, { stack: _err.stack, mensagem: _err.message });
         const { action, key, body_view, body_post, body_rsa } = _obj;
         let _tmp = {
             posted: {

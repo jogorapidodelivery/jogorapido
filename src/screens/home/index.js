@@ -7,7 +7,7 @@ import MinhaEscala from "./partial/minha-escala";
 import MeusRendimentos from "./partial/meus-rendimentos";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
-import { actionColetaAtualizar } from "@actions/";
+import { actionAutenticar } from "@actions/";
 import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
 import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 
@@ -38,36 +38,21 @@ export default class Home extends PureComponent {
     }
     _updateOnline = (status) => {
         if (this.ativarBg && status === "active") {
-            const { navigation: { push}, sd: { usuario_id } } = this.props;
-            actionColetaAtualizar({
-                body_rsa: {
-                    usuario_id,
-                }
-            }).catch(({ mensagem }) => {
-                push("alerta", {
-                    params: {
-                        titulo: "Jogo Rápido",
-                        mensagem
-                    }
-                })
-            })
+            this._updateColeta();
         }
         this.ativarBg = true;
     }
     _updateColeta = (onComplete) => {
-        const { sd: { usuario_id} } = this.props;
-        actionColetaAtualizar({
-            body_rsa: {
-                usuario_id,
-            }
-        }).then(({response}) => {
-            const coleta_id = getItemByKeys(response || {}, "coleta_id")
+        actionAutenticar().then(({ response }) => {
+            const coleta_id = getItemByKeys(response || {}, "coleta.coleta_id")
             if (!empty(coleta_id)) {
                 response.acao = "nova_coleta";
-                SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: response }));
+                SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: response.coleta }));
                 if (onComplete) onComplete();
-            } else if (onComplete) onComplete();
-        }).catch(({mensagem}) => {
+            } else {
+                if (onComplete) onComplete();
+            }
+        }).catch(({ mensagem}) => {
             if (onComplete) {
                 this.props.navigation.push("alerta", {
                     params: {
@@ -77,7 +62,7 @@ export default class Home extends PureComponent {
                 })
                 onComplete();
             }
-        })        
+        });       
     }
     render() {
         const {navigation} = this.props;

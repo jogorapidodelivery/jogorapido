@@ -10,7 +10,7 @@ export default class RecuperarSenha extends PureComponent {
                 }
             });
         }).catch(_e => {
-            console.log(_e);
+            console.warn(_e);
             this.props.navigation.push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",

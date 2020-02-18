@@ -17,7 +17,7 @@ export const destroyFence = () => {
 }
 const _currentLocation = () => {
     const _actionErr = _err => {
-        console.log(_err)
+        console.warn(_err)
     }
     let lootLocation = false;
     let startTime = (new Date()).getTime()

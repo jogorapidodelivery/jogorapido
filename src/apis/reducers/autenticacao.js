@@ -38,7 +38,6 @@ export default {
                 return { ...state, ...response };
             },
             [[ALTERAR_SENHA, CONECTAR, AUTENTICAR]]: (state, { response, posted: { senha, usuario } }) => {
-                console.log("reducer", AUTENTICAR, senha, usuario);
                 response.total_frete_semana = moeda(response.total_frete_semana, "");
                 if (response.disponibilidade) {
                     response.disponibilidade = response.disponibilidade.map(v => {
@@ -59,13 +58,7 @@ export default {
                 }
                 if (!empty(senha) && !empty(usuario)) {
                     const _chifed = encodeCipherCaesar({ senha, usuario });
-                    AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {
-                        console.log("FALHA AO SALVAR O LOGIN INICIO");
-                        console.log(_err)
-                        console.log("FALHA AO SALVAR O LOGIN FIM");
-                    })
-                } else {
-                    console.log("usuário e ou senha vazio", { senha, usuario })
+                    AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {})
                 }
                 return { ...state, ...response, usuario, senha };
             }

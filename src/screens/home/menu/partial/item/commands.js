@@ -39,12 +39,11 @@ export const alterarSenha = navigation => {
                 ..._s.body_rsa
             }
         });
-    }).catch(_e => {
-        console.log(_e);
+    }).catch(({ mensagem}) => {
         navigation.push("alerta", {
             params: {
                 titulo: "Jogo Rápido",
-                mensagem: _e.mensagem
+                mensagem
             }
         })
     })

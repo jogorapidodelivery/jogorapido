@@ -13,7 +13,6 @@ import AlterarSenha from "@screens/autenticacao/recuperar-senha/alterar-senha";
 import Gaveta from "@screens/home/menu";
 import Home from "@screens/home";
 import ChecarTokenEmailGoHome from "@screens/autenticacao/validar-email/checar-token-email/index";
-import { initFirebase } from "@sd/uteis/Firebase";
 import Coletar from "@screens/coleta-e-entrega";
 import MeusDadosChecarTokenEmail from "@screens/home/meus-dados/checar-token-email/index";
 import MeusDadosAlterarSenha from "@screens/home/meus-dados/alterar-senha/index";
@@ -62,5 +61,4 @@ SDNavigation.addModal([
     "carregando",
     "confirma"
 ]);
-initFirebase();
 export default SDNavigation.initProject(reducers);

@@ -9,8 +9,6 @@ export default {
     reducers: {
         autenticacao:{
             [COLETA_CHECKIN]: (state, { response: { data }, posted: { coluna } }) => {
-                console.log({ reducer: COLETA_CHECKIN, data, coluna});
-                console.log({ state})
                 state.coleta[coluna] = data;
                 return { ...state};
             },

@@ -2,6 +2,7 @@ import firebase from "react-native-firebase";
 import { GrupoRotas } from "@sd/navigation/revestir";
 import { empty } from "@sd/uteis/StringUteis";
 import { LayoutAnimation} from "react-native";
+import { SDNavigation } from "@sd/navigation";
 import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
 import Sound from "react-native-sound";
@@ -9,38 +10,23 @@ import moment from "moment";
 Sound.setCategory("Playback");
 let aguia = new Sound("http://177.101.149.36/aguia_small.mp3", Sound.MAIN_BUNDLE, (error) => {
     if (error) {
-        console.log("ERRO AU CARREGAR O SOM INICIO");
-        console.log(error)
-        console.log("ERRO AU CARREGAR O SOM FIM");
         aguia = undefined;
         return;
     }
     aguia.setNumberOfLoops(-1);
 });
-let timerMin;
 let timerInProcess = undefined;
+let notificacaoEmAndamento = false;
 let channel;
 if (Platform.OS === "android") {
     channel = new firebase.notifications.Android.Channel('receber-coleta-aguia', 'Grupo de coleta', firebase.notifications.Android.Importance.High);
     channel.setSound(null);
     firebase.notifications().android.createChannel(channel);
 }
-/*
-Cron atualizar status
-http://jogorapido.sitiodigital.local/app/usuario/checar-status
-
-cron enviar notificação
-http://jogorapido.sitiodigital.local/app/coleta/notificar-coletas
-
-http://jogorapido.sitiodigital.local/admin/entregador
-
-http://192.168.0.188:65006/uno/admin/expedicao-delivery
- */
-const prepareParams = ({ data, _data }, type) => {
-    const response = data || _data;
-    let { status, acao, coleta_id, data_hora_atual, data_notificacao } = response;
+const prepareParams = response => {
+    let { status, acao, coleta_id, data_hora_atual, data_notificacao, type } = response;
     if (empty(data_hora_atual) || empty(data_notificacao) || empty(coleta_id)) {
-        console.log({ falha:"PARAMS BRIGATÓRIOS VAZIO", status, acao, coleta_id, data_hora_atual, data_notificacao})
+        console.warn({ falha:"PARAMS BRIGATÓRIOS VAZIO", status, acao, coleta_id, data_hora_atual, data_notificacao})
     } else if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
         if (!empty(state.autenticacao)) {
@@ -50,34 +36,14 @@ const prepareParams = ({ data, _data }, type) => {
                 const novoTempo = tempo_aceite - mill;
                 if (novoTempo > 0 && novoTempo <= tempo_aceite) {
                     tempo_aceite = novoTempo;
-                    console.log({ acao:"ATUALIZA O REDUX COM OS DADOS", tempo_aceite, status, acao, coleta_id, type})
                     return { response, tempo_aceite, status, acao, coleta_id, type}
-                } else {
-                    console.log("2) FOREGROUND FORA DO INTERVALO", {
-                        novoTempo,
-                        tempo_aceite,
-                        mill,
-                        data_hora_atual,
-                        data_notificacao
-                    })
                 }
-            } else {
-                console.log("2) FOREGROUND tempo_aceite EMPTY")
             }
-        } else {
-            console.log("2) FOREGROUND autenticacao EMPTY")
         }
-    } else {
-        console.log("2) FOREGROUND STORE EMPTY")
     }
     return undefined
 }
-export const triggerDestroyTimerProgress = () => {
-    if (timerInProcess) clearInterval(timerInProcess);
-    firebase.notifications().removeAllDeliveredNotifications();
-    if (aguia !== undefined) aguia.stop();
-}
-const createNotifier = (coleta_id, tempo_aceite) => {
+const createNotifier = (coleta_id) => {
     const notification = new firebase.notifications.Notification({
         notificationId:"notificationId",
         title: `A coleta #${coleta_id} está aguardando sua decisão`,
@@ -105,15 +71,16 @@ const createNotifier = (coleta_id, tempo_aceite) => {
     return notification;
 }
 const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
+    if (notificacaoEmAndamento) return;
     const startTimer = (new Date()).getTime()
     const loopInterval = () => {
         const endtimer = (new Date()).getTime();
         const counter = (endtimer - startTimer) / 1000;
-        console.log({ method: "interval", counter, tempo_aceite });
         if (counter > tempo_aceite) {
+            notificacaoEmAndamento = false;
             if (timerInProcess) clearInterval(timerInProcess);
             _resolve()
-        } else if (counter == tempo_aceite) {
+        } else if (Math.floor(counter) == tempo_aceite) {
             notification.android.setProgress(0, 0, true).android.setColor(cor["12"]);
             notification.setTitle("Tempo esgotado. Seja mais rápido da próxima vez");
             firebase.notifications().displayNotification(notification);
@@ -125,14 +92,10 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
     firebase.notifications().removeAllDeliveredNotifications();
     firebase.notifications().displayNotification(notification);
     if (timerInProcess) clearInterval(timerInProcess);
-    if (aguia !== undefined) aguia.play((success) => {
-        if (success) {
-            console.log('successfully finished playing');
-        } else {
-            console.log('playback failed due to audio decoding errors');
-        }
+    if (aguia !== undefined) aguia.play((_success) => {
     });
     timerInProcess = setInterval(loopInterval, 1000);
+    notificacaoEmAndamento = true;
     loopInterval();
 }
 
@@ -141,8 +104,6 @@ const switchActions = (response, status, acao, type) => {
         case "nova_coleta":
             switch (status) {
                 case "Pendente":
-                    console.log("REIVER NOTIFICACAO BG AQUI")
-                    console.log(response);
                     GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
                     return true
@@ -162,36 +123,26 @@ const switchActions = (response, status, acao, type) => {
     }
     return false
 }
-firebase.messaging().onMessage(message => {
-    const post = prepareParams(message, { type: "DISPLAY" });
-    if (post !== undefined) {
-        const { response, tempo_aceite, status, acao, coleta_id, type } = post;
-        const triggerNotifier = switchActions(response, status, acao, type);
-        if (triggerNotifier) {
-            const notification = createNotifier(coleta_id, tempo_aceite);
-            dispatchNotifier(notification, tempo_aceite, () => {
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-                if (aguia !== undefined) aguia.stop();
-            })
-        }
-    }
-})
-export default async message => {
-    const post = prepareParams(message, { type: "DISPLAY" });
-    if (post !== undefined) {
-        const { response, tempo_aceite, status, acao, coleta_id, type } = post;
-        const triggerNotifier = switchActions(response, status, acao, type);
-        if (triggerNotifier) {
-            const notification = createNotifier(coleta_id, tempo_aceite);
-            return new Promise((_resolve) => {
+export const triggerDestroyTimerProgress = () => {
+    if (timerInProcess) clearInterval(timerInProcess);
+    firebase.notifications().removeAllDeliveredNotifications();
+    if (aguia !== undefined) aguia.stop();
+}
+export const triggerNotifier = (message, _resolve) => {
+    if (!empty(message)) {
+        const post = prepareParams(message);
+        if (post !== undefined) {
+            const { response, tempo_aceite, status, acao, coleta_id, type } = post;
+            const triggerNotifier = switchActions(response, status, acao, type);
+            if (triggerNotifier) {
+                const notification = createNotifier(coleta_id, tempo_aceite);
                 dispatchNotifier(notification, tempo_aceite, () => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                     GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
                     if (aguia !== undefined) aguia.stop();
                     _resolve();
                 })
-            })
-        }
-    }
-    return Promise.resolve();
+            } else _resolve();
+        } else _resolve();
+    } else _resolve();
 }
