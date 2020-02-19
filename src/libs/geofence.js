@@ -1,9 +1,8 @@
 import { RSA } from "react-native-rsa-native"
 import BackgroundGeolocation from "react-native-background-geolocation";
 import { PUBLIC_KEY_RSA } from "@sd/fetch";
-import { baseUrl } from "@root/app.json";
+import { baseApp } from "@sd/fetch/Ajax";
 import { empty } from "../../sd/uteis/StringUteis";
-const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
 import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
 import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 export const bgLocationFetch = async usuario_id => {

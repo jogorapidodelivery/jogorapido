@@ -3,6 +3,8 @@ import firebase from "react-native-firebase"
 import { globalParams } from "@sd/fetch/DataFormat";
 export const initFirebase = (_callBack = undefined) => {
     const _dataNotification = data => new Promise((_resolve) => {
+        console.log("DADOS RECEBIDOS VIA NOTIFICAÇÃO")
+        console.log(data);
         if (_resolve !== undefined) _callBack(data, _resolve);
         else _resolve();
     })

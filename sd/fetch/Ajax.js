@@ -2,7 +2,7 @@ import mountFormData from "./DataFormat"
 import { empty, str2slug } from "@sd/uteis/StringUteis"
 
 import { baseUrl } from "@root/app.json";
-const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
+export const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
 
 /*
 analiszar isto aqui também

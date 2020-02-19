@@ -26,7 +26,7 @@ export default class Home extends PureComponent {
     ativarBg = false;
     componentDidMount() {
         this.ativarBg = false;
-        this._updateColeta();
+        this._triggerNotify(this.props.sd.coleta);
         AppState.addEventListener('change', this._updateOnline);
     }
     componentWillUnmount() {
@@ -36,6 +36,16 @@ export default class Home extends PureComponent {
 
         }
     }
+    _triggerNotify = (coleta, onComplete = undefined) => {
+        if (!empty(coleta) && !empty(coleta.coleta_id)) {
+            coleta.acao = "nova_coleta";
+            console.log("DISPAROU A NOTIFICAÇÃO NO REFRESH DA HOME")
+            SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: coleta }));
+            if (onComplete) onComplete();
+        } else {
+            if (onComplete) onComplete();
+        }
+    }
     _updateOnline = (status) => {
         if (this.ativarBg && status === "active") {
             this._updateColeta();
@@ -43,15 +53,8 @@ export default class Home extends PureComponent {
         this.ativarBg = true;
     }
     _updateColeta = (onComplete) => {
-        actionAutenticar().then(({ response }) => {
-            const coleta_id = getItemByKeys(response || {}, "coleta.coleta_id")
-            if (!empty(coleta_id)) {
-                response.acao = "nova_coleta";
-                SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: response.coleta }));
-                if (onComplete) onComplete();
-            } else {
-                if (onComplete) onComplete();
-            }
+        actionAutenticar().then(({response}) => {
+            this._triggerNotify(response.coleta, onComplete);
         }).catch(({ mensagem}) => {
             if (onComplete) {
                 this.props.navigation.push("alerta", {

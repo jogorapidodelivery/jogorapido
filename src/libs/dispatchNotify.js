@@ -16,7 +16,7 @@ let aguia = new Sound("http://177.101.149.36/aguia_small.mp3", Sound.MAIN_BUNDLE
     aguia.setNumberOfLoops(-1);
 });
 let timerInProcess = undefined;
-let notificacaoEmAndamento = false;
+let notificarColetaId = undefined;
 let channel;
 if (Platform.OS === "android") {
     channel = new firebase.notifications.Android.Channel('receber-coleta-aguia', 'Grupo de coleta', firebase.notifications.Android.Importance.High);
@@ -70,15 +70,17 @@ const createNotifier = (coleta_id) => {
     }
     return notification;
 }
-const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
-    if (notificacaoEmAndamento) return;
+const dispatchNotifier = (notification, tempo_aceite, coleta_id, _resolve) => {
+    console.log({action:"dispatchNotifier", notificarColetaId, coleta_id, timerInProcess});
+    if (notificarColetaId !== undefined && notificarColetaId !== coleta_id && timerInProcess === undefined) return;
     const startTimer = (new Date()).getTime()
     const loopInterval = () => {
         const endtimer = (new Date()).getTime();
         const counter = (endtimer - startTimer) / 1000;
         if (counter > tempo_aceite) {
-            notificacaoEmAndamento = false;
             if (timerInProcess) clearInterval(timerInProcess);
+            timerInProcess = undefined;
+            notificarColetaId = undefined;
             _resolve()
         } else if (Math.floor(counter) == tempo_aceite) {
             notification.android.setProgress(0, 0, true).android.setColor(cor["12"]);
@@ -95,7 +97,7 @@ const dispatchNotifier = (notification, tempo_aceite, _resolve) => {
     if (aguia !== undefined) aguia.play((_success) => {
     });
     timerInProcess = setInterval(loopInterval, 1000);
-    notificacaoEmAndamento = true;
+    notificarColetaId = coleta_id;
     loopInterval();
 }
 
@@ -127,6 +129,8 @@ export const triggerDestroyTimerProgress = () => {
     if (timerInProcess) clearInterval(timerInProcess);
     firebase.notifications().removeAllDeliveredNotifications();
     if (aguia !== undefined) aguia.stop();
+    timerInProcess = undefined;
+    notificarColetaId = undefined;
 }
 export const triggerNotifier = (message, _resolve) => {
     if (!empty(message)) {
@@ -136,13 +140,22 @@ export const triggerNotifier = (message, _resolve) => {
             const triggerNotifier = switchActions(response, status, acao, type);
             if (triggerNotifier) {
                 const notification = createNotifier(coleta_id, tempo_aceite);
-                dispatchNotifier(notification, tempo_aceite, () => {
+                dispatchNotifier(notification, tempo_aceite, coleta_id, () => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                     GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
                     if (aguia !== undefined) aguia.stop();
                     _resolve();
                 })
-            } else _resolve();
-        } else _resolve();
-    } else _resolve();
+            } else {
+                console.log("DISPATCH_NOTIFY triggerNotifier EMPTY", post)
+                _resolve();
+            }
+        } else {
+            console.log("DISPATCH_NOTIFY POST EMPTY", post)
+            _resolve();
+        }
+    } else {
+        console.log("DISPATCH_NOTIFY MESSAGE EMPTY")
+        _resolve();
+    }
 }
