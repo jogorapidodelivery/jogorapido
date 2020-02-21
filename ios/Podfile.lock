@@ -262,9 +262,9 @@ PODS:
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (= 0.3.9011)
-  - GoogleDataTransport (3.3.1)
-  - GoogleDataTransportCCTSupport (1.3.1):
-    - GoogleDataTransport (~> 3.3)
+  - GoogleDataTransport (4.0.0)
+  - GoogleDataTransportCCTSupport (1.4.0):
+    - GoogleDataTransport (~> 4.0)
     - nanopb (~> 0.3.901)
   - GoogleUtilities/AppDelegateSwizzler (6.5.1):
     - GoogleUtilities/Environment
@@ -318,7 +318,7 @@ PODS:
     - RNPermissions
   - Permission-PhotoLibrary (2.0.9):
     - RNPermissions
-  - Protobuf (3.11.2)
+  - Protobuf (3.11.4)
   - RCTRequired (0.61.5)
   - RCTTypeSafety (0.61.5):
     - FBLazyVector (= 0.61.5)
@@ -527,7 +527,7 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNBackgroundFetch (2.7.1):
+  - RNBackgroundFetch (2.8.0):
     - React
   - RNBackgroundGeolocation (3.4.2):
     - CocoaLumberjack (~> 3.5.1)
@@ -554,6 +554,11 @@ PODS:
   - RNScreens (2.0.0-alpha.32):
     - React
   - RNSharedElement (0.5.5):
+    - React
+  - RNSound (0.11.0):
+    - React
+    - RNSound/Core (= 0.11.0)
+  - RNSound/Core (0.11.0):
     - React
   - Yoga (1.14.0)
 
@@ -612,6 +617,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSharedElement (from `../node_modules/react-native-shared-element`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -735,6 +741,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSharedElement:
     :path: "../node_modules/react-native-shared-element"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -762,8 +770,8 @@ SPEC CHECKSUMS:
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
   GoogleAppMeasurement: dfe55efa543e899d906309eaaac6ca26d249862f
-  GoogleDataTransport: 0048df6388dab1c254799f2a30365b1dffe20422
-  GoogleDataTransportCCTSupport: f880d70972efa2ed1be4e9173a0f4c5f3dc2d176
+  GoogleDataTransport: 47fe3b8e1673e5187dfd615656a3c5034f150d69
+  GoogleDataTransportCCTSupport: 36f69887fd212db6d7ef4dd45ba44523717a434e
   GoogleUtilities: 06eb53bb579efe7099152735900dd04bf09e7275
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
@@ -775,7 +783,7 @@ SPEC CHECKSUMS:
   Permission-MediaLibrary: 82e374f494221a6202836293448995c927c6603b
   Permission-Notifications: a5f726fd7ef7f337277dd145f4483008c8c7d0f6
   Permission-PhotoLibrary: 51718ddf8c0baf1cebf323c68cedcb2ff0cf304a
-  Protobuf: dd1aaea7140debfe4dd0683fb8ef208e527ae153
+  Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   RCTRequired: b153add4da6e7dbc44aebf93f3cf4fcae392ddf1
   RCTTypeSafety: 9aa1b91d7f9310fc6eadc3cf95126ffe818af320
   React: b6a59ef847b2b40bb6e0180a97d0ca716969ac78
@@ -800,7 +808,7 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNBackgroundFetch: 08bdaaa13a5aa71cdce42068def5602ed1e982c2
+  RNBackgroundFetch: 9a52e25373791da8cb41a42dbaeab257851f7792
   RNBackgroundGeolocation: 0ece4eb8306b1e0acc7571fa9394d71bfa42a53b
   RNCAsyncStorage: 8539fc80a0075fcc9c8e2dff84cd22dc5bf1dacf
   RNCMaskedView: e5b99bc191945f157adeede68da9d424462de177
@@ -810,8 +818,9 @@ SPEC CHECKSUMS:
   RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
   RNScreens: a55364dc1833101f836cee70975ce1fea615a12f
   RNSharedElement: 6c9167790f6e19850bc2612ec935b45b04fc209b
+  RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 593cb092b02918921bd691430b7c392ef8f3df73
+PODFILE CHECKSUM: 62f438be5116c0ad5595115eb4d33af8ffc77c03
 
 COCOAPODS: 1.8.4

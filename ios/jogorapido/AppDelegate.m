@@ -16,10 +16,15 @@
 #import "RNFirebaseNotifications.h"
 #import "RNFirebaseMessaging.h"
 
+#import <TSBackgroundFetch/TSBackgroundFetch.h>
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  TSBackgroundFetch *fetch = [TSBackgroundFetch sharedInstance];
+  [fetch registerAppRefreshTask];
+  
   // inicio instancia modulo de notificação
   [FIRApp configure];
   [RNFirebaseNotifications configure];

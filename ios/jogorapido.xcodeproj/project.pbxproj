@@ -21,6 +21,7 @@
 		BA56D5B123E5A8C400A5BC0A /* logo-splash@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA56D5AE23E5A8C400A5BC0A /* logo-splash@3x.png */; };
 		BA56D5B223E5A8C400A5BC0A /* logo-splash.png in Resources */ = {isa = PBXBuildFile; fileRef = BA56D5AF23E5A8C400A5BC0A /* logo-splash.png */; };
 		BA56D5B323E5A8C400A5BC0A /* logo-splash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BA56D5B023E5A8C400A5BC0A /* logo-splash@2x.png */; };
+		BAAF794123FDC42E000FB208 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BAAF794023FDC42E000FB208 /* RNBackgroundFetch+AppDelegate.m */; };
 		BACCAA6923E6000F007A3DE3 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA56D5AB23E5A8A400A5BC0A /* icomoon.ttf */; };
 		E5F7AD601EC1959D8225DA38 /* Pods_jogorapidoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86545BD5111772D4D61E8D /* Pods_jogorapidoTests.framework */; };
 /* End PBXBuildFile section */
@@ -40,13 +41,6 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "jogorapido-tvOS";
 		};
-		BA05EF6523FD7F03005919A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BA05EF6123FD7F03005919A5 /* RNSound.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 19825A1E1BD4A89800EE0337;
-			remoteInfo = RNSound;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -65,13 +59,13 @@
 		2D02E4901E0B4A5D006451C7 /* jogorapido-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jogorapido-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		658444CDCE5651F0F164F72D /* Pods-jogorapido.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jogorapido.debug.xcconfig"; path = "Target Support Files/Pods-jogorapido/Pods-jogorapido.debug.xcconfig"; sourceTree = "<group>"; };
 		AA5394FD6107AC2784E55062 /* Pods-jogorapido.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jogorapido.release.xcconfig"; path = "Target Support Files/Pods-jogorapido/Pods-jogorapido.release.xcconfig"; sourceTree = "<group>"; };
-		BA05EF6123FD7F03005919A5 /* RNSound.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNSound.xcodeproj; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; };
 		BA56D5AB23E5A8A400A5BC0A /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = icomoon.ttf; path = ../../assets/fonts/icomoon.ttf; sourceTree = "<group>"; };
 		BA56D5AC23E5A8AE00A5BC0A /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "jogorapido/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		BA56D5AE23E5A8C400A5BC0A /* logo-splash@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-splash@3x.png"; path = "../../assets/images/logo-splash@3x.png"; sourceTree = "<group>"; };
 		BA56D5AF23E5A8C400A5BC0A /* logo-splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-splash.png"; path = "../../assets/images/logo-splash.png"; sourceTree = "<group>"; };
 		BA56D5B023E5A8C400A5BC0A /* logo-splash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-splash@2x.png"; path = "../../assets/images/logo-splash@2x.png"; sourceTree = "<group>"; };
 		BA56D5B423E5A9CE00A5BC0A /* jogorapido.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = jogorapido.entitlements; path = jogorapido/jogorapido.entitlements; sourceTree = "<group>"; };
+		BAAF794023FDC42E000FB208 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; };
 		BCFE5CC6E8F9834FA3861E7B /* Pods_jogorapido.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jogorapido.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB504064DCF58D04DD3FC287 /* Pods-jogorapidoTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jogorapidoTests.debug.xcconfig"; path = "Target Support Files/Pods-jogorapidoTests/Pods-jogorapidoTests.debug.xcconfig"; sourceTree = "<group>"; };
 		EAE18F1979931AA628D26EA6 /* Pods-jogorapidoTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-jogorapidoTests.release.xcconfig"; path = "Target Support Files/Pods-jogorapidoTests/Pods-jogorapidoTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -134,6 +128,7 @@
 		13B07FAE1A68108700A75B9A /* jogorapido */ = {
 			isa = PBXGroup;
 			children = (
+				BAAF794023FDC42E000FB208 /* RNBackgroundFetch+AppDelegate.m */,
 				BA56D5B423E5A9CE00A5BC0A /* jogorapido.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -160,7 +155,6 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				BA05EF6123FD7F03005919A5 /* RNSound.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -188,14 +182,6 @@
 				00E356EE1AD99517003FC87E /* jogorapidoTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* jogorapido-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* jogorapido-tvOSTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		BA05EF6223FD7F03005919A5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				BA05EF6623FD7F03005919A5 /* libRNSound.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -343,12 +329,6 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = BA05EF6223FD7F03005919A5 /* Products */;
-					ProjectRef = BA05EF6123FD7F03005919A5 /* RNSound.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* jogorapido */,
@@ -358,16 +338,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		BA05EF6623FD7F03005919A5 /* libRNSound.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNSound.a;
-			remoteRef = BA05EF6523FD7F03005919A5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -552,6 +522,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAAF794123FDC42E000FB208 /* RNBackgroundFetch+AppDelegate.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -622,7 +593,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jogorapido.app/jogorapido";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jogoRápido.app/jogoRápido";
 			};
 			name = Debug;
 		};
@@ -643,7 +614,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jogorapido.app/jogorapido";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/jogoRápido.app/jogoRápido";
 			};
 			name = Release;
 		};
@@ -656,6 +627,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = SM77L5RNLU;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = jogorapido/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -677,6 +649,7 @@
 				CODE_SIGN_ENTITLEMENTS = jogorapido/jogorapido.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SM77L5RNLU;
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = jogorapido/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (

@@ -1,25 +1,32 @@
 import React, { PureComponent } from "react";
-import { View, Text, FlatList} from "react-native";
+import { View, FlatList} from "react-native";
 import Button from "@sd/components/button";
 import { stylDefault } from "@src/stylDefault";
 import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
 import styl from "./styl";
 import { empty } from "@sd/uteis/StringUteis";
+import MinhaEscalaItem from "@screens/disponibilidade/partial/index";
+import { buscarDisponibilidade } from "@actions/disponibilidade";
 export default class MinhaEscala extends PureComponent {
     _renderScale = ({ item: { icone, cor, data, disponibilidade, horario }, index}) => {
-        return <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={1000 + (200 * index)} style={styl.containerItem}>
-            <View style={[styl.containerItemWarp, { opacity: empty(data) ? .2 : 1 }]}>
-                <Text style={[stylDefault.icon, { color: cor}]}>{icone}</Text>
-                <View>
-                    <Text style={[stylDefault.span, styl.titulo]}>{disponibilidade}</Text>
-                    <Text style={stylDefault.span}>{horario}</Text>
-                </View>
-            </View>
-        </AnimatableView>
+        return <MinhaEscalaItem {...{ icone, cor, data, disponibilidade, horario, delay: 1000 + (200 * index), actived: !empty(data)}}/>
     }
     _extract = (item, index) => {
         if (item.categoria_atividade_id !== undefined) return item.categoria_atividade_id.toString()
         return index.toString()
+    }
+    _submit = () => {
+        const {navigation:{push}} = this.props;
+        buscarDisponibilidade().then(() => {
+            push("disponibilidade");
+        }).catch(({mensagem}) => {
+            push("alerta", {
+                params: {
+                    titulo: "Jogo Rápido",
+                    mensagem
+                }
+            })
+        })
     }
     render() {
         const { disponibilidade } = this.props;

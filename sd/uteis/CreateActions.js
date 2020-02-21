@@ -96,6 +96,10 @@ const dispatchRedux = (_args, _response, _resolve) => {
         }
     }
 ] */
+export const actionObject = type => _response => new Promise((resolve) => {
+    GrupoRotas.store.dispatch({ type, ..._response });
+    resolve()
+})
 export const actionFetchParallel = (_args/*[{type:LOGIN, stateWarpKey:"autenticacao", action:"usuario/login", }] */, loading = true) => {
     return (params/*[{ignorarError:, body_rsa:{}, body_post:{}, body_view:{}}] */) => new Promise((_resolve, _reject) => {
         if (_args.length !== params.length) return _reject({type:"erro", mensagem:"A quantidade de parametros dentro das matrizes [_args] e [_params] tem que ser a mesma"});

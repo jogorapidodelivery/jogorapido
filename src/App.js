@@ -16,6 +16,8 @@ import ChecarTokenEmailGoHome from "@screens/autenticacao/validar-email/checar-t
 import Coletar from "@screens/coleta-e-entrega";
 import MeusDadosChecarTokenEmail from "@screens/home/meus-dados/checar-token-email/index";
 import MeusDadosAlterarSenha from "@screens/home/meus-dados/alterar-senha/index";
+import Extrato from "@screens/extrato";
+import Disponibilidade from "@screens/disponibilidade";
 import moment from "moment"
 import ptLocale from "moment/locale/pt";
 moment.updateLocale("pt", ptLocale)
@@ -32,6 +34,8 @@ SDNavigation.registerScreens({
     checarTokenEmailGoHome: { name: "checarTokenEmailGoHome", screen: ChecarTokenEmailGoHome },
     alterarSenha: { name: "alterarSenha", screen: AlterarSenha },
     home: { name: "home", screen: Home },
+    extrato: { name: "extrato", screen: Extrato },
+    disponibilidade: { name: "disponibilidade", screen: Disponibilidade },
     coletar: { name: "coletar", screen: Coletar },
     meusDadosChecarTokenEmail: { name: "meusDadosChecarTokenEmail", screen: MeusDadosChecarTokenEmail },
     meusDadosAlterarSenha: { name: "meusDadosAlterarSenha", screen: MeusDadosAlterarSenha }
@@ -50,6 +54,8 @@ SDNavigation.addModal([
         SDNavigation.addDrawer(Gaveta, [
             SDNavigation.addStack([
                 "home",
+                "extrato",
+                "disponibilidade",
                 "meusDadosChecarTokenEmail",
                 "meusDadosAlterarSenha"
             ])
