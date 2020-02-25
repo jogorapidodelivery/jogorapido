@@ -65,7 +65,7 @@ export default {
     reducers: {
         disponibilidade: {
             [BUSCAR_DISPONIBILIDADE]: (state, _action) => {
-                hoje = (new Date()).getDay()
+                const hoje = (new Date()).getDay()
                 return { ...state, semana: diasSemana, diaSelecionado: hoje};
             },
             [MUDAR_DE_ABA_EM_DISPONIBILIDADE]: (state, { index}) => {

@@ -9,7 +9,6 @@ export default StyleSheet.create({
         color: cor["20"]
     },
     btnRendimentos: {
-        opacity:.2,
         marginTop: normalize(spaces["01"]),
         marginBottom: normalize(spaces["02"])
     },

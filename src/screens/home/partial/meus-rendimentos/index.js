@@ -4,7 +4,21 @@ import Button from "@sd/components/button";
 import { stylDefault } from "@src/stylDefault";
 import styl from "./styl";
 import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
+import { buscarExtrato } from "@actions/extrato";
 export default class MeusRendimentos extends PureComponent {
+    _submit = () => {
+        const { navigation: { push } } = this.props;
+        buscarExtrato().then(() => {
+            push("extrato");
+        }).catch((fai) => {
+            push("alerta", {
+                params: {
+                    titulo: "Jogo Rápido",
+                    mensagem:""
+                }
+            })
+        })
+    }
     render() {
         const { corridas_semana, total_frete_semana} = this.props
         return <Fragment>

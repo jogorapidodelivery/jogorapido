@@ -3,4 +3,5 @@ import caseAutenticacao from "./autenticacao";
 import caseColeta from "./coleta";
 import caseEntrega from "./entregador";
 import caseDisponibilidade from "./disponibilidade";
-export default mergeHandleActions(caseAutenticacao, caseColeta, caseEntrega, caseDisponibilidade);
+import caseExtrato from "./extrato";
+export default mergeHandleActions(caseAutenticacao, caseColeta, caseEntrega, caseDisponibilidade, caseExtrato);

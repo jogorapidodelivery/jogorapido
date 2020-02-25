@@ -3,11 +3,9 @@ import { normalize } from "@sd/uteis/NumberUteis";
 import { font, hButton, spaces, cor, size } from "@root/app.json";
 export default StyleSheet.create({
     container:{
-        flexGrow:1
+        flexGrow:1,
+        backgroundColor:cor["07"]
     },
-    // { height: 260, top: 0, resizeMode: 'contain', backgroundColor:"orange" }
-    // style={styl.warpBackground} imageStyle={styl.imageBackground}
-    
     warpBackground:{
         flex:1
     },
@@ -16,7 +14,6 @@ export default StyleSheet.create({
         bottom:null,
         height:normalize(260)
     },
-    // ***********
     warpButtomClose:{
         zIndex: 20,
         position: "absolute",
