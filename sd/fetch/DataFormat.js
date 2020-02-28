@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
-import { baseUrl, timeoutSlow, timeoutLong } from "@root/app.json";
-const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
+import { timeoutSlow, timeoutLong } from "@root/app.json";
+import { getBaseUrl } from "./Ajax";
+const URLSearchParams = require('url-search-params');
 import { empty } from "@sd/uteis/StringUteis";
 export let globalParams = {
     app_id: "",
@@ -23,9 +24,12 @@ const _getDefaultParams = () => {
     }
 }
 export default (_obj, _loggerID = 0) => {
-    let _urlDebug = `${baseApp}${_obj.action}?debug=1`
+    const url = getBaseUrl(_obj);
+    let _urlGet = `${url}?debug=1`;
     _obj.body_post = { ..._obj.body_post, ..._getDefaultParams() }
-    let _data = new FormData()
+    const { baseUrl, method } = _obj;
+    let _data = baseUrl === "node" ? new URLSearchParams() : new FormData();
+    
     let timeout = timeoutSlow;
     for (let a in _obj.body_post) {
         const value = _obj.body_post[a]
@@ -38,14 +42,12 @@ export default (_obj, _loggerID = 0) => {
                     for (let c in v2) {
                         const v3 = v2[c]
                         if (empty(v3)) continue
-                        // if (__DEV__) _urlDebug += `&${a}[${b}][${c}]=${escape(v3)}`
-                        _urlDebug += `&${a}[${b}][${c}]=${escape(v3)}`
+                        _urlGet += `&${a}[${b}][${c}]=${escape(v3)}`
                         _data.append(`${a}[${b}][${c}]`, v3)
                     }
                     continue
                 }
-                // if (__DEV__) _urlDebug += `&${a}[${b}]=${escape(v2)}`
-                _urlDebug += `&${a}[${b}]=${escape(v2)}`
+                _urlGet += `&${a}[${b}]=${escape(v2)}`
                 _data.append(`${a}[${b}]`, v2)
             }
             continue
@@ -54,8 +56,7 @@ export default (_obj, _loggerID = 0) => {
                 for (let d in value) {
                     const v4 = value[d]
                     if (empty(v4)) continue
-                    // if (__DEV__) _urlDebug += `&${a}[${d}]=${escape(v4)}`
-                    _urlDebug += `&${a}[${d}]=${escape(v4)}`
+                    _urlGet += `&${a}[${d}]=${escape(v4)}`
                     _data.append(`${a}[${d}]`, v4)
                 }
                 continue
@@ -63,13 +64,13 @@ export default (_obj, _loggerID = 0) => {
                 timeout = timeoutLong
             }
         }
-        // if (__DEV__) _urlDebug += `&${a}=${escape(value)}`
-        _urlDebug += `&${a}=${escape(value)}`
+        _urlGet += `&${a}=${escape(value)}`
         _data.append(a, value)
     }
-    console.log(`${_loggerID}) FORMAT POST`, { get: _urlDebug })
+    console.log(`${_loggerID}) FORMAT POST`, { get: _urlGet })
     return {
-        body: _data,
+        body: baseUrl === "node" ? _data.toString() : _data,
+        url: method === "GET" ? _urlGet : url,
         timeout
     }
 }

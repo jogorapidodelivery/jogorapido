@@ -3,8 +3,6 @@ import firebase from "react-native-firebase"
 import { globalParams } from "@sd/fetch/DataFormat";
 export const initFirebase = (_callBack = undefined) => {
     const _dataNotification = data => new Promise((_resolve) => {
-        console.log("DADOS RECEBIDOS VIA NOTIFICAÇÃO")
-        console.log(data);
         if (_resolve !== undefined) _callBack(data, _resolve);
         else _resolve();
     })
@@ -22,10 +20,10 @@ export const initFirebase = (_callBack = undefined) => {
         firebase.messaging().onMessage(({ _data:data}) => {
             _dataNotification({ ...data, type: "DISPLAY" });
         })
-        /*firebase.notifications().onNotificationDisplayed((message) => {
+        firebase.notifications().onNotificationDisplayed((message) => {
             // somente IOS
             if (!empty(message)) _dataNotification(message);
-        })*/
+        })
     }
     const _getToken = () => {
         firebase.messaging().getToken().then(_newToken => {

@@ -58,17 +58,17 @@
 	<key>NSCameraUsageDescription</key>
 	<string>O Jogo Rápido deseja utilizar sua câmera</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Sua localização é necessária para listar as empresas mais próximas a você</string>
+	<string>Precisamos de acesso a sua localização em tempo real para que possamos enviar novas coletas de acordo com o Player mais próximo.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Sua localização é necessária para listar as empresas mais próximas a você</string>
+	<string>Precisamos de acesso a sua localização em tempo real para que possamos enviar novas coletas de acordo com o Player mais próximo.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Sua localização é necessária para listar as empresas mais próximas a você</string>
+	<string>Precisamos de acesso a sua localização em tempo real para que possamos enviar novas coletas de acordo com o Player mais próximo.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Este aplicativo precisa ser capaz de acessar o seu uso de movimento</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>O Jogo Rápido deseja utilizar suas fotos</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string></string>
+	<string>Precisamos de acesso a este recurso para lhe notificar com aúdios</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>icomoon.ttf</string>

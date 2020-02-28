@@ -8,6 +8,10 @@
     "on":"http://177.101.149.36/app/",
     "off":"http://jogorapido.sitiodigital.local/app/"
   },
+  "baseUrlNode":{
+    "on": "http://177.101.149.36:22600/",
+    "off": "http://177.101.149.36:22600/"
+  },
   "tempoParaAceite": 60,
   "cor": {
     "01": "rgba(69,69,69,.1)",

@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import { AppState } from "react-native"
 import HeaderLogo from "@screens/partial/header-logo";
 import BaseScreen from "@screens/partial/base";
@@ -73,18 +73,21 @@ export default class Home extends PureComponent {
         const disponibilidade = getItemByKeys(this.props, "sd.disponibilidade")
         const corridas_semana = getItemByKeys(this.props, "sd.corridas_semana")
         const total_frete_semana = getItemByKeys(this.props, "sd.total_frete_semana")
+        const { usuario_id} = this.props.sd;
         return <BaseScreen
             onRefresh={this._updateColeta}
             navigation={navigation}
             header={<HeaderLogo navigation={navigation} />}
             headerHeight={HeaderLogo.heightContainer}
         >
-            {status === "Pendente" && <ColetaPendente
-                {...this.props.sd.coleta}
-                navigation={navigation}
-            />}
-            {status !== "Pendente" && <MinhaEscala navigation={navigation} disponibilidade={disponibilidade}/>}
-            {status !== "Pendente" && <MeusRendimentos corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>}
+            <Fragment>
+                {status === "Pendente" && <ColetaPendente
+                    {...this.props.sd.coleta}
+                    navigation={navigation}
+                />}
+                {status !== "Pendente" && <MinhaEscala navigation={navigation} usuario_id={usuario_id} disponibilidade={disponibilidade}/>}
+                {status !== "Pendente" && <MeusRendimentos usuario_id={usuario_id} corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>}
+            </Fragment>
         </BaseScreen>
     }
 }

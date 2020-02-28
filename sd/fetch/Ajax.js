@@ -1,13 +1,16 @@
 import mountFormData from "./DataFormat"
 import { empty, str2slug } from "@sd/uteis/StringUteis"
 
-import { baseUrl } from "@root/app.json";
-export const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
+import { baseUrl, baseUrlNode } from "@root/app.json";
 
-/*
-analiszar isto aqui também
-https://www.npmjs.com/package/react-native-cache-store
-*/
+const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
+const baseAppNode = __DEV__ ? baseUrlNode.off : baseUrlNode.on;
+
+export const getBaseUrl = ({ baseUrl, action}) => {
+    if (baseUrl === "php") return `${baseApp}${action}`;
+    return `${baseAppNode}${action}`;
+}
+
 const obj = {
     ignorarError: false,
     action: "",
@@ -19,20 +22,28 @@ const obj = {
 export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
     let headers = new Headers()
     headers.append("Accept", "application/json")
-    headers.append("Content-Type", "multipart/form-data")
     headers.append("Accept-Encoding", "gzip")
-    const { body, timeout } = mountFormData(_obj, _loggerID)
+    const { baseUrl, method } = _obj;
+    if (baseUrl === "php") {
+        headers.append("Content-Type", "multipart/form-data");
+    } else {
+        headers.append("Content-Type", "application/x-www-form-urlencoded");
+    }
+    const { body, timeout, url } = mountFormData(_obj, _loggerID)
     let controller = eval(`new AbortController()`)
     const { signal } = controller
     const _params = {
-        signal, method: "POST", headers, body
+        signal,
+        method: method || "POST",
+        headers,
+        ...(method === "POST" ? {body} : {})
     }
     let interval = setTimeout(() => {
         controller.abort()
         interval = undefined
         controller = undefined
     }, timeout);
-    fetch(`${baseApp}${_obj.action}`, _params).then((response) => {
+    fetch(url, _params).then((response) => {
         if (!empty(interval)) {
             clearTimeout(interval)
             interval = undefined

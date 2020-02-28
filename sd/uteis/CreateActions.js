@@ -35,12 +35,14 @@ export const mergeHandleActions = (...args) => {
     })
     return _ac
 }
-export const actionFetchItem = (type, action, loading = true, hasDispatchRedux = true) => {
+export const actionFetchItem = (type, action, loading = true, hasDispatchRedux = true, baseUrl = "php" /*node || php */, method="POST") => {
     return (params/*{ignorarError:, body_rsa:{}, body_post:{}, body_view:{}} */) => new Promise((_resolve, _reject) => {
         if (loading) SDNavigation.navegar.push("carregando");
         fetchItem({
             type,
             action,
+            method,
+            baseUrl,
             ...params
         }).then(({response, posted}) => {
             if (loading) {

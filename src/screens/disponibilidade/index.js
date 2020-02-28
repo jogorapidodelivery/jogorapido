@@ -8,35 +8,75 @@ import styl from "./styl";
 import MinhaEscalaItem from "@screens/disponibilidade/partial/index";
 import { empty } from "@sd/uteis/StringUteis";
 import MenuItem from "./partial/menuItem/index";
+import { toogleSelectDisponibilidade, toogleTabDisponibilidade, salvarDisponibilidade } from "@actions/disponibilidade";
 
 export default class Disponibilidade extends PureComponent {
-    static mapStateToProps = ["disponibilidade"];
+    static mapStateToProps = ["disponibilidade", "autenticacao.usuario_id"];
+    activedDelay = true;
     constructor(props){
         super(props);
     }
+    _toogleHorario = data => {
+        this.activedDelay = false
+        toogleSelectDisponibilidade(data);
+    }
     _renderScale = ({ item: { icone, cor, data, disponibilidade, horario }, index }) => {
-        console.log(100, index, 100 * index)
-        return <MinhaEscalaItem {...{ icone, cor, disponibilidade, horario, delay: (100 * index), actived: !empty(data) }} />
+        const props = {
+            index,
+            icone,
+            cor,
+            disponibilidade,
+            horario,
+            delay: 100 * index,
+            hasDelay: this.activedDelay,
+            actived: !empty(data)
+        }
+        return <MinhaEscalaItem onPress={this._toogleHorario} {...props } />
+    }
+    _toogleDay = data => {
+        this.activedDelay = true;
+        toogleTabDisponibilidade(data);
     }
     _renderDay = ({ item, index}) => {
         const { sd: { disponibilidade: { diaSelecionado } } } = this.props;
-        return <MenuItem {...item} index={index} selected={diaSelecionado === index}/>
+        return <MenuItem onPress={this._toogleDay} {...item} index={index} selected={diaSelecionado === index}/>
     }
-    _extract = (_item, index) => {
+    _submit = () => {
+        const { navigation:{push}, sd: { usuario_id, disponibilidade: { semana } } } = this.props;
+        const disponibilidade = Array.prototype.concat(...semana.map(({data}, key) => {
+            return data.filter(({ data }) => data !== null).map(({ disponibilidade_id }) => ({ dia_semana: key.toString(), disponibilidade_id: disponibilidade_id.toString() }));
+        }).filter(v => v.length > 0));
+        salvarDisponibilidade({
+            body_post:{
+                disponibilidade
+            },
+            body_rsa:{
+                usuario_id
+            }
+        }).then(() => {
+            push("alerta", { params: { titulo: "Jogo Rápido", mensagem:"Disponibilidade atualizada com sucesso. Lembre-se elas só terão efeito após 24 horas." } })
+        }).catch(({mensagem}) => {
+            push("alerta", { params: { titulo: "Jogo Rápido", mensagem } })
+        })
+    }
+    _extractHorario = ({data}, index) => {
+        const { sd: { disponibilidade: { diaSelecionado } } } = this.props;
+        return `index-${index}-${diaSelecionado}-${data || "?"}`;
+    }
+    _extractHeader = (item, index) => {
         const { sd: { disponibilidade: { diaSelecionado } } } = this.props;
         return `index-${index}-${diaSelecionado}`;
     }
     _renderHeader = () => {
         const { sd: { disponibilidade: { semana, diaSelecionado } } } = this.props;
         const { dia } = semana[diaSelecionado];
-        console.log({ action: "_renderHeader", diaSelecionado })
         return <Fragment>
             <AnimatableView animation="flipInX" useNativeDriver={true}>
                 <FlatList
                     extraData={diaSelecionado}
                     data={semana}
                     numColumns={7}
-                    keyExtractor={this._extract}
+                    keyExtractor={this._extractHeader}
                     renderItem={this._renderDay}
                 />
             </AnimatableView>
@@ -45,7 +85,7 @@ export default class Disponibilidade extends PureComponent {
     }
     _renderFooter = () => {
         return <Fragment>
-            <AnimatableText animation="fadeIn" useNativeDriver={true} delay={150} style={[stylDefault.p, styl.info]}>Após marcar sua disponibilidade,{"\n"}as alterações só ocorrerão <Text style={stylDefault.bold}>24 horas</Text>{"\n"}após a atualização.</AnimatableText>
+            <AnimatableText animation="fadeIn" useNativeDriver={true} delay={150} style={[stylDefault.p, styl.info]}>Após marcar sua disponibilidade,{"\n"}as alterações só ocorrerão após<Text style={stylDefault.bold}>{"\n"}24 horas.</Text></AnimatableText>
             <AnimatableView animation="flipInX" useNativeDriver={true} delay={250} >
                 <Button
                     style={styl.btnDisponibilizar}
@@ -64,8 +104,9 @@ export default class Disponibilidade extends PureComponent {
         </Fragment>
     }
     render() {
-        const { sd: { disponibilidade: { semana, diaSelecionado}} } = this.props;
+        const { sd: { disponibilidade: { semana, diaSelecionado, itemsSelecionados}} } = this.props;
         const { data } = semana[diaSelecionado];
+        console.log({ diaSelecionado, data})
         return <BaseScreen
             style={styl.container}
             tituloBold="MINHA"
@@ -75,7 +116,7 @@ export default class Disponibilidade extends PureComponent {
             <AnimatableText animation="flipInX" useNativeDriver={true} style={[stylDefault.p, styl.p]}>Clique no dia da semana e marque a{"\n"}<Text style={stylDefault.bold}>escala</Text> que deseja estar disponível.</AnimatableText>
             <AnimatableText animation="fadeIn" useNativeDriver={true} delay={50} style={[stylDefault.span, styl.span]}>Repita esta ação para todos os dias{"\n"}da semana e clique em salvar</AnimatableText>
             <FlatList
-                extraData={diaSelecionado}
+                extraData={itemsSelecionados}
                 ListHeaderComponent={this._renderHeader}
                 ListFooterComponent={this._renderFooter}
                 showsVerticalScrollIndicator={false}
@@ -83,7 +124,7 @@ export default class Disponibilidade extends PureComponent {
                 numColumns={2}
                 style={styl.warpItems}
                 contentContainerStyle={styl.warpItems}
-                keyExtractor={this._extract}
+                keyExtractor={this._extractHorario}
                 renderItem={this._renderScale}
             />
         </BaseScreen>

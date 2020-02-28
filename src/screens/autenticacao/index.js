@@ -18,6 +18,7 @@ export default class Autenticacao extends Component {
     }
   }
   componentDidMount(){
+
     permissions().then(() => {
       actionAutenticar().then(() => {
         openPageStart(this.props.navigation, 500);

@@ -4,10 +4,11 @@ import styl from "./styl";
 import { stylDefault } from "@src/stylDefault";
 export default class Item extends PureComponent {
     render() {
+        const { valor_frete, data_hora, coleta_id} = this.props
         return <View style={styl.warp}>
-            <Text style={stylDefault.span}>25/09 • 14:00</Text>
-            <Text style={stylDefault.span}>Rota finalizada</Text>
-            <Text style={[stylDefault.span, styl.preco]}>270,56</Text>
+            <Text style={stylDefault.span}>{data_hora}</Text>
+            <Text style={stylDefault.span}>#{coleta_id}</Text>
+            <Text style={[stylDefault.span, styl.preco]}>{valor_frete}</Text>
         </View>
     }
 }

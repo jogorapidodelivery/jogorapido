@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { normalize } from "@sd/uteis/NumberUteis";
-import { cor } from "@root/app.json";
+import { cor, size } from "@root/app.json";
 export default StyleSheet.create({
     container:{
         flexGrow:1
@@ -17,7 +17,8 @@ export default StyleSheet.create({
     },
     sigla:{
         marginTop:0,
-        marginBottom:0
+        marginBottom:0,
+        fontSize: size["03"]
     },
     marcacao:{
         width: normalize(4),

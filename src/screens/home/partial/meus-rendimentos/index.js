@@ -7,18 +7,26 @@ import { View as AnimatableView, Text as AnimatableText } from "react-native-ani
 import { buscarExtrato } from "@actions/extrato";
 export default class MeusRendimentos extends PureComponent {
     _submit = () => {
-        const { navigation: { push } } = this.props;
-        buscarExtrato().then(() => {
+        const { usuario_id, navigation: { push } } = this.props;
+        buscarExtrato({
+            body_post:{
+                status_periodo:1
+            },
+            body_rsa: {
+                usuario_id
+            }
+        }).then(() => {
             push("extrato");
-        }).catch((fai) => {
+        }).catch(({ mensagem }) => {
             push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",
-                    mensagem:""
+                    mensagem
                 }
             })
         })
     }
+    
     render() {
         const { corridas_semana, total_frete_semana} = this.props
         return <Fragment>

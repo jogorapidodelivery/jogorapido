@@ -1,17 +1,32 @@
 import React, { PureComponent, Fragment } from "react";
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, LayoutAnimation } from "react-native";
 import Button from "@sd/components/button";
 import { stylDefault } from "@src/stylDefault";
+import { buscarExtrato } from "@actions/extrato";
 import styl from "./styl";
-const dataFilter = [
-    { start: 1, end: 1, title: "HOJE", actived:true },
-    { start: 2, end: 2, title: "ONTEM" },
-    { start: 15, end: 31, title: "1ª QUINZENA" },
-    { start: 0, end: 15, title: "2ª QUINZENA" },
-    { start: 30, end: 61, title: "MÊS PASSADO" }
-]
 export default class Header extends PureComponent {
-    _renderFilter = ({ item: { title, actived }, index }) => {
+    onPress = ({ status_periodo}) => {
+        // this.props.navigation.push
+        const { usuario_id, navigation: { push} } = this.props;
+        buscarExtrato({
+            body_post: {
+                status_periodo
+            },
+            body_rsa: {
+                usuario_id
+            }
+        }).then(() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+        }).catch(({ mensagem }) => {
+            push("alerta", {
+                params: {
+                    titulo: "Jogo Rápido",
+                    mensagem
+                }
+            })
+        })
+    }
+    _renderFilter = ({ item: { status_periodo, title, actived } }) => {
         const props = actived ? {bg:"14"} : {};
         const textColor = actived ? "07" : "20";
         return <Button
@@ -20,6 +35,7 @@ export default class Header extends PureComponent {
                 value: title,
                 color: textColor
             }}
+            onPress={this.onPress.bind(this, { status_periodo })}
             styleName="pequeno"
             {...props}
         />
@@ -29,17 +45,19 @@ export default class Header extends PureComponent {
         <Text style={[stylDefault.p, styl.titulo]}>{titulo}</Text>
         {data && <Text style={stylDefault.p}>{data}</Text>}
     </View>)
-    _extract = (_item, index) => `index-${index}`;
+    _extract = ({ actived }, index) => `index-${index}-${actived ? "sim" : "nao"}`;
     render() {
+        const { filtros, mes_atual, total_mes_atual} = this.props;
         return <Fragment>
-            {this._renderLineHeader("", "Receita", "01/2020")}
+            {this._renderLineHeader("", "Receita", mes_atual)}
             <View style={styl.warpMoney}>
                 <View style={styl.lineVertical} />
-                <Text style={stylDefault.span}>R$ <Text style={styl.preco}>233,00</Text></Text>
+                <Text style={stylDefault.span}>R$ <Text style={styl.preco}>{total_mes_atual}</Text></Text>
             </View>
             {this._renderLineHeader("", "Extrato por período")}
             <FlatList
-                data={dataFilter}
+                extraData={filtros}
+                data={filtros}
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 style={styl.warpList}
@@ -48,7 +66,7 @@ export default class Header extends PureComponent {
             />
             <View style={styl.warpHeaderList}>
                 <Text style={styl.headerTitle}>DATA E HORA</Text>
-                <Text style={styl.headerTitle}>DESCRIÇÃO</Text>
+                <Text style={styl.headerTitle}>Nº DO PEDIDO</Text>
                 <Text style={styl.headerTitle}>VALOR</Text>
             </View>
         </Fragment>

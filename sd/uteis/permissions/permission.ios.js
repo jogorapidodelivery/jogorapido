@@ -1,11 +1,13 @@
 import { request, PERMISSIONS, RESULTS } from "react-native-permissions"
 export default (_resolve, _reject, _currentLocation) => {
     Promise.all([
-        request(PERMISSIONS.IOS.LOCATION_ALWAYS),
+        // request(PERMISSIONS.IOS.LOCATION_ALWAYS),
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE),
         request(PERMISSIONS.IOS.CAMERA),
         request(PERMISSIONS.IOS.PHOTO_LIBRARY),
-        // …
+        /*
+        <key>NSLocationWhenInUseUsageDescription</key>
+	    <string>Sua localização é necessária para listar as empresas mais próximas a você</string> */
     ]).then(([locationAlways, locationWhenUse, camera, galeria]) => {
         let falhaEmPermissoes = []
         switch (locationAlways) {
