@@ -8,8 +8,7 @@ import MeusRendimentos from "./partial/meus-rendimentos";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 import { actionAutenticar } from "@actions/";
-import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
-import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
+import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
 
 export default class Home extends PureComponent {
     static mapStateToProps = [
@@ -39,8 +38,8 @@ export default class Home extends PureComponent {
     _triggerNotify = (coleta, onComplete = undefined) => {
         if (!empty(coleta) && !empty(coleta.coleta_id)) {
             coleta.acao = "nova_coleta";
-            console.log("DISPAROU A NOTIFICAÇÃO NO REFRESH DA HOME")
-            SharedEventEmitter.emit('onMessage', new RemoteMessage({ data: coleta }));
+            console.log("DISPAROU A NOTIFICAÇÃO NO REFRESH DA HOME");
+            dispatchNotifierOnResultGeofenceHttp(coleta);
             if (onComplete) onComplete();
         } else {
             if (onComplete) onComplete();

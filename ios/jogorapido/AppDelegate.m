@@ -23,7 +23,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   TSBackgroundFetch *fetch = [TSBackgroundFetch sharedInstance];
-  [fetch registerAppRefreshTask];
   
   // inicio instancia modulo de notificação
   [FIRApp configure];

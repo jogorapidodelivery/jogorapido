@@ -6,6 +6,9 @@ import { empty } from "@sd/uteis/StringUteis";
 const _asa = require("@images/asa.png")
 export default class Header extends PureComponent {
     render() {
+        // https://gist.github.com/cmcewen/b1ea2464aa88ae32be17
+        // https://dev.to/joypalumbo/uploading-images-to-cloudinary-in-react-native-using-cloudinary-s-api-37mo
+        // https://tarcode.github.io/blog/react-native-image-uploading/
         const { email, telefone, foto, nome } = this.props.data
         return <View style={styl.container}>
             <View style={styl.warp}>

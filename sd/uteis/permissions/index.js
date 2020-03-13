@@ -6,6 +6,7 @@ import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 import { latLngDist } from "@sd/uteis/NumberUteis";
 import { entregadorGeofence } from "@apis/actions/entregador";
+import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
 let fences = [];
 export const addFence = ({ latitude, longitude, raio, callBack, name }) => {
     fences.push({ latitude, longitude, raio, callBack, name });
@@ -19,6 +20,10 @@ const _currentLocation = () => {
     const _actionErr = _err => {
         console.warn(_err)
     }
+    const defParans = {
+        distanceFilter: 30// metros
+    }
+    let watchId = undefined;
     let lootLocation = false;
     let startTime = (new Date()).getTime()
     const _actionSuccess = ({ coords: { latitude, longitude } }) => {
@@ -45,9 +50,12 @@ const _currentLocation = () => {
                                 longitude,
                                 usuario_id
                             }
-                        }).then(() => {
+                        }).then(({ response}) => {
+                            console.log("DISPAROU A NOTIFICAÇÃO VIA WATCH LOCATION");
+                            dispatchNotifierOnResultGeofenceHttp(response);
                             lootLocation = false;
                         }).catch(() => {
+                            console.log("falha ao enviar a localização em BG")
                             lootLocation = false;
                         })
                     }
@@ -61,13 +69,14 @@ const _currentLocation = () => {
         enableHighAccuracy: false,
         timeout: 20000,// em ms
         maximumAge: 1000 * 60 * 60,// em ms
-        distanceFilter: 10// metros
+        ...defParans
     });
-    Geolocation.watchPosition(_actionSuccess, _actionErr, { 
+    console.log("WATCH ATIVADO");
+    watchId = Geolocation.watchPosition(_actionSuccess, _actionErr, {
         enableHighAccuracy: true,
         interval: 10000,// em ms
         fastestInterval: 5000,// em ms
-        distanceFilter: 10// metros
+        ...defParans
     });
 }
 export default () => new Promise((_resolve, _reject) => {

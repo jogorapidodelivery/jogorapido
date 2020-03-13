@@ -2,12 +2,12 @@ import React, { PureComponent } from "react";
 import { actionAlterarSenha } from "@actions/";
 import CapturarEmailOuTelefone from "@screens/partial/capturar-email-ou-telefone";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
-import { bgLocationFetch } from "@libs/geofence";
+import { setUserBackground } from "@libs/geofence";
 export default class AlterarSenha extends PureComponent {
     _submit = _s => {
         actionAlterarSenha(_s).then(_r => {
             const { response: { usuario_id}} = _r;
-            if (usuario_id) bgLocationFetch({ usuario_id });
+            if (usuario_id) setUserBackground({ usuario_id });
             this.props.navigation.navigate("home");
         }).catch(_e => {
             this.props.navigation.push("alerta", {

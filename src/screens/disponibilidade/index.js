@@ -42,7 +42,7 @@ export default class Disponibilidade extends PureComponent {
         return <MenuItem onPress={this._toogleDay} {...item} index={index} selected={diaSelecionado === index}/>
     }
     _submit = () => {
-        const { navigation:{push}, sd: { usuario_id, disponibilidade: { semana } } } = this.props;
+        const { navigation: { push, popToTop }, sd: { usuario_id, disponibilidade: { semana } } } = this.props;
         const disponibilidade = Array.prototype.concat(...semana.map(({data}, key) => {
             return data.filter(({ data }) => data !== null).map(({ disponibilidade_id }) => ({ dia_semana: key.toString(), disponibilidade_id: disponibilidade_id.toString() }));
         }).filter(v => v.length > 0));
@@ -54,7 +54,13 @@ export default class Disponibilidade extends PureComponent {
                 usuario_id
             }
         }).then(() => {
-            push("alerta", { params: { titulo: "Jogo Rápido", mensagem:"Disponibilidade atualizada com sucesso. Lembre-se elas só terão efeito após 24 horas." } })
+            push("alerta", {
+                params: {
+                    titulo: "Jogo Rápido",
+                    mensagem:"Disponibilidade atualizada com sucesso. Lembre-se elas só terão efeito após 24 horas.",
+                    onPress: popToTop
+                }
+            })
         }).catch(({mensagem}) => {
             push("alerta", { params: { titulo: "Jogo Rápido", mensagem } })
         })

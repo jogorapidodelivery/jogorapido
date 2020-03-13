@@ -68,6 +68,7 @@ export default (_obj, _loggerID = 0) => {
         _data.append(a, value)
     }
     console.log(`${_loggerID}) FORMAT POST`, { get: _urlGet })
+    // console.log("action)", _obj.action)
     return {
         body: baseUrl === "node" ? _data.toString() : _data,
         url: method === "GET" ? _urlGet : url,

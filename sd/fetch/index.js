@@ -22,7 +22,6 @@ const _encryptAjax = (_resolve, _reject, _obj, _endGroupLogger = true, _loggerID
 				const _rTmp = { status: "erro", mensagem: "Não foi possível criptografar os dados a ser enviados." }
 				_reject(_rTmp)
 			} else {
-				console.log({ rsa:_result})
 				_obj.body_post.postdata = _result
 				_ajax(_obj)
 			}

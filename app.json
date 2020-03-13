@@ -5,12 +5,12 @@
   "googleplayid": "com.jogorapido",
   "facebookID": "?",
   "baseUrl": {
-    "on":"http://177.101.149.36/app/",
+    "on":"https://jogorapido.delivery/app/",
     "off":"http://jogorapido.sitiodigital.local/app/"
   },
   "baseUrlNode":{
-    "on": "http://177.101.149.36:22600/",
-    "off": "http://177.101.149.36:22600/"
+    "on": "https://jogorapido.delivery:22600/",
+    "off": "https://jogorapido.delivery:22600/"
   },
   "tempoParaAceite": 60,
   "cor": {

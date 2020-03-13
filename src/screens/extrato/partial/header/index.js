@@ -5,8 +5,7 @@ import { stylDefault } from "@src/stylDefault";
 import { buscarExtrato } from "@actions/extrato";
 import styl from "./styl";
 export default class Header extends PureComponent {
-    onPress = ({ status_periodo}) => {
-        // this.props.navigation.push
+    onPress = ({ status_periodo, index}) => {
         const { usuario_id, navigation: { push} } = this.props;
         buscarExtrato({
             body_post: {
@@ -16,6 +15,7 @@ export default class Header extends PureComponent {
                 usuario_id
             }
         }).then(() => {
+            this.refs.lista.scrollToIndex({ animated: true, index });    
             LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
         }).catch(({ mensagem }) => {
             push("alerta", {
@@ -26,16 +26,17 @@ export default class Header extends PureComponent {
             })
         })
     }
-    _renderFilter = ({ item: { status_periodo, title, actived } }) => {
+    _renderFilter = ({ item: { status_periodo, title, actived }, index }) => {
         const props = actived ? {bg:"14"} : {};
         const textColor = actived ? "07" : "20";
+        
         return <Button
             style={styl.warpBtn}
             text={{
                 value: title,
                 color: textColor
             }}
-            onPress={this.onPress.bind(this, { status_periodo })}
+            onPress={this.onPress.bind(this, { status_periodo, index })}
             styleName="pequeno"
             {...props}
         />
@@ -55,15 +56,18 @@ export default class Header extends PureComponent {
                 <Text style={stylDefault.span}>R$ <Text style={styl.preco}>{total_mes_atual}</Text></Text>
             </View>
             {this._renderLineHeader("", "Extrato por período")}
-            <FlatList
-                extraData={filtros}
-                data={filtros}
-                showsHorizontalScrollIndicator={false}
-                horizontal
-                style={styl.warpList}
-                keyExtractor={this._extract}
-                renderItem={this._renderFilter}
-            />
+            <View style={styl.warpList}>
+                <FlatList
+                    ref="lista"
+                    key="lista"
+                    extraData={filtros}
+                    data={filtros}
+                    showsHorizontalScrollIndicator={false}
+                    horizontal
+                    keyExtractor={this._extract}
+                    renderItem={this._renderFilter}
+                />
+            </View>
             <View style={styl.warpHeaderList}>
                 <Text style={styl.headerTitle}>DATA E HORA</Text>
                 <Text style={styl.headerTitle}>Nº DO PEDIDO</Text>

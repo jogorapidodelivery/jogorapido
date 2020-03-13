@@ -2,15 +2,14 @@ import mountFormData from "./DataFormat"
 import { empty, str2slug } from "@sd/uteis/StringUteis"
 
 import { baseUrl, baseUrlNode } from "@root/app.json";
-
-const baseApp = __DEV__ ? baseUrl.off : baseUrl.on;
-const baseAppNode = __DEV__ ? baseUrlNode.off : baseUrlNode.on;
+const dev = __DEV__;
+const baseApp = dev ? baseUrl.off : baseUrl.on;
+const baseAppNode = dev ? baseUrlNode.off : baseUrlNode.on;
 
 export const getBaseUrl = ({ baseUrl, action}) => {
     if (baseUrl === "php") return `${baseApp}${action}`;
     return `${baseAppNode}${action}`;
 }
-
 const obj = {
     ignorarError: false,
     action: "",

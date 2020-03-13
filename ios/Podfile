@@ -64,6 +64,7 @@ target 'jogorapido' do
   pod 'Permission-MediaLibrary', :path => "../node_modules/react-native-permissions/ios/MediaLibrary.podspec"
   pod 'Permission-Notifications', :path => "../node_modules/react-native-permissions/ios/Notifications.podspec"
   pod 'Permission-PhotoLibrary', :path => "../node_modules/react-native-permissions/ios/PhotoLibrary.podspec"
+  pod 'Permission-Motion', :path => "../node_modules/react-native-permissions/ios/Motion.podspec"
 
 
   pod 'Firebase', '~> 6.13.0'

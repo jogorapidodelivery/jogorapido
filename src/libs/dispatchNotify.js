@@ -25,18 +25,15 @@ if (Platform.OS === "android") {
 }
 const prepareParams = response => {
     let { status, acao, coleta_id, data_hora_atual, data_notificacao, type } = response;
-    if (empty(data_hora_atual) || empty(data_notificacao) || empty(coleta_id)) {
-        console.warn({ falha:"PARAMS BRIGATÓRIOS VAZIO", status, acao, coleta_id, data_hora_atual, data_notificacao})
-    } else if (!empty(GrupoRotas.store)) {
+    if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
         if (!empty(state.autenticacao)) {
             let { autenticacao: { tempo_aceite } } = state;
             if (tempo_aceite) {
                 const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
-                const novoTempo = tempo_aceite - mill;
-                if (novoTempo > 0 && novoTempo <= tempo_aceite) {
-                    tempo_aceite = novoTempo;
-                    return { response, tempo_aceite, status, acao, coleta_id, type}
+                const tempo_aceite_restante = tempo_aceite - mill;
+                if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
+                    return { response, tempo_aceite, tempo_aceite_restante, status, acao, coleta_id, type}
                 }
             }
         }
@@ -70,9 +67,13 @@ const createNotifier = (coleta_id) => {
     }
     return notification;
 }
-const dispatchNotifier = (notification, tempo_aceite, coleta_id, _resolve) => {
-    console.log({action:"dispatchNotifier", notificarColetaId, coleta_id, timerInProcess});
-    if (notificarColetaId !== undefined && notificarColetaId !== coleta_id && timerInProcess === undefined) return;
+const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante, coleta_id, _resolve) => {
+    if (empty(coleta_id)) {
+        console.warn({ falha: "PARAMS BRIGATÓRIOS VAZIO", coleta_id })
+        return false
+    }
+    
+    if (notificarColetaId !== undefined) return false;
     const startTimer = (new Date()).getTime()
     const loopInterval = () => {
         const endtimer = (new Date()).getTime();
@@ -87,7 +88,9 @@ const dispatchNotifier = (notification, tempo_aceite, coleta_id, _resolve) => {
             notification.setTitle("Tempo esgotado. Seja mais rápido da próxima vez");
             firebase.notifications().displayNotification(notification);
         } else {
-            notification.android.setProgress(100, Math.round(counter / tempo_aceite * 100), false);
+            const percentAceite = Math.round(counter / tempo_aceite * 100);
+            //const percentRestante = Math.round(counter / tempo_aceite_restante * 100);
+            notification.android.setProgress(100, percentAceite, false);
             firebase.notifications().displayNotification(notification);
         }
     }
@@ -132,30 +135,30 @@ export const triggerDestroyTimerProgress = () => {
     timerInProcess = undefined;
     notificarColetaId = undefined;
 }
-export const triggerNotifier = (message, _resolve) => {
+export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
     if (!empty(message)) {
         const post = prepareParams(message);
         if (post !== undefined) {
-            const { response, tempo_aceite, status, acao, coleta_id, type } = post;
-            const triggerNotifier = switchActions(response, status, acao, type);
-            if (triggerNotifier) {
-                const notification = createNotifier(coleta_id, tempo_aceite);
-                dispatchNotifier(notification, tempo_aceite, coleta_id, () => {
+            const { response, tempo_aceite, tempo_aceite_restante, status, acao, coleta_id, type } = post;
+            const _isNotify = switchActions(response, status, acao, type);
+            if (_isNotify) {
+                const notification = createNotifier(coleta_id, tempo_aceite, );
+                renderNotifierDisplay(notification, tempo_aceite, tempo_aceite_restante, coleta_id, () => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                     GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
                     if (aguia !== undefined) aguia.stop();
                     _resolve();
                 })
             } else {
-                console.log("DISPATCH_NOTIFY triggerNotifier EMPTY", post)
-                _resolve();
+                _reject();
+                console.log("DISPATCH_NOTIFY ação a ser executada não existe", post);
             }
         } else {
-            console.log("DISPATCH_NOTIFY POST EMPTY", post)
-            _resolve();
+            _reject();
+            console.log("DISPATCH_NOTIFY POST EMPTY", post);
         }
     } else {
-        console.log("DISPATCH_NOTIFY MESSAGE EMPTY")
-        _resolve();
+        _reject();
+        console.log("DISPATCH_NOTIFY MESSAGE EMPTY");
     }
-}
+})

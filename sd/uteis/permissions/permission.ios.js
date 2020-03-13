@@ -3,6 +3,7 @@ export default (_resolve, _reject, _currentLocation) => {
     Promise.all([
         // request(PERMISSIONS.IOS.LOCATION_ALWAYS),
         request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE),
+        // request(PERMISSIONS.IOS.MOTION),
         request(PERMISSIONS.IOS.CAMERA),
         request(PERMISSIONS.IOS.PHOTO_LIBRARY),
         /*

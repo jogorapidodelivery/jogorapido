@@ -1,5 +1,5 @@
 import { GrupoRotas } from "@sd/navigation/revestir";
-import { bgLocationFetch } from "@libs/geofence";
+import { setUserBackground } from "@libs/geofence";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 export const openPageStart = async (navigation, delay = 0) => {
@@ -8,7 +8,7 @@ export const openPageStart = async (navigation, delay = 0) => {
     const state = GrupoRotas.store.getState();
     if (getItemByKeys(state, "autenticacao.usuario_id") !== undefined) {
         const { autenticacao: { tempo_aceite, email: usuario, usuario_id, email_verificado, coleta } } = state;
-        if (usuario_id) await bgLocationFetch({ usuario_id });
+        if (usuario_id) await setUserBackground({ usuario_id });
         if (email_verificado) {
             if (coleta !== undefined) {
                 const { status, data_checkout_cliente} = coleta;

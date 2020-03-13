@@ -314,6 +314,8 @@ PODS:
     - RNPermissions
   - Permission-MediaLibrary (2.0.9):
     - RNPermissions
+  - Permission-Motion (2.0.9):
+    - RNPermissions
   - Permission-Notifications (2.0.9):
     - RNPermissions
   - Permission-PhotoLibrary (2.0.9):
@@ -527,7 +529,7 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNBackgroundFetch (2.8.0):
+  - RNBackgroundFetch (2.7.1):
     - React
   - RNBackgroundGeolocation (3.4.2):
     - CocoaLumberjack (~> 3.5.1)
@@ -578,6 +580,7 @@ DEPENDENCIES:
   - Permission-LocationAlways (from `../node_modules/react-native-permissions/ios/LocationAlways.podspec`)
   - Permission-LocationWhenInUse (from `../node_modules/react-native-permissions/ios/LocationWhenInUse.podspec`)
   - Permission-MediaLibrary (from `../node_modules/react-native-permissions/ios/MediaLibrary.podspec`)
+  - Permission-Motion (from `../node_modules/react-native-permissions/ios/Motion.podspec`)
   - Permission-Notifications (from `../node_modules/react-native-permissions/ios/Notifications.podspec`)
   - Permission-PhotoLibrary (from `../node_modules/react-native-permissions/ios/PhotoLibrary.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
@@ -669,6 +672,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-permissions/ios/LocationWhenInUse.podspec"
   Permission-MediaLibrary:
     :path: "../node_modules/react-native-permissions/ios/MediaLibrary.podspec"
+  Permission-Motion:
+    :path: "../node_modules/react-native-permissions/ios/Motion.podspec"
   Permission-Notifications:
     :path: "../node_modules/react-native-permissions/ios/Notifications.podspec"
   Permission-PhotoLibrary:
@@ -781,6 +786,7 @@ SPEC CHECKSUMS:
   Permission-LocationAlways: f10e3c82c2cfa38137ba0a41e132630578a8018f
   Permission-LocationWhenInUse: f5dd8f5c9a0412db5eddd299ae208d6268b595b1
   Permission-MediaLibrary: 82e374f494221a6202836293448995c927c6603b
+  Permission-Motion: 270100664fb98f4d5ccac701f7a832f2a1799e1d
   Permission-Notifications: a5f726fd7ef7f337277dd145f4483008c8c7d0f6
   Permission-PhotoLibrary: 51718ddf8c0baf1cebf323c68cedcb2ff0cf304a
   Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
@@ -808,7 +814,7 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNBackgroundFetch: 9a52e25373791da8cb41a42dbaeab257851f7792
+  RNBackgroundFetch: 08bdaaa13a5aa71cdce42068def5602ed1e982c2
   RNBackgroundGeolocation: 0ece4eb8306b1e0acc7571fa9394d71bfa42a53b
   RNCAsyncStorage: 8539fc80a0075fcc9c8e2dff84cd22dc5bf1dacf
   RNCMaskedView: e5b99bc191945f157adeede68da9d424462de177
@@ -821,6 +827,6 @@ SPEC CHECKSUMS:
   RNSound: c980916b596cc15c8dcd2f6ecd3b13c4881dbe20
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
-PODFILE CHECKSUM: 62f438be5116c0ad5595115eb4d33af8ffc77c03
+PODFILE CHECKSUM: fa192cbd311def165ab40f84b5ce72c9f3cccd34
 
 COCOAPODS: 1.8.4
