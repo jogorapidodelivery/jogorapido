@@ -10,7 +10,7 @@ export default class Aba extends PureComponent {
         if (onPress) onPress(index)
     }
     render() {
-        const { abas, abaSelecionada} = this.props
+        const { abaSelecionada, abas} = this.props;
         const direction = abaSelecionada === 0 ? "left" : "right";
         return <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={100} style={styl.container}>
             <View style={[styl.bg, {[direction]: 0}]}></View>

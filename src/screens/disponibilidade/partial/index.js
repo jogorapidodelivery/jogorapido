@@ -18,6 +18,7 @@ export default class MinhaEscalaItem extends PureComponent {
         const corHorario = actived ? corApp["20"] : corApp["05"];
         const backgroundColor = actived ? corApp["06"] : corApp["26"];
         // console.log(delay)
+        
         return <AnimatableView animation={hasDelay ? "fadeInUp" : ""} useNativeDriver={true} delay={hasDelay ? delay : 0} style={styl.containerItem}>
             <TouchableOpacity style={[styl.containerItemWarp, { backgroundColor }]} activeOpacity={actived ? .2 : 1} onPress={this._press}>
                 <Text style={[stylDefault.icon, { color: cor }]}>{icone}</Text>

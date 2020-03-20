@@ -12,9 +12,12 @@ data_checkout_unidade:
 */
 export default class CheckInCliente extends Component {
     _click = () => {
-        const { coleta: { coleta_id }, distanciaMinClienteOk, navigation, onChange, distancia_checkin } = this.props;
+        const { index, coleta: { coleta_id }, distanciaMinClienteOk, navigation, onChange, distancia_checkin } = this.props;
         if (distanciaMinClienteOk) {
             coletaCheckIn({
+                body_view: {
+                    index
+                },
                 body_rsa: {
                     coleta_id,
                     coluna: "data_checkin_cliente"

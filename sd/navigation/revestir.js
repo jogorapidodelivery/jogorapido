@@ -14,16 +14,8 @@ export default class Revestir extends PureComponent {
         return <Fragment>
             <StatusBar translucent backgroundColor="rgba(20,20,20,0)" barStyle="light-content" />
             <Provider store={GrupoRotas.store}>
-                {/* <AlertTipoToast/> */}
                 <GrupoRotas.container />
             </Provider>
         </Fragment>
-        // return <LinearGradient
-        //         start={{ x: 0, y: 0 }}
-        //         end={{ x: .8, y: .4 }}
-        //         colors={cor["14"]}
-        //         style={styl.gradiente}
-        //     >
-        // </LinearGradient>
     }
 }

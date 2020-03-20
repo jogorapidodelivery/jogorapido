@@ -7,7 +7,10 @@ import BackgroundGeolocation from "react-native-background-geolocation";
 export const logout = navigation => {
     BackgroundGeolocation.stop();
     let state = GrupoRotas.store.getState();
-    state.autenticacao = {}
+    delete state.autenticacao.usuario
+    delete state.autenticacao.senha
+    delete state.autenticacao.usuario_id
+    delete state.autenticacao.disponibilidade
     AsyncStorage.clear();
     navigation.navigate("conectar");
 }

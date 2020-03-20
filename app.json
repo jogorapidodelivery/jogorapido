@@ -5,8 +5,8 @@
   "googleplayid": "com.jogorapido",
   "facebookID": "?",
   "baseUrl": {
-    "on":"https://jogorapido.delivery/app/",
-    "off":"http://jogorapido.sitiodigital.local/app/"
+    "on":"https://jogorapido.delivery/beta/",
+    "off":"http://jogorapido.sitiodigital.local/beta/"
   },
   "baseUrlNode":{
     "on": "https://jogorapido.delivery:22600/",
@@ -28,11 +28,11 @@
       "#A7A7A7",
       "#DEDEDE"
     ],
-    "08": "#7530C8",
-    "19": "rgba(116, 48, 200, .9)",
+    "08": "#893691",
+    "19": "rgba(69, 74, 157, .9)",
     "14": [
-      "#772FC3",
-      "#40BEFF"
+      "#84168E",
+      "#486EC8"
     ],
     "13": "#58BEFF",
     "22": "#74D0FF",
@@ -56,7 +56,8 @@
       "#15D11D",
       "#0B690F"
     ],
-    "11": "#38508F"
+    "11": "#38508F",
+    "27": ["#f9f9f9", "#ebebeb", "#f9f9f9"]
   },
   "spaces": {
     "01": 10,

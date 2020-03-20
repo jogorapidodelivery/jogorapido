@@ -1,8 +1,9 @@
 import React, { PureComponent } from "react";
+import Shimmer from "react-native-shimmer-placeholder";
 import { View, Text, TouchableOpacity } from "react-native";
 import styl from "./styl";
 import { stylDefault } from "@src/stylDefault";
-import { cor, size } from "@root/app.json";
+import { cor } from "@root/app.json";
 import { empty } from "@sd/uteis/StringUteis";
 export default class MenuItem extends PureComponent {
     onPress = () => {
@@ -11,6 +12,11 @@ export default class MenuItem extends PureComponent {
     }
     render() {
         const { sigla, data, selected } = this.props;
+        if (sigla === "") {
+            return <View style={styl.container}>
+                <Shimmer colorShimmer={cor["27"]} style={styl.warp} autoRun={true} visible={false}></Shimmer>
+            </View>
+        }
         const fontWeight = selected ? "bold" : "normal";
         const backgroundColor = selected ? cor["08"] : cor["06"];
         const color = selected ? cor["07"] : cor["08"];

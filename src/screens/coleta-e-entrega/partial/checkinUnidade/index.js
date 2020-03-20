@@ -1,24 +1,27 @@
-import React, { PureComponent, Fragment } from "react";
+import React, { PureComponent } from "react";
 import { View } from "react-native";
 import Button from "@sd/components/button";
 import styl from "./styl";
 import Rota from "../rota";
 import { empty } from "@sd/uteis/StringUteis";
-import { coletaCheckIn } from "@actions/";
+import { coletaCheckInUnidade } from "@actions/";
 import { View as ViewAnimatable } from "react-native-animatable";
+
 /*
 data_checkin_unidade:
     * Tem que estar a menos de X metros do estabelecimento
     * O data_checkin_unidade tem que ser vazio
     * Estar na aba informações (0)
 */
+
 export default class CheckInUnidade extends PureComponent {
+   
     _click = () => {
-        const { coleta: { coleta_id }, distanciaMinEstabelecimentoOk, navigation, onChange, distancia_checkin } = this.props;
+        const { onChange, coleta_ids, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinEstabelecimentoOk) {
-            coletaCheckIn({
+            coletaCheckInUnidade({
                 body_rsa: {
-                    coleta_id,
+                    coleta_id: coleta_ids,
                     coluna: "data_checkin_unidade"
                 }
             }).then(onChange).catch(({ mensagem }) => {
@@ -39,9 +42,10 @@ export default class CheckInUnidade extends PureComponent {
         }
     }
     render() {
-        const { coleta: { data_checkin_unidade }, distanciaMinEstabelecimentoOk, navigation} = this.props
+        const { coleta, distanciaMinEstabelecimentoOk } = this.props;
+        const { data_checkin_unidade, data_checkout_cliente } = coleta;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
-            <Rota coleta={this.props.coleta} navigation={navigation} />
+            <Rota coleta={coleta}/>
             {empty(data_checkin_unidade) && <View style={styl.container}>
                 <Button
                     onPress={this._click}

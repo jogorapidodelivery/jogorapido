@@ -79,6 +79,7 @@ export default class Rota extends PureComponent {
         OpenMap.show(_data);
     }
     render() {
+        const { coleta:{data_checkout_cliente}} = this.props;
         return [this.dadosUnidade, this.dadosCliente].map(({ distancia, tempo, titulo, destino, latitude, longitude, chegada, espera}, key) => <Fragment key={`entrega-${key}`}>
                 <Text style={[stylDefault.p, styl.p]}><Text style={styl.strong}>{tempo || distancia}</Text> {tempo && `( ${distancia} )`} até a coleta</Text>
                 <View style={styl.btn}>
@@ -98,7 +99,7 @@ export default class Rota extends PureComponent {
                         </View>}
                     </View>
                 </View>
-                {latitude && <Button
+            {latitude && empty(data_checkout_cliente) && <Button
                     onPress={this._openMaps.bind(this, { latitude, longitude, autor: titulo})}
                     style={styl.btnRota}
                     text={{

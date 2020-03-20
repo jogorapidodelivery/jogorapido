@@ -16,20 +16,26 @@ export default class CheckOutUnidade extends Component {
         super(props);
         this.state = {
             todosOsProdutosEstaoSelecionados:false,
-            badge: `0/${this.props.produtos.length}`
+            badge: `0/${props.produtos.length}`
         }
     }
     _click = () => {
         const { todosOsProdutosEstaoSelecionados } = this.state;
-        const { coleta: { coleta_id }, distanciaMinEstabelecimentoOk, navigation, onChange, distancia_checkin } = this.props;
+        const { onChange, index, coleta:{coleta_id}, coleta_ids, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinEstabelecimentoOk) {
             if (todosOsProdutosEstaoSelecionados) {
+                
                 coletaCheckIn({
+                    body_view:{
+                        index
+                    },
                     body_rsa: {
-                        coleta_id,
+                        coleta_id: coleta_ids,
                         coluna: "data_checkout_unidade"
                     }
-                }).then(onChange).catch(({ mensagem }) => {
+                }).then(() => {
+                    onChange({ index, coleta_id });
+                }).catch(({ mensagem }) => {
                     navigation.push("alerta", {
                         params: {
                             titulo: "Jogo Rápido",

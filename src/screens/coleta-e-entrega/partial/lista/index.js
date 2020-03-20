@@ -31,6 +31,7 @@ export default class Lista extends Component {
             onPress({ actived: selecteds === totalLista, badge: `${selecteds}/${totalLista}` })
         }
     }
+    // ?
     _renderConteudo = ({ titulo, textOrMoney, textSub, colorTextOrMoney, actived }, index) => {
         const totalLista = this.state.data.length - 1;
         const { onPress } = this.props;

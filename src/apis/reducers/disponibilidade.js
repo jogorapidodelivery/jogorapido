@@ -33,6 +33,7 @@ const diasSemana = [{
 ]
 export default {
     defaultProps: {
+        loading:true
     },
     reducers: {
         disponibilidade: {
@@ -65,7 +66,7 @@ export default {
                 return {...state}
             },
             [MUDAR_DE_ABA_EM_DISPONIBILIDADE]: (state, { index}) => {
-                return { ...state, diaSelecionado:index};
+                return { ...state, loading:false, diaSelecionado:index};
             }
         }
     }

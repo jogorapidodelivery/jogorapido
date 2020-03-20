@@ -45,13 +45,8 @@ export default {
                         return v
                     })
                 }
-                if (response.coleta) {
-                    if (response.coleta.valor_frete) {
-                        response.coleta.valor_frete = moeda(response.coleta.valor_frete);
-                        response.coleta.total_pedido = moeda(response.coleta.total_pedido);
-                    }
-                    response.coleta = formatDateCheckIn(response.coleta)
-                }
+                response.coleta = formatDateCheckIn(response.coleta)
+                // response.coleta = []
                 if (!empty(senha) && !empty(usuario)) {
                     const _chifed = encodeCipherCaesar({ senha, usuario });
                     AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {})

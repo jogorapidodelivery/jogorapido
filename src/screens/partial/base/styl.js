@@ -19,7 +19,11 @@ export default StyleSheet.create({
         position: "absolute",
         left: 0,
         right: 0,
-        height: normalize(55)
+        top:0,
+        height: normalize(55),
+        transform:[
+            {transformY:-60}
+        ]
     },
     warpTop:{
         flex:1,

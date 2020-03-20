@@ -4,27 +4,9 @@ import Button from "@sd/components/button";
 import { stylDefault } from "@src/stylDefault";
 import styl from "./styl";
 import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
-import { buscarExtrato } from "@actions/extrato";
 export default class MeusRendimentos extends PureComponent {
     _submit = () => {
-        const { usuario_id, navigation: { push } } = this.props;
-        buscarExtrato({
-            body_post:{
-                status_periodo:1
-            },
-            body_rsa: {
-                usuario_id
-            }
-        }).then(() => {
-            push("extrato");
-        }).catch(({ mensagem }) => {
-            push("alerta", {
-                params: {
-                    titulo: "Jogo Rápido",
-                    mensagem
-                }
-            })
-        })
+        this.props.navigation.push("extrato");
     }
     
     render() {

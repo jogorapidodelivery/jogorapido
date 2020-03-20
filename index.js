@@ -9,6 +9,7 @@ YellowBox.ignoreWarnings([
     'VirtualizedLists should never be nested',
     'Require cycle: node_modules/react-native-firebase'
 ]);
+
 AppRegistry.registerComponent(appName, () => App);
 initFirebase(triggerNotifier);
 bgLocationFetch();

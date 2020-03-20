@@ -8,7 +8,7 @@ import { SharedEventEmitter } from "react-native-firebase/dist/utils/events";
 import { cor } from "@root/app.json";
 import { Alert } from "react-native";
 export const dispatchNotifierOnResultGeofenceHttp = data => {
-    if (!empty(data)) {
+    if (!empty(data) && !empty(data.coleta) && data.coleta.length > 0) {
         data.acao = "nova_coleta";
         SharedEventEmitter.emit('onMessage', new RemoteMessage({ data}));
     } else {
@@ -21,6 +21,7 @@ export const setUserBackground = async usuario_id => {
         const postdata = await RSA.encrypt(JSON.stringify(usuario_id), PUBLIC_KEY_RSA);
         BackgroundGeolocation.setConfig({
             params: {
+                tipo:"GEOFENCE",
                 postdata
             },
         })
@@ -47,7 +48,7 @@ export const bgLocationFetch = () => {
         }
     });
     
-    const url = getBaseUrl({ baseUrl:"node", action:"entregador/geofence" });
+    const url = getBaseUrl({ baseUrl:"php", action:"entregador/geofence" });
     console.log("BG_URL:", url);
 
     BackgroundGeolocation.ready({
@@ -56,7 +57,7 @@ export const bgLocationFetch = () => {
         locationTemplate: '{"lat":<%= latitude %>,"lng":<%= longitude %>}',
         // stopOnTerminate: false,// Permita que o serviço em segundo plano continue acompanhando quando o aplicativo for encerrado.
         autoSync: true,// Defina true para sincronizar cada local com o servidor quando ele chegar.
-        autoSyncThreshold: 2,
+        autoSyncThreshold: 1,
         batchSync: true,// Defina true para sincronizar locais com o servidor em uma única solicitação HTTP.
         maxBatchSize: 50,
         notification:{

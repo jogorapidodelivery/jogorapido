@@ -4,6 +4,7 @@ import styl from "./styl";
 import Button from "@sd/components/button";
 const { height: hWindow } = Dimensions.get("window");
 import { normalize } from "@sd/uteis/NumberUteis"; 
+import { cor } from "@root/app.json";
 const behavior = Platform.select({
     android: "height",
     ios: "padding"
@@ -39,10 +40,9 @@ export default class BaseScreen extends Component {
         </View>
     }
     render() {
-        const { refreshingActived} = this.state
-        const { children, header, headerFix, onRefresh } = this.props;
+        const { refreshingActived, scrollY} = this.state
+        const { children, header, headerFix, footerFix, onRefresh, noTopButton } = this.props;
         const headerHeight = header ? this.props.headerHeight : normalize(50);
-        const { scrollY } = this.state;
         const translateY = scrollY.interpolate({
             inputRange: [headerHeight, headerHeight + 50],
             outputRange: [-60, 0],
@@ -62,7 +62,7 @@ export default class BaseScreen extends Component {
                 {headerFix}
                 <Animated.ScrollView
                     refreshControl={
-                        onRefresh ? <RefreshControl refreshing={refreshingActived} onRefresh={this._onRefresh} /> : null
+                        onRefresh ? <RefreshControl tintColor={cor["07"]} refreshing={refreshingActived} onRefresh={this._onRefresh} /> : null
                     }
                     ref={ref => this.listView = ref}
                     overScrollMode="never"
@@ -81,18 +81,19 @@ export default class BaseScreen extends Component {
                     }]}>
                         {header === undefined ? this.renderHeader : header}
                     </Animated.View>
-                    <View style={[styl.warp, this.props.style, { minHeight, paddingBottom, marginTop }]}>
+                    <View style={[styl.warp, this.props.style, { minHeight, paddingBottom, marginTop }, this.props.styleImportant]}>
                         {children}
                     </View>
                 </Animated.ScrollView>
-                <Animated.View style={[styl.warpButtomClose, { transform: [{ translateY }] }]}>
+                {footerFix}
+                {noTopButton !== true && <Animated.View style={[styl.warpButtomClose, { transform: [{ translateY }] }]}>
                     <TouchableOpacity onPress={this._clickScrollTop} style={styl.warpTop}>
                         <View style={styl.bgTop}/>
                         <View style={styl.warpIconTop}>
                             <Text style={styl.warpTextTop}></Text>
                         </View>
                     </TouchableOpacity>
-                </Animated.View>
+                </Animated.View>}
             </ImageBackground>
         </KeyboardAvoidingView>
     }

@@ -6,7 +6,6 @@ import { View as AnimatableView, Text as AnimatableText } from "react-native-ani
 import styl from "./styl";
 import { empty } from "@sd/uteis/StringUteis";
 import MinhaEscalaItem from "@screens/disponibilidade/partial/index";
-import { buscarDisponibilidade } from "@actions/disponibilidade";
 export default class MinhaEscala extends PureComponent {
     _renderScale = ({ item: { icone, cor, data, disponibilidade, horario }, index}) => {
         return <MinhaEscalaItem
@@ -17,25 +16,9 @@ export default class MinhaEscala extends PureComponent {
         if (data !== undefined) return `${data}-${index}`;
         return `${horario}-${index}`;
     }
+    _loadedData = false
     _submit = () => {
-        const { disponibilidade, usuario_id, navigation:{push}} = this.props;
-        buscarDisponibilidade({
-            body_view:{
-                disponibilidade
-            },
-            body_rsa:{
-                usuario_id
-            }
-        }).then(() => {
-            push("disponibilidade");
-        }).catch(({mensagem}) => {
-            push("alerta", {
-                params: {
-                    titulo: "Jogo Rápido",
-                    mensagem
-                }
-            })
-        })
+        this.props.navigation.push("disponibilidade");
     }
     render() {
         const { disponibilidade } = this.props;

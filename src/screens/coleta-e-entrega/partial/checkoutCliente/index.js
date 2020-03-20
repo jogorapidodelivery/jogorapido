@@ -14,16 +14,18 @@ data_checkout_cliente:
 
 export default class CheckOutCliente extends Component {
     _click = () => {
-        const { coleta: { coleta_id }, distanciaMinClienteOk, navigation, distancia_checkin } = this.props;
+        const { onChange, index, coleta: { coleta_id }, distanciaMinClienteOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinClienteOk) {
-
             coletaCheckOutCliente({
+                body_view:{
+                    index
+                },
                 body_rsa: {
                     coleta_id,
                     coluna: "data_checkout_cliente"
                 }
             }).then(() => {
-                navigation.push("home")
+                onChange({ index, coleta_id });
             }).catch(({ mensagem }) => {
                 navigation.push("alerta", {
                     params: {
@@ -42,9 +44,9 @@ export default class CheckOutCliente extends Component {
         }
     }
     render() {
-        const { produtos, coleta: { valor_frete, total_pedido, data_checkout_cliente }, distanciaMinClienteOk} = this.props;
+        const { titulo, produtos, coleta: { valor_frete, total_pedido, data_checkout_cliente }, distanciaMinClienteOk} = this.props;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
-            <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Taxa entrega", textOrMoney: valor_frete}]} />
+            <Lista titulo={titulo} total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Taxa entrega", textOrMoney: valor_frete}]} />
             {empty(data_checkout_cliente) && <Button
                 onPress={this._click}
                 text={{

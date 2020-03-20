@@ -68,6 +68,7 @@ export default class Conectar extends PureComponent {
             {...this.props}
             header={<HeaderLogo />}
             style={styl.warpBase}
+            noTopButton={true}
             headerHeight={HeaderLogo.heightContainer}>
             <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={100}>
                 <Input value={__DEV__ ? "joisiney@gmail.com" : ""} style={styl.warpInput} form={this.form} type="email" postName="usuario" postType="rsa" placeHouder="E-mail" underline={{ color:"06" }} />

@@ -9,23 +9,57 @@ import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 import { empty } from "@sd/uteis/StringUteis";
 import { actionAutenticar } from "@actions/";
 import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
+import { _addressOpenMapsDefaultProps } from "@screens/coleta-e-entrega/partial/rota/index";
 
 export default class Home extends PureComponent {
-    static mapStateToProps = [
-        "autenticacao.usuario_id",
-        "autenticacao.coleta",
-        "autenticacao.tempo_aceite",
-        "autenticacao.disponibilidade",
-        "autenticacao.corridas_semana",
-        "autenticacao.total_frete_semana"
-    ]
+    static mapStateToProps = [ "autenticacao" ]
+    static mapTransformProps = ({ autenticacao: { total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta } }) => {
+        let coleta_ids = [];
+        let tituloColetas = "";
+        const getItem = ({ coleta_id, cliente: titulo, latitude_cliente: latitude, longitude_cliente: longitude }) => {
+            coleta_ids.push(coleta_id);
+            return {
+                titulo,
+                mapa: {
+                    latitude,
+                    longitude,
+                    ..._addressOpenMapsDefaultProps
+                }
+            }
+        }
+        let coletaFilter = [];
+        const total = coleta.length;
+        if (total > 0) {
+            const { unidade: titulo, latitude_unidade: latitude, longitude_unidade: longitude } = coleta[0];
+            const unidade = {
+                titulo,
+                mapa: {
+                    latitude,
+                    longitude,
+                    ..._addressOpenMapsDefaultProps
+                }
+            }
+            coletaFilter = [].concat(coleta).map(getItem);
+            coletaFilter.unshift(unidade);
+            tituloColetas = (total === 1 ? "Coleta pendente " : "Coletas pendentes ");
+            const clone = [].concat(coleta_ids);
+            const _id = clone.pop();
+            if (clone.length > 0) {
+                tituloColetas += clone.join(", ");
+                tituloColetas += " e " + _id;
+            } else {
+                tituloColetas += _id;
+            }
+        }
+        return { coleta_ids, tituloColetas, total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta, coletaFilter };
+    }
     constructor(props) {
         super(props)
     }
     ativarBg = false;
     componentDidMount() {
         this.ativarBg = false;
-        this._triggerNotify(this.props.sd.coleta);
+        dispatchNotifierOnResultGeofenceHttp(this.props.sd);
         AppState.addEventListener('change', this._updateOnline);
     }
     componentWillUnmount() {
@@ -33,16 +67,6 @@ export default class Home extends PureComponent {
             AppState.removeEventListener('change', this._updateOnline);
         } catch(e) {
 
-        }
-    }
-    _triggerNotify = (coleta, onComplete = undefined) => {
-        if (!empty(coleta) && !empty(coleta.coleta_id)) {
-            coleta.acao = "nova_coleta";
-            console.log("DISPAROU A NOTIFICAÇÃO NO REFRESH DA HOME");
-            dispatchNotifierOnResultGeofenceHttp(coleta);
-            if (onComplete) onComplete();
-        } else {
-            if (onComplete) onComplete();
         }
     }
     _updateOnline = (status) => {
@@ -53,7 +77,10 @@ export default class Home extends PureComponent {
     }
     _updateColeta = (onComplete) => {
         actionAutenticar().then(({response}) => {
-            this._triggerNotify(response.coleta, onComplete);
+            console.log("UPDATE")
+            console.log(response)
+            dispatchNotifierOnResultGeofenceHttp(response);
+            if (onComplete) onComplete()
         }).catch(({ mensagem}) => {
             if (onComplete) {
                 this.props.navigation.push("alerta", {
@@ -66,9 +93,10 @@ export default class Home extends PureComponent {
             }
         });       
     }
+    
     render() {
-        const {navigation} = this.props;
-        const status = getItemByKeys(this.props, "sd.coleta.status")
+        const { navigation, sd: { coletaFilter, coleta_ids, tituloColetas}} = this.props;
+        const total = coletaFilter.length;
         const disponibilidade = getItemByKeys(this.props, "sd.disponibilidade")
         const corridas_semana = getItemByKeys(this.props, "sd.corridas_semana")
         const total_frete_semana = getItemByKeys(this.props, "sd.total_frete_semana")
@@ -80,12 +108,14 @@ export default class Home extends PureComponent {
             headerHeight={HeaderLogo.heightContainer}
         >
             <Fragment>
-                {status === "Pendente" && <ColetaPendente
-                    {...this.props.sd.coleta}
+                {total >= 1 && <ColetaPendente
+                    coleta={coletaFilter}
+                    tituloColetas={tituloColetas} 
+                    coleta_ids={coleta_ids}
                     navigation={navigation}
                 />}
-                {status !== "Pendente" && <MinhaEscala navigation={navigation} usuario_id={usuario_id} disponibilidade={disponibilidade}/>}
-                {status !== "Pendente" && <MeusRendimentos usuario_id={usuario_id} corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>}
+                {total === 0 && <MinhaEscala navigation={navigation} usuario_id={usuario_id} disponibilidade={disponibilidade}/>}
+                {total === 0 && <MeusRendimentos usuario_id={usuario_id} corridas_semana={corridas_semana} total_frete_semana={total_frete_semana} navigation={navigation} disponibilidade={disponibilidade}/>}
             </Fragment>
         </BaseScreen>
     }

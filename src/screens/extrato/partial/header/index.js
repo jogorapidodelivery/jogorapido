@@ -2,29 +2,13 @@ import React, { PureComponent, Fragment } from "react";
 import { Text, View, FlatList, LayoutAnimation } from "react-native";
 import Button from "@sd/components/button";
 import { stylDefault } from "@src/stylDefault";
-import { buscarExtrato } from "@actions/extrato";
 import styl from "./styl";
 export default class Header extends PureComponent {
     onPress = ({ status_periodo, index}) => {
-        const { usuario_id, navigation: { push} } = this.props;
-        buscarExtrato({
-            body_post: {
-                status_periodo
-            },
-            body_rsa: {
-                usuario_id
-            }
-        }).then(() => {
-            this.refs.lista.scrollToIndex({ animated: true, index });    
+        this.props.load(() => {
+            this.refs.lista.scrollToIndex({ animated: true, index });
             LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-        }).catch(({ mensagem }) => {
-            push("alerta", {
-                params: {
-                    titulo: "Jogo Rápido",
-                    mensagem
-                }
-            })
-        })
+        }, status_periodo);
     }
     _renderFilter = ({ item: { status_periodo, title, actived }, index }) => {
         const props = actived ? {bg:"14"} : {};

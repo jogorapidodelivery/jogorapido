@@ -7,14 +7,17 @@ import { empty } from "@sd/uteis/StringUteis";
 import { latLngDist } from "@sd/uteis/NumberUteis";
 import { entregadorGeofence } from "@apis/actions/entregador";
 import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
-let fences = [];
-export const addFence = ({ latitude, longitude, raio, callBack, name }) => {
-    fences.push({ latitude, longitude, raio, callBack, name });
+let fences = {};
+export const calcFence = ({ latitude, longitude, raio }) => {
     const distancia = globalParams.latitude === 0 ? 1000 : Math.round(latLngDist(globalParams.latitude, globalParams.longitude, latitude, longitude) * 1000);
     return { dentroDoRaio: distancia <= raio, distancia };
 }
-export const destroyFence = () => {
-    fences = [];
+export const addFence = (data) => {
+    fences[data.name] = data;
+    return calcFence(data)
+}
+export const destroyFence = (name) => {
+    delete fences[name];
 }
 const _currentLocation = () => {
     const _actionErr = _err => {
@@ -28,8 +31,9 @@ const _currentLocation = () => {
     let startTime = (new Date()).getTime()
     const _actionSuccess = ({ coords: { latitude, longitude } }) => {
         if (GrupoRotas.store !== undefined && GrupoRotas.store !== null) {
-            if (fences.length > 0) {
-                fences.forEach(({ latitude: lat, longitude: lng, raio, callBack, name}) => {
+            const keys = Object.values(fences)
+            if (keys.length > 0) {
+                keys.forEach(({ latitude: lat, longitude: lng, raio, callBack}) => {
                     const distancia = Math.round(latLngDist(lat, lng, latitude, longitude) * 1000);
                     if (callBack) callBack({ dentroDoRaio: distancia <= raio, distancia})
                 });
@@ -45,6 +49,9 @@ const _currentLocation = () => {
                     if (intervaloEmSegundos > 30 || distancia > 30) {
                         startTime = (new Date()).getTime();
                         entregadorGeofence({
+                            body_post:{
+                                tipo: "WATCH"
+                            },
                             body_rsa: {
                                 latitude,
                                 longitude,

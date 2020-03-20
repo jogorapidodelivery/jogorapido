@@ -24,7 +24,22 @@ if (Platform.OS === "android") {
     firebase.notifications().android.createChannel(channel);
 }
 const prepareParams = response => {
-    let { status, acao, coleta_id, data_hora_atual, data_notificacao, type } = response;
+    if (typeof response.coleta === "string") response.coleta = JSON.parse(response.coleta);
+    let { acao, type, coleta: [{
+        data_hora_atual,
+        data_notificacao,
+        status_coleta_id}] } = response;
+    let coleta_id = "";
+    console.log("??????");
+    if (response.coleta.length > 0) {
+        coleta_id = response.coleta.map(({ coleta_id }) => coleta_id);
+        if (coleta_id.length > 1) {
+            let coleta_id_lasted = coleta_id.pop();
+            coleta_id = `As coletas ${coleta_id.join(", ")} e ${coleta_id_lasted} está aguardando sua decisão`
+        } else {
+            coleta_id = `A coleta ${coleta_id.join(", ")} está aguardando sua decisão`
+        }
+    }
     if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
         if (!empty(state.autenticacao)) {
@@ -33,17 +48,28 @@ const prepareParams = response => {
                 const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
                 const tempo_aceite_restante = tempo_aceite - mill;
                 if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
-                    return { response, tempo_aceite, tempo_aceite_restante, status, acao, coleta_id, type}
+                    return { response, tempo_aceite, tempo_aceite_restante, acao, type,
+                    status_coleta_id: Number(status_coleta_id),
+                    coleta_id
+                    }
+                } else {
+                    console.log("prepareParams:", tempo_aceite_restante, tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao);
                 }
+            } else {
+                console.log("prepareParams tempo_aceite empty")
             }
+        } else {
+            console.log("prepareParams autenticacao empty")
         }
+    } else {
+        console.log("prepareParams GrupoRotas.store empty")
     }
     return undefined
 }
 const createNotifier = (coleta_id) => {
     const notification = new firebase.notifications.Notification({
         notificationId:"notificationId",
-        title: `A coleta #${coleta_id} está aguardando sua decisão`,
+        title: coleta_id,
         show_in_foreground: true
     });
     notification.setSound(channel.sound);
@@ -104,16 +130,19 @@ const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante
     loopInterval();
 }
 
-const switchActions = (response, status, acao, type) => {
+const switchActions = ({type, acao, coleta}) => {// status_coleta_id, acao, type
+    const [{status_coleta_id}] = coleta;
     switch (acao) {
         case "nova_coleta":
-            switch (status) {
-                case "Pendente":
-                    GrupoRotas.store.dispatch({ type: COLETA_NOVA, response });
+            switch (status_coleta_id) {
+                case 1:// Pendente
+                    console.log("switchActions");
+                    console.log(coleta);
+                    GrupoRotas.store.dispatch({ type: COLETA_NOVA, coleta });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
                     return true
-                case "Confirmado":
-                    GrupoRotas.store.dispatch({ type: COLETA_ATUALIZAR_STATUS, response });
+                case 2:// Confirmado
+                    GrupoRotas.store.dispatch({ type: COLETA_ATUALIZAR_STATUS, coleta });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("coletar");
                     return false
                 default:
@@ -121,7 +150,7 @@ const switchActions = (response, status, acao, type) => {
             }
             return false
         case "atualizar_escala":
-            GrupoRotas.store.dispatch({ type: ENTREGADOR_ATUALIZAR_ESCALA, response });
+            // GrupoRotas.store.dispatch({ type: ENTREGADOR_ATUALIZAR_ESCALA, {} });
             return false
         default:
             return false
@@ -137,10 +166,14 @@ export const triggerDestroyTimerProgress = () => {
 }
 export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
     if (!empty(message)) {
+        console.log("triggerNotifier")
+        console.log(message)
         const post = prepareParams(message);
         if (post !== undefined) {
-            const { response, tempo_aceite, tempo_aceite_restante, status, acao, coleta_id, type } = post;
-            const _isNotify = switchActions(response, status, acao, type);
+            const { response, tempo_aceite, tempo_aceite_restante, coleta_id } = post;
+            console.log("TRIGGER_NOTIFIER");
+            console.log(response);
+            const _isNotify = switchActions(response);
             if (_isNotify) {
                 const notification = createNotifier(coleta_id, tempo_aceite, );
                 renderNotifierDisplay(notification, tempo_aceite, tempo_aceite_restante, coleta_id, () => {

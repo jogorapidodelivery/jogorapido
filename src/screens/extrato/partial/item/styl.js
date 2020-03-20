@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { normalize } from "@sd/uteis/NumberUteis";
-import { spaces, hButton, cor } from "@root/app.json";
+import { spaces, hButton, cor, size } from "@root/app.json";
 
 export default StyleSheet.create({
     warp:{
@@ -12,5 +12,10 @@ export default StyleSheet.create({
     },
     preco:{
         color:cor["08"]
+    },
+    loader:{
+        height:normalize(25),
+        width:normalize(80),
+        borderRadius:5
     }
 })
