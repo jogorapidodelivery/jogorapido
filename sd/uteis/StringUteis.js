@@ -122,3 +122,8 @@ export const abreviarNome = (s, minCharAbreviar = 10) => {
     }
     return s || ""
 }
+export const km2String = metros => {
+    if (metros < 1000) return `${metros} m`;
+    metros = metros/1000;
+    return metros.toFixed(3) + " km";
+}

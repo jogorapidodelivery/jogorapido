@@ -81,7 +81,7 @@ export default class Rota extends PureComponent {
     render() {
         const { coleta:{data_checkout_cliente}} = this.props;
         return [this.dadosUnidade, this.dadosCliente].map(({ distancia, tempo, titulo, destino, latitude, longitude, chegada, espera}, key) => <Fragment key={`entrega-${key}`}>
-                <Text style={[stylDefault.p, styl.p]}><Text style={styl.strong}>{tempo || distancia}</Text> {tempo && `( ${distancia} )`} até a coleta</Text>
+            <Text style={[stylDefault.p, styl.p]}><Text style={styl.strong}>{tempo || distancia}</Text> {tempo && `( ${distancia} )`} {key === 0 ? "até a coleta" : ""}</Text>
                 <View style={styl.btn}>
                     <Text style={[stylDefault.icon, styl.icon, {color: key === 0 ? cor["08"] : cor["10"]}]}>{key === 0 ? icCenter : icMarker}</Text>
                     <View style={styl.warpItem}>

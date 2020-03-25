@@ -7,12 +7,17 @@ export const initFirebase = (_callBack = undefined) => {
             if (_callBack !== undefined) {
                 try{
                     await _callBack(data);
+                    console.log("INNER_NOTIFIER_THEN", new Date())
                     _resolve();
                 }catch(e){
+                    console.log("INNER_NOTIFIER_CATCH", new Date())
                     _reject();
                 }
             }
-            else _reject();
+            else {
+                console.log("INNER_NOTIFIER_CALLBACK_NULL", new Date())
+                _reject();
+            }
         })
     }
     const _sucessToken = _token => {
@@ -21,7 +26,7 @@ export const initFirebase = (_callBack = undefined) => {
         firebase.messaging().subscribeToTopic("todos")
         firebase.messaging().subscribeToTopic(`${Platform.OS}`)
         firebase.notifications().onNotificationOpened(async ({ notification: { _data:data}}) => {
-            console.log("ON_OPENED");
+            console.log("ON_OPENED", new Date());
             try{
                 return await _dataNotification({ ...data, type: "DISPLAY", listener: "ON_OPENED" });
             } catch(_err) {
@@ -29,7 +34,7 @@ export const initFirebase = (_callBack = undefined) => {
             }
         })
         firebase.notifications().onNotification(async ({ _data:data}) => {
-            console.log("ON_NOTIFICATION");
+            console.log("ON_NOTIFICATION", new Date());
             try{
                 return await _dataNotification({ ...data, type: "DISPLAY", listener: "ON_NOTIFICATION" });
             } catch (_err) {
@@ -37,7 +42,8 @@ export const initFirebase = (_callBack = undefined) => {
             }
         })
         firebase.messaging().onMessage(async ({ _data:data}) => {
-            console.log("ON_DISPLAY_MESSAGING");
+            console.log("ON_DISPLAY_MESSAGING", new Date());
+            console.log(data)
             try{
                 return await _dataNotification({ ...data, type: "DISPLAY", listener: "ON_DISPLAY_MESSAGING" });
             } catch (_err) {
@@ -47,7 +53,7 @@ export const initFirebase = (_callBack = undefined) => {
         try{
             if (firebase.messaging().setBackgroundMessageHandler !== undefined) {
                 firebase.messaging().setBackgroundMessageHandler(async ({ _data:data}) => {
-                    console.log("ON_BACKGROUND_MESSAGING");
+                    console.log("ON_BACKGROUND_MESSAGING", new Date());
                     try{
                         return await _dataNotification({ ...data, type: "DISPLAY", listener: "ON_BACKGROUND_MESSAGING" });
                     } catch (_err) {
@@ -82,7 +88,7 @@ export const initFirebase = (_callBack = undefined) => {
     
     AppRegistry.registerHeadlessTask('RNFirebaseBackgroundMessage', () => async ({data}) => {
         // Dados ok
-        console.log("ON_BACKGROUND");
+        console.log("ON_BACKGROUND", new Date());
         try{
             return await _dataNotification({ ...data, type: "BACKGROUND", listener: "ON_BACKGROUND" });
         } catch (_err) {

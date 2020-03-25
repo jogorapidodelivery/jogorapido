@@ -4,6 +4,7 @@ import { coletaCheckOutCliente } from "@actions/";
 import Lista from "../lista/index";
 import { empty } from "@sd/uteis/StringUteis";
 import { View as ViewAnimatable } from "react-native-animatable";
+import { km2String } from "../../../../../sd/uteis/StringUteis";
 /*
 data_checkout_cliente:
     * Tem que estar a menos de X metros do cliente
@@ -38,7 +39,7 @@ export default class CheckOutCliente extends Component {
             navigation.push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",
-                    mensagem: `Só é possivel fazer checkout no cliente à uma distância máxima de ${distancia_checkin} metros.`
+                    mensagem: `Só é possivel fazer checkout no cliente à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })
         }

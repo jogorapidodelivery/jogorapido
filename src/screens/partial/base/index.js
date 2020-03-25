@@ -85,7 +85,7 @@ export default class BaseScreen extends Component {
                         {children}
                     </View>
                 </Animated.ScrollView>
-                {footerFix}
+                {footerFix && footerFix()}
                 {noTopButton !== true && <Animated.View style={[styl.warpButtomClose, { transform: [{ translateY }] }]}>
                     <TouchableOpacity onPress={this._clickScrollTop} style={styl.warpTop}>
                         <View style={styl.bgTop}/>

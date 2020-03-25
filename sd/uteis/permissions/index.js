@@ -8,9 +8,10 @@ import { latLngDist } from "@sd/uteis/NumberUteis";
 import { entregadorGeofence } from "@apis/actions/entregador";
 import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
 let fences = {};
-export const calcFence = ({ latitude, longitude, raio }) => {
+export const calcFence = (_fence) => {
+    const { latitude, longitude, raio } = _fence;
     const distancia = globalParams.latitude === 0 ? 1000 : Math.round(latLngDist(globalParams.latitude, globalParams.longitude, latitude, longitude) * 1000);
-    return { dentroDoRaio: distancia <= raio, distancia };
+    return { ..._fence, dentroDoRaio: distancia <= raio, distancia };
 }
 export const addFence = (data) => {
     fences[data.name] = data;
@@ -33,9 +34,13 @@ const _currentLocation = () => {
         if (GrupoRotas.store !== undefined && GrupoRotas.store !== null) {
             const keys = Object.values(fences)
             if (keys.length > 0) {
-                keys.forEach(({ latitude: lat, longitude: lng, raio, callBack}) => {
-                    const distancia = Math.round(latLngDist(lat, lng, latitude, longitude) * 1000);
-                    if (callBack) callBack({ dentroDoRaio: distancia <= raio, distancia})
+                keys.forEach((_fence) => {
+                    const { latitude: lat, longitude: lng, raio, callBack } = _fence;
+                    _fence.distancia = Math.round(latLngDist(lat, lng, latitude, longitude) * 1000);
+                    _fence.dentroDoRaio = _fence.distancia <= raio;
+                    const _cp = { ..._fence }
+                    delete _cp.callBack;
+                    if (callBack) callBack(_cp);
                 });
             }
             if (!lootLocation) {
@@ -58,7 +63,7 @@ const _currentLocation = () => {
                                 usuario_id
                             }
                         }).then(({ response}) => {
-                            console.log("DISPAROU A NOTIFICAÇÃO VIA WATCH LOCATION");
+                            // console.log("DISPAROU A NOTIFICAÇÃO VIA WATCH LOCATION");
                             dispatchNotifierOnResultGeofenceHttp(response);
                             lootLocation = false;
                         }).catch(() => {

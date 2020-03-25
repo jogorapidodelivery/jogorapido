@@ -3,8 +3,9 @@ import { View, Text } from "react-native";
 import Button from "@sd/components/button";
 import styl from "./styl";
 import { View as ViewAnimatable } from "react-native-animatable";
-import { coletaCheckIn } from "@actions/";
+import { coletaCheckOutUnidade } from "@actions/";
 import Lista from "../lista/index";
+import { km2String } from "../../../../../sd/uteis/StringUteis";
 /*
 data_checkin_cliente:
     * Tem que estar a menos de X metros do cliente
@@ -24,8 +25,7 @@ export default class CheckOutUnidade extends Component {
         const { onChange, index, coleta:{coleta_id}, coleta_ids, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinEstabelecimentoOk) {
             if (todosOsProdutosEstaoSelecionados) {
-                
-                coletaCheckIn({
+                coletaCheckOutUnidade({
                     body_view:{
                         index
                     },
@@ -35,7 +35,8 @@ export default class CheckOutUnidade extends Component {
                     }
                 }).then(() => {
                     onChange({ index, coleta_id });
-                }).catch(({ mensagem }) => {
+                }).catch(_err => {
+                    const { mensagem } = _err;
                     navigation.push("alerta", {
                         params: {
                             titulo: "Jogo Rápido",
@@ -55,7 +56,7 @@ export default class CheckOutUnidade extends Component {
             navigation.push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",
-                    mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${distancia_checkin} metros.`
+                    mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })
         }
@@ -65,7 +66,8 @@ export default class CheckOutUnidade extends Component {
     }
     render() {
         const { todosOsProdutosEstaoSelecionados, badge} = this.state;
-        const { produtos, distanciaMinEstabelecimentoOk} = this.props;
+        const { produtos, distanciaMinEstabelecimentoOk, tituloBtnCheckOutUnidade, distanciaEmLinhaEstabelecimento} = this.props;
+        const value = `${tituloBtnCheckOutUnidade} ( ${km2String(distanciaEmLinhaEstabelecimento)} )`;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Lista titulo="Produto" onPress={this._liberarCheckOut.bind(this)} data={produtos} />
             <View style={styl.container}>
@@ -76,7 +78,7 @@ export default class CheckOutUnidade extends Component {
                 <Button
                     onPress={this._click}
                     text={{
-                        value:"Saindo do Estabelecimento",
+                        value,
                         color: "07"
                     }}
                     bg={distanciaMinEstabelecimentoOk && todosOsProdutosEstaoSelecionados? "14" : "15"}

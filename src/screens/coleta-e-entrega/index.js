@@ -9,29 +9,71 @@ import BaseScreen from "@screens/partial/base/index";
 import styl from "./styl";
 import { ScrollView } from "react-native-gesture-handler";
 import { cor } from "@root/app.json";
-import { empty } from "sd/uteis/StringUteis";
+import { empty, km2String } from "sd/uteis/StringUteis";
 import { GrupoRotas } from "@sd/navigation/revestir";
+import { destroyFence, addFence, calcFence } from "@sd/uteis/permissions/index";
 const initialLayout = { width: Dimensions.get('window').width };
 export default function Coletas(props) {
-    const coletas = useSelector(({ autenticacao: { coleta } }) => coleta);
-    if (empty(coletas) || coletas.length === 0) return null;
+    const dados = useSelector(({ autenticacao: { distancia_checkin, coleta } }) => ({distancia_checkin, coleta}));
+    if (empty(dados.coleta) || dados.coleta.length === 0) return null;
+
+
+    // coleta: { data_checkout_cliente, data_checkout_unidade, data_checkin_cliente, data_checkin_unidade, latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, coleta_id }
+    const { coleta, distancia_checkin } = dados;
+    
+    let stateInitial = {}
+    let unidadeFence = false
+    coleta.forEach(({latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, coleta_id }) => {
+        const _clienteKey = `clienteColetaId_${coleta_id}`
+        if (unidadeFence === false) {
+            const _unidadeKey = "estabelecimento";
+            const dataFenceEstabelecimentoTmp = { name: _unidadeKey, latitude: latitude_unidade, longitude: longitude_unidade, raio: distancia_checkin };
+            stateInitial[_unidadeKey] = calcFence(dataFenceEstabelecimentoTmp);
+            unidadeFence = true;
+        }
+        const dataFenceClienteTmp = { name: _clienteKey, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin }
+        stateInitial[_clienteKey] = calcFence(dataFenceClienteTmp);
+    })
+    const [stateFence, setStateFence] = useState(stateInitial);
     let scenes = {}
-    const coleta_ids = [];
-    let coletasCapturadas = [];
-    console.log("0) ANALIZA ARRAY AO ACEITAR A COLETA");
-    console.log(coletas)
-    console.log("0) FIM DE ANALIZA ARRAY AO ACEITAR A COLETA");
-    let titles = coletas.map(({ coleta_id }, index) => {
+    let coleta_ids = [];
+    let titles = dados.coleta.map(({ coleta_id, data_checkout_unidade}, index) => {
         const key = `coleta_${coleta_id}`;
         coleta_ids.push(coleta_id);
         scenes[key] = Coleta;
-        return { key, title: `Coleta #${coleta_id}`, index, jumpToCliente: p => jumpToConfirmCliente(p), jumpToColeta: p => jumpToConfirmColeta(p), navigation:props.navigation}
+        return {
+            key,
+            stateFence,
+            coletaConfirm: !empty(data_checkout_unidade),
+            title: `Coleta #${coleta_id}`,
+            index,
+            coleta_id,
+            jumpToCliente: p => jumpToConfirmCliente(p),
+            jumpToColeta: p => jumpToConfirmColeta(p),
+            navigation: props.navigation
+        }
     })
-    
     const [index, setIndex] = useState(0);
     const [routes] = useState(titles);
     const renderScene = SceneMap(scenes);
 
+    useEffect(() => {
+        function callBack(rest) {
+            const { dentroDoRaio, distancia, name } = rest;
+            let _newState = { ...stateInitial}
+            _newState[name].distancia = distancia;
+            _newState[name].dentroDoRaio = dentroDoRaio;
+            setStateFence(_newState);
+        }
+        Object.values(stateInitial).forEach(fence => {
+            addFence({ ...fence, callBack })
+        })
+        return () => {
+             Object.values(stateInitial).forEach(({name}) => {
+                destroyFence(name);
+            })
+        }
+    }, []);
     useEffect(() => {
         const load = async () => {
             try{
@@ -89,30 +131,43 @@ export default function Coletas(props) {
         case 2:
             minWidth = initialLayout.width / 2
             break;
-        default:
+        case 2:
             minWidth = initialLayout.width / 3
             break;
+        default:
+            minWidth = initialLayout.width / 3.3
+            break;
+    }
+    function renderMenuScroll() {
+        if (empty(titles) || titles.length <= 1)return null;
+        return <View style={styl.shadow}>
+            <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: .8, y: .4 }}
+                colors={cor["14"]}
+            >
+                <ScrollView showsHorizontalScrollIndicator={false} horizontal style={styl.warpTab}>
+                    {titles.map(({ title, coletaConfirm, key, coleta_id }, k) => {
+                        const _clienteKey = coletaConfirm ? `clienteColetaId_${coleta_id}` : "estabelecimento";
+                        const _fenceTmp = stateInitial[_clienteKey];
+                        return <TouchableOpacity
+                            onPress={toogleTab.bind(null, { index: k })}
+                            style={[styl.btnTab, { minWidth, backgroundColor: `rgba(255,255,255,${index === k ? .07 : 0})` }]} key={key}
+                        >
+                            <Text style={styl.textTab}>{title}</Text>
+                            <Text style={styl.textDist}>( {km2String(_fenceTmp.distancia)} )</Text>
+                        </TouchableOpacity>
+                    })}
+                </ScrollView>
+            </LinearGradient>
+        </View>
     }
     return (
         <BaseScreen
             style={styl.container}
             tituloBold="INFORMAÇÕES"
             titulo={` (coleta #${coleta_ids[index]})`}
-            footerFix={titles.length > 1 ? <View style={styl.shadow}><LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: .8, y: .4 }}
-                colors={cor["14"]}
-            >
-                <ScrollView horizontal style={styl.warpTab}>
-                    {titles.map(({ title, key }, k) => <TouchableOpacity
-                        onPress={toogleTab.bind(null, {index:k})}
-                        style={[styl.btnTab, { minWidth, borderBottomWidth: index === k ? 5 : 0 }]} key= { key }
-                    >
-                        <Text style={styl.textTab}>{title}</Text>
-                    </TouchableOpacity>
-                    )}
-                </ScrollView>
-            </LinearGradient></View> : null}
+            footerFix={renderMenuScroll}
         >
             <TabView
                 renderTabBar={() => null}

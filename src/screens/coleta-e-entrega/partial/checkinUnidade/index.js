@@ -6,6 +6,7 @@ import Rota from "../rota";
 import { empty } from "@sd/uteis/StringUteis";
 import { coletaCheckInUnidade } from "@actions/";
 import { View as ViewAnimatable } from "react-native-animatable";
+import { km2String } from "../../../../../sd/uteis/StringUteis";
 
 /*
 data_checkin_unidade:
@@ -36,21 +37,22 @@ export default class CheckInUnidade extends PureComponent {
             navigation.push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",
-                    mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${distancia_checkin} metros.`
+                    mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })
         }
     }
     render() {
-        const { coleta, distanciaMinEstabelecimentoOk } = this.props;
-        const { data_checkin_unidade, data_checkout_cliente } = coleta;
+        const { coleta, distanciaMinEstabelecimentoOk, distanciaEmLinhaEstabelecimento } = this.props;
+        const { data_checkin_unidade } = coleta;
+        const value = `Cheguei Estabelecimento ( ${km2String(distanciaEmLinhaEstabelecimento)} )`;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Rota coleta={coleta}/>
             {empty(data_checkin_unidade) && <View style={styl.container}>
                 <Button
                     onPress={this._click}
                     text={{
-                        value:"Cheguei Estabelecimento",
+                        value,
                         color: "07"
                     }}
                     bg={distanciaMinEstabelecimentoOk ? "14" : "15"}

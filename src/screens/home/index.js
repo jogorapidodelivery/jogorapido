@@ -6,10 +6,10 @@ import ColetaPendente from "./partial/coleta-pendente";
 import MinhaEscala from "./partial/minha-escala";
 import MeusRendimentos from "./partial/meus-rendimentos";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
-import { empty } from "@sd/uteis/StringUteis";
 import { actionAutenticar } from "@actions/";
 import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
 import { _addressOpenMapsDefaultProps } from "@screens/coleta-e-entrega/partial/rota/index";
+import { triggerDestroyTimerProgress } from "@libs/dispatchNotify";
 
 export default class Home extends PureComponent {
     static mapStateToProps = [ "autenticacao" ]
@@ -73,6 +73,7 @@ export default class Home extends PureComponent {
         if (this.ativarBg && status === "active") {
             this._updateColeta();
         }
+        triggerDestroyTimerProgress()
         this.ativarBg = true;
     }
     _updateColeta = (onComplete) => {

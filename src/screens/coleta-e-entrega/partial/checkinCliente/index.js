@@ -3,6 +3,7 @@ import Button from "@sd/components/button";
 import { coletaCheckIn } from "@actions/";
 import Lista from "../lista/index";
 import { View as ViewAnimatable } from "react-native-animatable";
+import { km2String } from "@sd/uteis/StringUteis";
 /*
 data_checkout_unidade:
     * Tem que estar a menos de X metros do estabelecimento
@@ -34,23 +35,24 @@ export default class CheckInCliente extends Component {
             navigation.push("alerta", {
                 params: {
                     titulo: "Jogo Rápido",
-                    mensagem: `Só é possivel fazer checkin no cliente à uma distância máxima de ${distancia_checkin} metros.`
+                    mensagem: `Só é possivel fazer checkin no cliente à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })
         }
     }
     render() {
-        const { produtos, coleta: { valor_frete, total_pedido }, distanciaMinClienteOk} = this.props;
+        const { produtos, coleta: { valor_frete, total_pedido }, distanciaMinClienteOk, distanciaEmLinhaCliente, lastedCheckoutUnidade} = this.props;
+        const value = `Cheguei Cliente ( ${km2String(distanciaEmLinhaCliente)} )`;
         return <ViewAnimatable useNativeDriver={true} delay={200} animation="fadeIn">
             <Lista titulo="Produto" total={total_pedido} data={[...produtos, { colorTextOrMoney: "12", textSub: "Taxa entrega", textOrMoney: valor_frete}]} />
-            <Button
+            {lastedCheckoutUnidade === 0 && <Button
                 onPress={this._click}
                 text={{
-                    value: "Cheguei Cliente",
+                    value,
                     color: "07"
                 }}
                 bg={distanciaMinClienteOk ? "14" : "15"}
-            />
+            />}
         </ViewAnimatable>
     }
 }

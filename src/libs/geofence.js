@@ -12,7 +12,7 @@ export const dispatchNotifierOnResultGeofenceHttp = data => {
         data.acao = "nova_coleta";
         SharedEventEmitter.emit('onMessage', new RemoteMessage({ data}));
     } else {
-        console.log("Sem pedido pendente");
+        // console.log("Sem pedido pendente");
     }
 }
 export const setUserBackground = async usuario_id => {
@@ -36,8 +36,10 @@ export const bgLocationFetch = () => {
         if (response.success){
             if (!empty(response.responseText) && response.responseText.length > 20) {
                 try {
+                    console.log("0) DISPAROU A NOTIFICAÇÃO VIA GEOFENCE");
+                    console.log(response.responseText);
                     let { data } = JSON.parse(response.responseText);
-                    console.log("DISPAROU A NOTIFICAÇÃO VIA GEOFENCE");
+                    console.log(data);
                     dispatchNotifierOnResultGeofenceHttp(data);
                 } catch (e) {
                     console.log("Não conseguiu fazer o parse na resposta");
@@ -45,9 +47,10 @@ export const bgLocationFetch = () => {
             }
         } else {
             console.log("FALHA NA RECEPÇÃO DE DADOS DO GEOFENCE");
+            console.log(response.responseText);
         }
     });
-    
+    console.log("DA TANDO ERRO ABAIXO");
     const url = getBaseUrl({ baseUrl:"php", action:"entregador/geofence" });
     console.log("BG_URL:", url);
 

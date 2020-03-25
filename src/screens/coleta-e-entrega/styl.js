@@ -24,9 +24,13 @@ export default StyleSheet.create({
         fontWeight: "bold",
         color:cor["07"]
     },
+    textDist:{
+        textTransform: "uppercase",
+        ...stylDefault.span,
+        color:cor["07"]
+    },
     btnTab:{
         flex:1,
-        borderBottomColor: cor["07"],
         justifyContent:"center",
         alignItems:"center"
     },

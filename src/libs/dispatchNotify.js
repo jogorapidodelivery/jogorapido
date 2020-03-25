@@ -30,7 +30,6 @@ const prepareParams = response => {
         data_notificacao,
         status_coleta_id}] } = response;
     let coleta_id = "";
-    console.log("??????");
     if (response.coleta.length > 0) {
         coleta_id = response.coleta.map(({ coleta_id }) => coleta_id);
         if (coleta_id.length > 1) {
@@ -48,15 +47,13 @@ const prepareParams = response => {
                 const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
                 const tempo_aceite_restante = tempo_aceite - mill;
                 if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
-                    return { response, tempo_aceite, tempo_aceite_restante, acao, type,
-                    status_coleta_id: Number(status_coleta_id),
-                    coleta_id
+                    return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id
                     }
                 } else {
-                    console.log("prepareParams:", tempo_aceite_restante, tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao);
+                    console.log("prepareParams:", {tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao});
                 }
             } else {
-                console.log("prepareParams tempo_aceite empty")
+                console.log("prepareParams tempo_aceite empty", { tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante})
             }
         } else {
             console.log("prepareParams autenticacao empty")
@@ -132,12 +129,12 @@ const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante
 
 const switchActions = ({type, acao, coleta}) => {// status_coleta_id, acao, type
     const [{status_coleta_id}] = coleta;
+    // const { autenticacao: { coleta: coletaAtual}} = GrupoRotas.store.getState();
+    // if (!empty(coletaAtual) && coletaAtual.length > 0) return false;
     switch (acao) {
         case "nova_coleta":
             switch (status_coleta_id) {
                 case 1:// Pendente
-                    console.log("switchActions");
-                    console.log(coleta);
                     GrupoRotas.store.dispatch({ type: COLETA_NOVA, coleta });
                     if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
                     return true
@@ -166,25 +163,26 @@ export const triggerDestroyTimerProgress = () => {
 }
 export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
     if (!empty(message)) {
-        console.log("triggerNotifier")
-        console.log(message)
+        // console.log("triggerNotifier")
+        // console.log(message)
         const post = prepareParams(message);
         if (post !== undefined) {
             const { response, tempo_aceite, tempo_aceite_restante, coleta_id } = post;
             console.log("TRIGGER_NOTIFIER");
-            console.log(response);
+            // console.log(response);
             const _isNotify = switchActions(response);
             if (_isNotify) {
                 const notification = createNotifier(coleta_id, tempo_aceite, );
                 renderNotifierDisplay(notification, tempo_aceite, tempo_aceite_restante, coleta_id, () => {
                     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                     GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-                    if (aguia !== undefined) aguia.stop();
+                    triggerDestroyTimerProgress();
+                    SDNavigation.navegar.popToTop();
                     _resolve();
                 })
             } else {
                 _reject();
-                console.log("DISPATCH_NOTIFY ação a ser executada não existe", post);
+                console.log("DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", post);
             }
         } else {
             _reject();

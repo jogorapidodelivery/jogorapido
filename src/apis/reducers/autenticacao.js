@@ -45,7 +45,8 @@ export default {
                         return v
                     })
                 }
-                response.coleta = formatDateCheckIn(response.coleta)
+                const data = formatDateCheckIn(response.coleta);
+                response = { ...response, ...data}
                 // response.coleta = []
                 if (!empty(senha) && !empty(usuario)) {
                     const _chifed = encodeCipherCaesar({ senha, usuario });

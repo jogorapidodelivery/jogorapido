@@ -102,6 +102,15 @@ export const actionObject = type => _response => new Promise((resolve) => {
     GrupoRotas.store.dispatch({ type, ..._response });
     resolve()
 })
+export const actionObjectPostStatic = (type, ..._args) => _posted => new Promise((resolve) => {
+    let _data = { response: _posted.response, posted:{}};
+    ["body_rsa", "body_view", "body_post", "body_get"].forEach(key => {
+        if (_posted[key] !== undefined) _data.posted = { ..._data.posted, ..._posted[key]};
+    })
+    const _response = { type, ..._data };
+    GrupoRotas.store.dispatch(_response);
+    resolve(_response)
+})
 export const actionFetchParallel = (_args/*[{type:LOGIN, stateWarpKey:"autenticacao", action:"usuario/login", }] */, loading = true) => {
     return (params/*[{ignorarError:, body_rsa:{}, body_post:{}, body_view:{}}] */) => new Promise((_resolve, _reject) => {
         if (_args.length !== params.length) return _reject({type:"erro", mensagem:"A quantidade de parametros dentro das matrizes [_args] e [_params] tem que ser a mesma"});
