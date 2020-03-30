@@ -128,18 +128,18 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 
 // Inicio de funcões de atualização de nome e código de versão;
-def getVersionName() {
-    def inputFile = new File("../package.json")
-    def packageJson = new JsonSlurper().parseText(inputFile.text)
-    return packageJson["version"]
-}
-def getVersionCode() {
-    def (major, minor, patch) = getVersionName().tokenize('.');
-    def r = major + minor.padLeft(3, "0") + patch.padLeft(4, "0");
+// def getVersionName() {
+//     def inputFile = new File("../package.json")
+//     def packageJson = new JsonSlurper().parseText(inputFile.text)
+//     return packageJson["version"]
+// }
+// def getVersionCode() {
+//     def (major, minor, patch) = getVersionName().tokenize('.');
+//     def r = major + minor.padLeft(3, "0") + patch.padLeft(4, "0");
     // System.out.println("VERSION CODE");
     // System.out.println(r);
-    return Integer.parseInt(r);
-}
+//     return Integer.parseInt(r);
+// }
 // def vName = getVersionName()
 // def vCode = getVersionCode()
 // Fim de funcões de atualização de nome e código de versão;
