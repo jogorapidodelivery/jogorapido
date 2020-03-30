@@ -28,8 +28,8 @@ build/
 .gradle
 local.properties
 # settings.gradle
-gradlew.bat
-gradlew
+# gradlew.bat
+# gradlew
 *.iml
 
 # node.js
