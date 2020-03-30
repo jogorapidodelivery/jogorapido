@@ -5,11 +5,12 @@ import { name as appName } from '@root/app.json';
 import { initFirebase } from "@sd/uteis/Firebase";
 import { triggerNotifier } from '@libs/dispatchNotify';
 import { bgLocationFetch } from "@libs/geofence";
+import codePush from 'react-native-code-push';
 YellowBox.ignoreWarnings([
     'VirtualizedLists should never be nested',
     'Require cycle: node_modules/react-native-firebase'
 ]);
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => codePush(App));
 initFirebase(triggerNotifier);
 bgLocationFetch();

@@ -29,7 +29,7 @@ export default class ChecarToken extends PureComponent {
             _s.body_rsa.token_email = `${p1}${p2}${p3}${p4}`;
             onSubmit(_s)
         }).catch(_e => {
-            console.warn("check.catch", _e)
+            //console.warn("check.catch", _e)
         })
     }
     render() {
