@@ -9,7 +9,7 @@ import { triggerDestroyTimerProgress } from "@libs/dispatchNotify";
 import { View as AnimatableView, Text as AnimatableText } from "react-native-animatable";
 import ItemRoute from "./partial/item-route";
 export const _addressOpenMapsDefaultProps = {
-    title: "Jogo Rápido",
+    title: "JogoRápido",
     cancelText: "Cancelar",
     actionSheetTitle: "Escolha o App",
     actionSheetMessage: "Apps disponíveis"
@@ -33,7 +33,7 @@ export default class ColetaPendente extends PureComponent {
         this.props.navigation.push("confirma", {
             params:{
                 titulo:"Confirmar corrida",
-                mensagem: 'Ao clicar em “Confirmar” declaro que estou ciente que devo cumprir as normas que constam no Regulamento do <strong>APP Jogo Rápido.</strong>',
+                mensagem: 'Ao clicar em “Confirmar” declaro que estou ciente que devo cumprir as normas que constam no Regulamento do <strong>APP JogoRápido.</strong>',
                 button:{
                     text:{
                         value: "CONFIRMAR CORRIDA",

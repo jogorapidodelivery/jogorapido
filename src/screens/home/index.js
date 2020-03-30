@@ -86,7 +86,7 @@ export default class Home extends PureComponent {
             if (onComplete) {
                 this.props.navigation.push("alerta", {
                     params: {
-                        titulo: "Jogo Rápido",
+                        titulo: "JogoRápido",
                         mensagem
                     }
                 })

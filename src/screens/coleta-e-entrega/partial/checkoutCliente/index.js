@@ -30,7 +30,7 @@ export default class CheckOutCliente extends Component {
             }).catch(({ mensagem }) => {
                 navigation.push("alerta", {
                     params: {
-                        titulo: "Jogo Rápido",
+                        titulo: "JogoRápido",
                         mensagem
                     }
                 })
@@ -38,7 +38,7 @@ export default class CheckOutCliente extends Component {
         } else {
             navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: `Só é possivel fazer checkout no cliente à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })

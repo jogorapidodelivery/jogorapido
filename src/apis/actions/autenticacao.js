@@ -13,7 +13,7 @@ const checarSeAppEstaAtualizado = versao_app => {
         const v = `${version}`.replace(/\s/gi, "").split(".")
         const currentVersion = Number(`${v[0]}${pad(3, v[1], "0")}${pad(4, v[2], "0")}`)
         if (currentVersion < versao_app) {
-            Alert.alert("ATUALIZAÇÃO DISPONÍVEL", "Nova vesão do Jogo Rápido disponível. Manter seu aplicativo atualizado garante uma boa experiência de navegação. Deseja atualizar?", [
+            Alert.alert("ATUALIZAÇÃO DISPONÍVEL", "Nova vesão do JogoRápido disponível. Manter seu aplicativo atualizado garante uma boa experiência de navegação. Deseja atualizar?", [
                 { text: "Agora não", style: "cancel" },
                 { text: "Atualizar", onPress: () => {
                     if (Platform.OS === "ios") {

@@ -39,7 +39,7 @@ export default class CheckOutUnidade extends Component {
                     const { mensagem } = _err;
                     navigation.push("alerta", {
                         params: {
-                            titulo: "Jogo Rápido",
+                            titulo: "JogoRápido",
                             mensagem
                         }
                     })
@@ -47,7 +47,7 @@ export default class CheckOutUnidade extends Component {
             } else {
                 navigation.push("alerta", {
                     params: {
-                        titulo: "Jogo Rápido",
+                        titulo: "JogoRápido",
                         mensagem: "É necessário confirmar que pegou todos os produtos"
                     }
                 })
@@ -55,7 +55,7 @@ export default class CheckOutUnidade extends Component {
         } else {
             navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })

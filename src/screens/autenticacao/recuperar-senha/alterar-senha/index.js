@@ -12,7 +12,7 @@ export default class AlterarSenha extends PureComponent {
         }).catch(_e => {
             this.props.navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: _e.mensagem
                 }
             })

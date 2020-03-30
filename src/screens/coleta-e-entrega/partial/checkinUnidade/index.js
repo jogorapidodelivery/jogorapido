@@ -28,7 +28,7 @@ export default class CheckInUnidade extends PureComponent {
             }).then(onChange).catch(({ mensagem }) => {
                 navigation.push("alerta", {
                     params: {
-                        titulo: "Jogo Rápido",
+                        titulo: "JogoRápido",
                         mensagem
                     }
                 })
@@ -36,7 +36,7 @@ export default class CheckInUnidade extends PureComponent {
         } else {
             navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: `Só é possivel fazer checkin no estabelecimento à uma distância máxima de ${km2String(distancia_checkin)}.`
                 }
             })

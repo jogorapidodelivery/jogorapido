@@ -45,7 +45,7 @@ export const alterarSenha = navigation => {
     }).catch(({ mensagem}) => {
         navigation.push("alerta", {
             params: {
-                titulo: "Jogo Rápido",
+                titulo: "JogoRápido",
                 mensagem
             }
         })

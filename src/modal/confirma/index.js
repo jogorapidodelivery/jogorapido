@@ -6,7 +6,7 @@ import HTML from "react-native-render-html";
 import Button from "@sd/components/button";
 /*
 this.props.navigation.push("confirma", {params:{
-    titulo:"Jogo Rápido",
+    titulo:"JogoRápido",
     mensagem: "Os seguintes campos não foram preenchidos corretamente:"
 }}) */
 export default class Confirma extends PureComponent {

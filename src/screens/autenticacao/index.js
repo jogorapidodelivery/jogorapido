@@ -44,7 +44,7 @@ export default class Autenticacao extends Component {
     let _f = falhas.length > 2 ? ` e ${falhas.pop()}` : ""
     const msg = falhas.join(", ") + _f;
     return <Fragment>
-      <Info data={["O App Jogo Rápido precisa de\nacesso ao(s) seguinte(s) recurso(s):\n", msg, _fraseFinal]} />
+      <Info data={["O App JogoRápido precisa de\nacesso ao(s) seguinte(s) recurso(s):\n", msg, _fraseFinal]} />
       <Button
         style={styl.button}
         onPress={this._confirmarCodigo}

@@ -11,7 +11,7 @@ import { empty } from "@sd/uteis/StringUteis";
 const icCenter = "";
 const icMarker = "";
 export const _addressOpenMapsDefaultProps = {
-    title: "Jogo Rápido",
+    title: "JogoRápido",
     cancelText: "Cancelar",
     actionSheetTitle: "Escolha o App",
     actionSheetMessage: "Apps disponíveis"

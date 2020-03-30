@@ -64,7 +64,7 @@ export const bgLocationFetch = () => {
         batchSync: true,// Defina true para sincronizar locais com o servidor em uma única solicitação HTTP.
         maxBatchSize: 50,
         notification:{
-            title:"Jogo Rápido",
+            title:"JogoRápido",
             smallIcon: "drawable/notifier",
             color:cor["08"],
             text:"Sincronizando sua localização com o servidor"

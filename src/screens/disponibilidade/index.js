@@ -48,7 +48,7 @@ export default class Disponibilidade extends PureComponent {
             _resolve();
             push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem
                 }
             })
@@ -110,13 +110,13 @@ export default class Disponibilidade extends PureComponent {
         }).then(() => {
             push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem:"Disponibilidade atualizada com sucesso. Lembre-se elas só terão efeito após 24 horas.",
                     onPress: popToTop
                 }
             })
         }).catch(({mensagem}) => {
-            push("alerta", { params: { titulo: "Jogo Rápido", mensagem } })
+            push("alerta", { params: { titulo: "JogoRápido", mensagem } })
         })
     }
     _extractHorario = ({data}, index) => {

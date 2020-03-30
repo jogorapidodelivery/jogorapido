@@ -72,7 +72,7 @@ export default function Coleta({ route: { index, stateFence, navigation, jumpToC
         } else {
             navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: "Só é possivel ver o detalhamento do pedido após fazer checkin no estabelecimento"
                 }
             })

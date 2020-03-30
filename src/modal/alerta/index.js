@@ -4,7 +4,7 @@ import styl from "./styl";
 import HTML from "react-native-render-html";
 /*
 this.props.navigation.push("alerta", {params:{
-    titulo:"Jogo Rápido",
+    titulo:"JogoRápido",
     mensagem: "Os seguintes campos não foram preenchidos corretamente:"
 }}) */
 export default class Alerta extends PureComponent {

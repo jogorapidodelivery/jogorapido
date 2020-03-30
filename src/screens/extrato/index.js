@@ -40,7 +40,7 @@ export default class Disponibilidade extends Component {
             this.setState({ loading: false }, _resolve);
             push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem
                 }
             })

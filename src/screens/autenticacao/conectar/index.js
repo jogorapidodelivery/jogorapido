@@ -38,7 +38,7 @@ export default class Conectar extends PureComponent {
             }).catch(({ mensagem}) => {
                 this.props.navigation.push("alerta", {
                     params: {
-                        titulo: "Jogo Rápido",
+                        titulo: "JogoRápido",
                         mensagem
                     }
                 })

@@ -9,7 +9,7 @@ export default class MeusDadosAlterarSenha extends PureComponent {
         }).catch(_e => {
             this.props.navigation.push("alerta", {
                 params: {
-                    titulo: "Jogo Rápido",
+                    titulo: "JogoRápido",
                     mensagem: _e.mensagem
                 }
             })
