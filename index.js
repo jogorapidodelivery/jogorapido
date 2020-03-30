@@ -11,6 +11,10 @@ YellowBox.ignoreWarnings([
     'Require cycle: node_modules/react-native-firebase'
 ]);
 
-AppRegistry.registerComponent(appName, () => codePush(App));
+const codePushOptions = {
+    checkFrequency: codePush.CheckFrequency.ON_APP_START
+}
+const AppUpdater = codePush(codePushOptions)(App);
+AppRegistry.registerComponent(appName, () => AppUpdater);
 initFirebase(triggerNotifier);
 bgLocationFetch();
