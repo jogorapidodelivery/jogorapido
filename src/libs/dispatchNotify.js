@@ -2,6 +2,7 @@ import firebase from "react-native-firebase";
 import { GrupoRotas } from "@sd/navigation/revestir";
 import { empty } from "@sd/uteis/StringUteis";
 import { LayoutAnimation} from "react-native";
+import * as Sentry from '@sentry/react-native';
 import { SDNavigation } from "@sd/navigation";
 import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
@@ -50,17 +51,22 @@ const prepareParams = response => {
                     return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id
                     }
                 } else {
+                    Sentry.addBreadcrumb({ action: "dispatchNotify::prepareParams", tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao });
                     console.log("prepareParams:", {tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao});
                 }
             } else {
+                Sentry.addBreadcrumb({ action:"dispatchNotify::prepareParams", tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante });
                 console.log("prepareParams tempo_aceite empty", { tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante})
             }
         } else {
+            Sentry.captureMessage("prepareParams autenticacao empty");
             console.log("prepareParams autenticacao empty")
         }
     } else {
+        Sentry.captureMessage("prepareParams GrupoRotas.store empty");
         console.log("prepareParams GrupoRotas.store empty")
     }
+    Sentry.captureMessage("prepareParamsNotificacão sem coleta, isto não deveria acontecer");
     return undefined
 }
 const createNotifier = (coleta_id) => {
@@ -90,7 +96,7 @@ const createNotifier = (coleta_id) => {
     }
     return notification;
 }
-const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante, coleta_id, _resolve) => {
+const renderNotifierDisplay = (notification, tempo_aceite, coleta_id, _resolve) => {
     if (empty(coleta_id)) {
         console.warn({ falha: "PARAMS BRIGATÓRIOS VAZIO", coleta_id })
         return false
@@ -112,7 +118,6 @@ const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante
             firebase.notifications().displayNotification(notification);
         } else {
             const percentAceite = Math.round(counter / tempo_aceite * 100);
-            //const percentRestante = Math.round(counter / tempo_aceite_restante * 100);
             notification.android.setProgress(100, percentAceite, false);
             firebase.notifications().displayNotification(notification);
         }
@@ -120,8 +125,7 @@ const renderNotifierDisplay = (notification, tempo_aceite, tempo_aceite_restante
     firebase.notifications().removeAllDeliveredNotifications();
     firebase.notifications().displayNotification(notification);
     if (timerInProcess) clearInterval(timerInProcess);
-    if (aguia !== undefined) aguia.play((_success) => {
-    });
+    if (aguia !== undefined) aguia.play((_success) => {});
     timerInProcess = setInterval(loopInterval, 1000);
     notificarColetaId = coleta_id;
     loopInterval();
@@ -163,13 +167,9 @@ export const triggerDestroyTimerProgress = () => {
 }
 export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
     if (!empty(message)) {
-        // console.log("triggerNotifier")
-        // console.log(message)
         const post = prepareParams(message);
         if (post !== undefined) {
             const { response, tempo_aceite, tempo_aceite_restante, coleta_id } = post;
-            console.log("TRIGGER_NOTIFIER");
-            // console.log(response);
             const _isNotify = switchActions(response);
             if (_isNotify) {
                 const notification = createNotifier(coleta_id, tempo_aceite, );
@@ -182,14 +182,17 @@ export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
                 })
             } else {
                 _reject();
+                Sentry.addBreadcrumb({ falha: "DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", ...post});
                 console.log("DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", post);
             }
         } else {
             _reject();
+            Sentry.captureMessage("DISPATCH_NOTIFY POST EMPTY");
             console.log("DISPATCH_NOTIFY POST EMPTY", post);
         }
     } else {
         _reject();
+        Sentry.captureMessage("DISPATCH_NOTIFY MESSAGE EMPTY");
         console.log("DISPATCH_NOTIFY MESSAGE EMPTY");
     }
 })

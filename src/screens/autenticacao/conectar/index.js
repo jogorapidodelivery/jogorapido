@@ -35,7 +35,9 @@ export default class Conectar extends PureComponent {
             actionLogin(res).then( () => {
                 openPageStart(this.props.navigation)
                 _callBackUnlock();
-            }).catch(({ mensagem}) => {
+            }).catch(_resp => {
+                const { mensagem} = _resp;
+                console.log(_resp)
                 this.props.navigation.push("alerta", {
                     params: {
                         titulo: "JogoRápido",
@@ -44,7 +46,7 @@ export default class Conectar extends PureComponent {
                 })
                 _callBackUnlock();
             })
-        }).catch(() => {
+        }).catch(_resp => {
             _callBackUnlock();
         })
         

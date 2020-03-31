@@ -6,11 +6,14 @@ import { initFirebase } from "@sd/uteis/Firebase";
 import { triggerNotifier } from '@libs/dispatchNotify';
 import { bgLocationFetch } from "@libs/geofence";
 import codePush from 'react-native-code-push';
+import * as Sentry from '@sentry/react-native';
 YellowBox.ignoreWarnings([
     'VirtualizedLists should never be nested',
     'Require cycle: node_modules/react-native-firebase'
 ]);
-
+Sentry.init({
+    dsn: 'https://9b5931fcc9dc405eaa228e45b3ea5f1e@sentry.io/5182924',
+});
 const codePushOptions = {
     checkFrequency: codePush.CheckFrequency.ON_APP_START
 }

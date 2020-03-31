@@ -5,7 +5,7 @@ import { baseUrl, baseUrlNode } from "@root/app.json";
 const dev = __DEV__;
 const baseApp = dev ? baseUrl.off : baseUrl.on;
 const baseAppNode = dev ? baseUrlNode.off : baseUrlNode.on;
-
+import * as Sentry from '@sentry/react-native';
 export const getBaseUrl = ({ baseUrl, action}) => {
     if (baseUrl === "php") return `${baseApp}${action}`;
     return `${baseAppNode}${action}`;
@@ -59,7 +59,7 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
         try {
             return JSON.parse(string);
         } catch (e) {
-            console.warn(string);
+            Sentry.captureException(e);
             Promise.reject({ body: string, type: 'unparsable' });
         }
 
@@ -91,10 +91,11 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             _resolve(_r)
         }
         else {
+            Sentry.addBreadcrumb(_r)
             _reject(_r)
         }
     }).catch(_err => {
-        console.warn("catch _err", _err.text);
+        Sentry.captureException(_err);
         if (!empty(interval)) {
             clearTimeout(interval)
             interval = undefined

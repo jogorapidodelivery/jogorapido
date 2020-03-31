@@ -34,7 +34,7 @@ class _Navigation {
     _data = {}
     navegar = {vazio:true};
     conectar = screen => {
-        const { mapStateToProps, mapTransformProps } = screen;
+        const { mapStateToProps, mapTransformProps } = screen || {};
         return connect((_state, { navigation }) => {
             if (this.navegar.vazio) this.navegar = navigation;
             if (mapStateToProps === undefined) {

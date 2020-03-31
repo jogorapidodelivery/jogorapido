@@ -1,6 +1,7 @@
 import { RSA } from "react-native-rsa-native"
 import BackgroundGeolocation from "react-native-background-geolocation";
 import { PUBLIC_KEY_RSA } from "@sd/fetch";
+import * as Sentry from '@sentry/react-native';
 import { getBaseUrl } from "@sd/fetch/Ajax";
 import { empty } from "@sd/uteis/StringUteis";
 import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
@@ -11,8 +12,6 @@ export const dispatchNotifierOnResultGeofenceHttp = data => {
     if (!empty(data) && !empty(data.coleta) && data.coleta.length > 0) {
         data.acao = "nova_coleta";
         SharedEventEmitter.emit('onMessage', new RemoteMessage({ data}));
-    } else {
-        // console.log("Sem pedido pendente");
     }
 }
 export const setUserBackground = async usuario_id => {
@@ -26,34 +25,29 @@ export const setUserBackground = async usuario_id => {
             },
         })
     } catch(_err) {
+        Sentry.captureException(_err);
         Alert.alert("Erro", `${_err}`);
     }
 }
 export const bgLocationFetch = () => {
-    console.log("START GEOFENCE BACKGROUND NOT USER_ID");
-    // Este manipulador é acionado em respostas HTTP
     BackgroundGeolocation.onHttp((response) => {
         if (response.success){
             if (!empty(response.responseText) && response.responseText.length > 20) {
                 try {
-                    console.log("0) DISPAROU A NOTIFICAÇÃO VIA GEOFENCE");
-                    console.log(response.responseText);
                     let { data } = JSON.parse(response.responseText);
-                    console.log(data);
                     dispatchNotifierOnResultGeofenceHttp(data);
-                } catch (e) {
-                    console.log("Não conseguiu fazer o parse na resposta");
+                } catch (_err) {
+                    Sentry.captureException(_err);
                 }
+            } else {
+                Sentry.captureMessage("GEOFENCE: Falha ao enviar os dados do geofence");
             }
         } else {
-            console.log("FALHA NA RECEPÇÃO DE DADOS DO GEOFENCE");
+            Sentry.captureMessage("GEOFENCE:"+response.responseText);
             console.log(response.responseText);
         }
     });
-    console.log("DA TANDO ERRO ABAIXO");
-    const url = getBaseUrl({ baseUrl:"php", action:"entregador/geofence" });
-    console.log("BG_URL:", url);
-
+    const url = getBaseUrl({ baseUrl: "php", action: "entregador/geofence" });
     BackgroundGeolocation.ready({
         distanceFilter: 30,
         startOnBoot: true,// Iniciar automaticamente o rastreamento quando o dispositivo estiver ligado.
