@@ -20,6 +20,7 @@ import Extrato from "@screens/extrato";
 import Disponibilidade from "@screens/disponibilidade";
 import moment from "moment"
 import ptLocale from "moment/locale/pt";
+import Camera from "@screens/camera/index";
 moment.updateLocale("pt", ptLocale)
 SDNavigation.registerScreens({
     autenticacao: { name: "autenticacao", screen: Autenticacao },
@@ -32,6 +33,7 @@ SDNavigation.registerScreens({
     recuperarSenha: { name: "recuperarSenha", screen: RecuperarSenha },
     checarTokenEmailGoRecuperarSenha: { name: "checarTokenEmailGoRecuperarSenha", screen: ChecarTokenEmailGoRecuperarSenha },
     checarTokenEmailGoHome: { name: "checarTokenEmailGoHome", screen: ChecarTokenEmailGoHome },
+    camera: { name: "camera", screen: Camera },
     alterarSenha: { name: "alterarSenha", screen: AlterarSenha },
     home: { name: "home", screen: Home },
     extrato: { name: "extrato", screen: Extrato },
@@ -57,7 +59,8 @@ SDNavigation.addModal([
                 "extrato",
                 "disponibilidade",
                 "meusDadosChecarTokenEmail",
-                "meusDadosAlterarSenha"
+                "meusDadosAlterarSenha",
+                "camera"
             ])
         ]),
         SDNavigation.addStack(["validarEmail", "checarTokenEmailGoHome"]),

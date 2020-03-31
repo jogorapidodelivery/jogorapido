@@ -33,7 +33,7 @@ export default function Menu({ navigation}){
     }, [])
     return <View style={styl.container}>
         <FlatList
-            ListHeaderComponent={() => <Header data={{ email, telefone, foto, nome }} />}
+            ListHeaderComponent={() => <Header navigation={navigation} data={{ email, telefone, foto, nome }} />}
             style={styl.flatList}
             showsVerticalScrollIndicator={false}
             data={menu}
