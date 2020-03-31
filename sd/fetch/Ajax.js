@@ -101,6 +101,8 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             interval = undefined
             controller = undefined
         }
+        
+        
         console.warn(`${_loggerID}) LOAD FAILED`, { stack: _err.stack, mensagem: _err.message });
         const { action, key, body_view, body_post, body_rsa } = _obj;
         let _tmp = {

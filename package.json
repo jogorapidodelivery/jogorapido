@@ -1,6 +1,6 @@
 {
   "name": "jogorapido",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -30,6 +30,7 @@
     "react-native-background-geolocation": "^3.4.2",
     "react-native-code-push": "^6.1.1",
     "react-native-date-picker": "^2.7.5",
+    "react-native-fbsdk": "^1.1.2",
     "react-native-firebase": "^5.6.0",
     "react-native-geolocation-service": "^3.1.0",
     "react-native-gesture-handler": "^1.5.3",

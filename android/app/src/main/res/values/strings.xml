@@ -2,7 +2,7 @@
     <string name="app_name">JogoRápido</string>
     <string name="default_notification_channel_id">aguia_small</string>
     <string name="licenseGeofence">4df5082c96b065657aae4421694d70c0ab9d31a9e53696a4a4dc073a6a6c7856</string>
-    <string name="facebook_app_id">2339249979423964</string>
-    <string name="fb_login_protocol_scheme">fb2339249979423964</string>
+    <string name="facebook_app_id">2616599668662123</string>
+    <string name="fb_login_protocol_scheme">fb2616599668662123</string>
     <string moduleConfig="true" name="CodePushDeploymentKey">TQyI3phUksM1Qb_mTB_Pj6_V671YgIdsRwVpj</string>
 </resources>

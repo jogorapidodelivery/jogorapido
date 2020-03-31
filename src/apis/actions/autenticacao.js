@@ -5,6 +5,8 @@ import { actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from "@sd/uteis/CipherCaesar";
 import { version } from "@root/package.json";
+import { LoginManager, AccessToken } from "react-native-fbsdk"
+import * as Sentry from '@sentry/react-native';
 const { applestoryid, googleplayid } = require("@root/app.json")
 import pad from "pad";
 import { empty } from "@sd/uteis/StringUteis";
@@ -36,6 +38,8 @@ export const actionAutenticar = () => {
         AsyncStorage.getItem(AUTENTICAR).then(value => {
             if(value != null) {
                 const body_rsa = decodeCipherCaesar(value);
+                const { usuario: email } = body_rsa
+                Sentry.setUser({ email });
                 const _action = actionFetchItem(AUTENTICAR, "usuario/login", false);
                 _action({ body_rsa }).then((_response) => {
                     const { response: { versao_app } } = _response;
@@ -52,6 +56,39 @@ export const actionAutenticar = () => {
         });
     })
 };
+export const actionAutenticarFacebook = () => {
+    return new Promise((_resolve, _reject) => {
+        LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+            _r => {
+                if (_r.isCancelled) {
+                    _reject({ mensagem: "Login facebook cancelado" })
+                } else {
+                    AccessToken.getCurrentAccessToken().then((data) => {
+                        const { accessToken } = data
+                        fetch("https://graph.facebook.com/v2.5/me?fields=email,first_name,last_name&access_token=" + accessToken)
+                            .then((response) => response.json())
+                            .then((_json) => {
+                                const { email, first_name, last_name, id } = _json
+                                _resolve({
+                                    email: email,
+                                    nome: `${first_name} ${last_name}`,
+                                    social_id: id,
+                                    foto: `https://graph.facebook.com/${id}/picture?width=320`
+                                })
+                            })
+                            .catch(() => {
+                                _reject({ status:"erro", mensagem: `Falha ao obter dados de seu login no facebook` })
+                            })
+                    })
+                }
+            },
+            _erro => {
+                console.log("catch LoginManager", _erro)
+                _reject({ mensagem: `Falha ao efetuar login com o facebook: ${_erro}` })
+            }
+        )
+    })
+}
 // COLETA_NOVA
 export const actionLogin = actionFetchItem(CONECTAR, "usuario/login");
 export const actionRecuperarSenha = actionFetchItem(RECUPERAR_SENHA, "usuario/recuperar-senha");

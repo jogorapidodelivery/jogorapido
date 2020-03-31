@@ -6,13 +6,10 @@ import styl from "./styl";
 import Button from "@sd/components/button";
 import Form from "@sd/components/form";
 import Input from "@sd/components/form/input";
+import * as Sentry from '@sentry/react-native';
 import { stylDefault } from "@src/stylDefault";
-import { actionLogin } from "@actions/";
+import { actionLogin, actionAutenticarFacebook } from "@actions/";
 import { openPageStart } from "../command";
-import RemoteMessage from "react-native-firebase/dist/modules/messaging/RemoteMessage";
-import { SharedEventEmitter} from "react-native-firebase/dist/utils/events";
-import { empty } from "@sd/uteis/StringUteis";
-
 import { View as AnimatableView } from "react-native-animatable";
 export default class Conectar extends PureComponent {
     constructor(props) {
@@ -30,26 +27,45 @@ export default class Conectar extends PureComponent {
             }
         }
     }
-    _submit = _callBackUnlock => {
-        this.form.check().then((res) => {
-            actionLogin(res).then( () => {
-                openPageStart(this.props.navigation)
-                _callBackUnlock();
-            }).catch(_resp => {
-                const { mensagem} = _resp;
-                console.log(_resp)
-                this.props.navigation.push("alerta", {
-                    params: {
-                        titulo: "JogoRápido",
-                        mensagem
-                    }
-                })
-                _callBackUnlock();
-            })
+    _fetchLogin = (response, _callBackUnlock) => {
+        actionLogin(response).then(() => {
+            const { body_rsa: { usuario: email } } = response
+            Sentry.setUser({ email });
+            openPageStart(this.props.navigation)
+            _callBackUnlock();
         }).catch(_resp => {
+            const { mensagem } = _resp;
+            Sentry.addBreadcrumb({ action: "conectar/actionLogin:catch", ..._resp, ...response });
+            this.props.navigation.push("alerta", {
+                params: {
+                    titulo: "JogoRápido",
+                    mensagem
+                }
+            })
             _callBackUnlock();
         })
-        
+    }
+    _submit = _callBackUnlock => {
+        this.form.check().then((res) => {
+            this._fetchLogin(res, _callBackUnlock);
+        }).catch(_resp => {
+            Sentry.addBreadcrumb({ action: "conectar/check:catch", ..._resp });
+            _callBackUnlock();
+        })
+    }
+    _facebookLogin = _callBackUnlock => {
+        actionAutenticarFacebook().then(({ social_id, email: usuario, foto}) => {
+            this._fetchLogin({
+                body_rsa:{
+                    social_id,
+                    usuario,
+                    foto
+                }
+            }, _callBackUnlock);
+        }).catch(_resp => {
+            Sentry.addBreadcrumb({ action: "conectar/actionAutenticarFacebook:catch", ..._resp, usuario });
+            _callBackUnlock();
+        })
     }
     _toogleType = () => {
         let { passWordStyle:{type, value, color}} = this.state;
@@ -84,7 +100,9 @@ export default class Conectar extends PureComponent {
             <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={700}>
                 <Button nome="Opa! esqueci minha senha?" text={{ value: "Opa! esqueci minha senha?", color:"03", style:styl.textoSenha }} onPress={() => this.props.navigation.navigate("recuperarSenha")} />
             </AnimatableView>
-            {false && <Button nome="Facebook" text={{ value: <Text><Text style={stylDefault.normal}>Entrar com </Text>Facebook</Text>, color:"07" }} onPressAwait={actionUnlook => { if (false) actionUnlook()}} bg="11" style={styl.btnLoginSocial} />}
+            {false && <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={800}>
+                <Button nome="Facebook" text={{ value: <Text><Text style={stylDefault.normal}>Entrar com </Text>Facebook</Text>, color: "07" }} onPressAwait={this._facebookLogin} bg="11" style={styl.btnLoginSocial} />
+            </AnimatableView>}
             {false && <Button nome="Cadastro" text={{ value: <Text><Text style={stylDefault.normal}>Não está registrado? </Text><Text style={[styl.textCadastro]}>Cadastre-se</Text></Text>, color: "03", style: styl.textoSenha }} onPressAwait={actionUnlook => { if (false) actionUnlook() }} style={styl.btn} />}
         </BaseScreen>
     }
