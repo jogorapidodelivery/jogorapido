@@ -17,8 +17,7 @@ export default function Coletas(props) {
     const dados = useSelector(({ autenticacao: { distancia_checkin, coleta } }) => ({distancia_checkin, coleta}));
     if (empty(dados.coleta) || dados.coleta.length === 0) return null;
 
-
-    // coleta: { data_checkout_cliente, data_checkout_unidade, data_checkin_cliente, data_checkin_unidade, latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, coleta_id }
+    
     const { coleta, distancia_checkin } = dados;
     
     let stateInitial = {}

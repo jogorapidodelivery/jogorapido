@@ -53,18 +53,18 @@ export default function Coleta({ route: { index, stateFence, navigation, jumpToC
         }
     });
     if (dados === null) return null;
-    const { produtos, coleta: { cliente, data_checkout_cliente, data_checkout_unidade, data_checkin_cliente, data_checkin_unidade, coleta_id }} = dados;
-    console.log({ data_checkin_unidade, data_checkout_unidade, cliente})
+    const { produtos, coleta: { data_checkout_cliente, data_checkout_unidade, data_checkin_cliente, data_checkin_unidade, coleta_id }} = dados;
     const fenceCliente = stateFence[`clienteColetaId_${coleta_id}`];
     dados.distanciaMinClienteOk = fenceCliente.dentroDoRaio;
     dados.distanciaEmLinhaCliente = fenceCliente.distancia;
     dados.distanciaEmLinhaEstabelecimento = fenceEstabelecimento.distancia;
     dados.distanciaMinEstabelecimentoOk = fenceEstabelecimento.dentroDoRaio;
-    const [abaSelecionada, setAbaSelecionada] = useState(!empty(data_checkin_unidade) ? 1 : 0);
+    const [abaSelecionada, setAbaSelecionada] = useState(data_checkin_unidade === null ? 0 : 1);
+    console.log({ data_checkin_unidade, data_checkout_unidade, abaSelecionada})
     dados.abaSelecionada = abaSelecionada;
     useEffect(() => {
-        dados.abaSelecionada = 1;
-        setAbaSelecionada(1);
+        dados.abaSelecionada = data_checkin_unidade === null ? 0 : 1;
+        setAbaSelecionada(dados.abaSelecionada);
     }, [data_checkin_unidade])
     function _toogleTab(tabIndex) {
         if (!empty(data_checkin_unidade) || (abaSelecionada === 1 && tabIndex !== 1)) {

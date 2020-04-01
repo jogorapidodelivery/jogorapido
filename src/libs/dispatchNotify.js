@@ -25,7 +25,10 @@ if (Platform.OS === "android") {
     firebase.notifications().android.createChannel(channel);
 }
 const prepareParams = response => {
-    if (typeof response.coleta === "string") response.coleta = JSON.parse(response.coleta);
+    if (typeof response.coleta === "string") {
+        response.coleta = response.coleta.replace(/[/\"]/gi, '"').replace(/(\"\[\{\")/gi, '[{"').replace(/(\"\}\]\")/gi, '}]"');
+        response.coleta = JSON.parse(response.coleta);
+    }
     let { acao, type, coleta: [{
         data_hora_atual,
         data_notificacao,
