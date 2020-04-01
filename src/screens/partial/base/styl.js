@@ -62,6 +62,7 @@ export default StyleSheet.create({
     warp: {
         flex: 1,
         zIndex:10,
+        overflow:"hidden",
         borderTopEndRadius: 10,
         borderTopLeftRadius: 10,
         backgroundColor: cor["07"],
