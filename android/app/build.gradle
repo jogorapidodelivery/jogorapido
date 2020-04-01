@@ -159,8 +159,8 @@ android {
         multiDexEnabled true
         // versionCode vCode
         // versionName vName
-        versionCode 10010008
-        versionName "1.1.8"
+        versionCode 20010001
+        versionName "2.0.1"
     }
     splits {
         abi {
