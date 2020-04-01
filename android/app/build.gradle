@@ -160,7 +160,7 @@ android {
         // versionCode vCode
         // versionName vName
         versionCode 20010001
-        versionName "2.0.1"
+        versionName "2.1.1"
     }
     splits {
         abi {
