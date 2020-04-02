@@ -1,12 +1,10 @@
 {
   "name": "jogorapido",
-  "displayName": "Jogo Rápido",
-  "applestoryid": "?",
+  "displayName": "JogoRápido",
   "googleplayid": "com.jogorapido",
-  "facebookID": "?",
   "baseUrl": {
-    "on":"https://beta.jogorapido.delivery/app/",
-    "off":"https://beta.jogorapido.delivery/app/"
+    "on":"https://jogorapido.delivery/app/",
+    "off":"https://jogorapido.delivery/app/"
   },
   "baseUrlNode":{
     "on": "https://jogorapido.delivery:22600/",

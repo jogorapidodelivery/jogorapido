@@ -25,6 +25,7 @@ if (Platform.OS === "android") {
     firebase.notifications().android.createChannel(channel);
 }
 const prepareParams = response => {
+    console.log({ action:"dispatchNotify/prepareParams"})
     if (typeof response.coleta === "string") {
         response.coleta = response.coleta.replace(/[/\"]/gi, '"').replace(/(\"\[\{\")/gi, '[{"').replace(/(\"\}\]\")/gi, '}]"');
         response.coleta = JSON.parse(response.coleta);
@@ -73,6 +74,7 @@ const prepareParams = response => {
     return undefined
 }
 const createNotifier = (coleta_id) => {
+    console.log({ action: "dispatchNotify/createNotifier", coleta_id })
     const notification = new firebase.notifications.Notification({
         notificationId:"notificationId",
         title: coleta_id,
@@ -100,6 +102,7 @@ const createNotifier = (coleta_id) => {
     return notification;
 }
 const renderNotifierDisplay = (notification, tempo_aceite, coleta_id, _resolve) => {
+    console.log({ action: "dispatchNotify/renderNotifierDisplay", tempo_aceite, coleta_id })
     if (empty(coleta_id)) {
         console.warn({ falha: "PARAMS BRIGATÓRIOS VAZIO", coleta_id })
         return false
@@ -136,8 +139,7 @@ const renderNotifierDisplay = (notification, tempo_aceite, coleta_id, _resolve) 
 
 const switchActions = ({type, acao, coleta}) => {// status_coleta_id, acao, type
     const [{status_coleta_id}] = coleta;
-    // const { autenticacao: { coleta: coletaAtual}} = GrupoRotas.store.getState();
-    // if (!empty(coletaAtual) && coletaAtual.length > 0) return false;
+    console.log({ action: "switchActions", acao, status_coleta_id });
     switch (acao) {
         case "nova_coleta":
             switch (status_coleta_id) {
@@ -169,6 +171,7 @@ export const triggerDestroyTimerProgress = () => {
     notificarColetaId = undefined;
 }
 export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
+    console.log({ action: "dispatchNotify/triggerNotifier"})
     if (!empty(message)) {
         const post = prepareParams(message);
         if (post !== undefined) {

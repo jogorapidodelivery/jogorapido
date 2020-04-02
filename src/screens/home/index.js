@@ -78,8 +78,6 @@ export default class Home extends PureComponent {
     }
     _updateColeta = (onComplete) => {
         actionAutenticar().then(({response}) => {
-            console.log("UPDATE")
-            console.log(response)
             dispatchNotifierOnResultGeofenceHttp(response);
             if (onComplete) onComplete()
         }).catch(({ mensagem}) => {

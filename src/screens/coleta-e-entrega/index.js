@@ -4,20 +4,18 @@ import { Dimensions, View, Text, TouchableOpacity } from "react-native";
 import { TabView, SceneMap } from 'react-native-tab-view';
 import LinearGradient from "react-native-linear-gradient";
 import { useSelector } from 'react-redux';
-import { coletaBuscarProdutos } from "@actions/";
+import { coletaBuscarProdutos, actionAutenticar } from "@actions/";
 import BaseScreen from "@screens/partial/base/index";
 import styl from "./styl";
 import { ScrollView } from "react-native-gesture-handler";
 import { cor } from "@root/app.json";
-import { empty, km2String } from "sd/uteis/StringUteis";
+import { empty, km2String } from "@sd/uteis/StringUteis";
 import { GrupoRotas } from "@sd/navigation/revestir";
 import { destroyFence, addFence, calcFence } from "@sd/uteis/permissions/index";
 const initialLayout = { width: Dimensions.get('window').width };
 export default function Coletas(props) {
     const dados = useSelector(({ autenticacao: { distancia_checkin, coleta } }) => ({distancia_checkin, coleta}));
     if (empty(dados.coleta) || dados.coleta.length === 0) return null;
-
-    
     const { coleta, distancia_checkin } = dados;
     
     let stateInitial = {}
@@ -137,6 +135,23 @@ export default function Coletas(props) {
             minWidth = initialLayout.width / 3.3
             break;
     }
+    function _updateColeta(onComplete){
+        actionAutenticar().then(({ response:{coleta} }) => {
+            const voltarParaHome = (empty(coleta) ? [] : coleta).filter(({ status_coleta_id }) => status_coleta_id === 1).length > 0
+            console.log({ voltarParaHome})
+            if (onComplete) onComplete()
+        }).catch((_err) => {
+            if (onComplete) {
+                onComplete();
+                props.navigation.push("alerta", {
+                    params: {
+                        titulo: "JogoRápido",
+                        mensagem: _err.mensagem || "Ocorreu um erro ao recarregar os dados da coleta."
+                    }
+                })
+            }
+        });
+    }
     function renderMenuScroll() {
         if (empty(titles) || titles.length <= 1)return null;
         return <View style={styl.shadow}>
@@ -165,6 +180,8 @@ export default function Coletas(props) {
         <BaseScreen
             style={styl.container}
             tituloBold="INFORMAÇÕES"
+            onRefresh={_updateColeta}
+            navigation={props.navigation}
             titulo={` (coleta #${coleta_ids[index]})`}
             footerFix={renderMenuScroll}
         >
