@@ -20,7 +20,8 @@ const requestExternalStoreageRead = async () => {
         return granted == PermissionsAndroid.RESULTS.GRANTED
     }
     catch (_err) {
-        Sentry.captureException(_err);
+        Sentry.addBreadcrumb({ action: "home/Menu/partial/header", mensagem: "Falha na solicitação da permissão READ_EXTERNAL_STORAGE" });
+        console.log(_err);
         return false;
     }
 }

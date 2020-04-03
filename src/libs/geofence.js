@@ -25,7 +25,7 @@ export const setUserBackground = async usuario_id => {
             },
         })
     } catch(_err) {
-        Sentry.captureException(_err);
+        Sentry.addBreadcrumb({ action: "geofence/setUserBackground", mensagem:"RSA or BackgroundGeolocation.setConfig failed" });
         Alert.alert("Erro", `${_err}`);
     }
 }
@@ -34,16 +34,17 @@ export const bgLocationFetch = () => {
         if (response.success){
             if (!empty(response.responseText) && response.responseText.length > 20) {
                 try {
-                    let { data } = JSON.parse(response.responseText);
+                    const response = JSON.parse(response.responseText);
+                    const { data } = response || {}
                     dispatchNotifierOnResultGeofenceHttp(data);
                 } catch (_err) {
-                    Sentry.captureException(_err);
+                    Sentry.captureMessage("GEOFENCE CATCH PARSE: " + response.responseText);
                 }
             } else {
-                Sentry.captureMessage("GEOFENCE: Falha ao enviar os dados do geofence");
+                Sentry.captureMessage("GEOFENCE DADOS INVÁLIDOS: " + response.responseText);
             }
         } else {
-            Sentry.captureMessage("GEOFENCE:"+response.responseText);
+            Sentry.captureMessage("GEOFENCE AJAX ERROR:"+response.responseText);
             console.log(response.responseText);
         }
     });

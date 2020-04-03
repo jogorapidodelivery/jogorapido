@@ -50,6 +50,7 @@ export default function Coletas(props) {
             navigation: props.navigation
         }
     })
+    
     const [index, setIndex] = useState(0);
     const [routes] = useState(titles);
     const renderScene = SceneMap(scenes);
@@ -136,11 +137,33 @@ export default function Coletas(props) {
             break;
     }
     function _updateColeta(onComplete){
-        actionAutenticar().then(({ response:{coleta} }) => {
-            const voltarParaHome = (empty(coleta) ? [] : coleta).filter(({ status_coleta_id }) => status_coleta_id === 1).length > 0
-            console.log({ voltarParaHome})
+        actionAutenticar(false).then(({ response }) => {
+            const { coleta } = response;
+            const voltarParaHome = (empty(coleta) ? [] : coleta).filter(({ status_coleta_id }) => status_coleta_id === 1).length === 0
+            if (voltarParaHome) {
+                let mensagem = "";
+                if (coleta_ids.length > 1) {
+                    let coleta_id_lasted = coleta_ids.pop();
+                    mensagem = `As coletas ${coleta_ids.join(", ")} e ${coleta_id_lasted} foram canceladas`
+                } else {
+                    mensagem = `A coleta ${coleta_ids.join(", ")} foi cancelada`
+                }
+                props.navigation.push("alerta", {
+                    params: {
+                        titulo: "JogoRápido",
+                        mensagem,
+                        onPress:() => {
+                            let store = GrupoRotas.store.getState();
+                            store.autenticacao.coleta = [];
+                            store.autenticacao.produtos = [];
+                            props.navigation.navigate("home");
+                        }
+                    }
+                })
+            }
             if (onComplete) onComplete()
         }).catch((_err) => {
+            console.log(_err);
             if (onComplete) {
                 onComplete();
                 props.navigation.push("alerta", {

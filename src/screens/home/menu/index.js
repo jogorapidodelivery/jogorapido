@@ -25,7 +25,7 @@ export default function Menu({ navigation}){
                 Sentry.setRelease(update.appVersion + ':' + update.label);
             }
         }).catch(_err => {
-            Sentry.captureException(_err);
+            Sentry.addBreadcrumb({ action: "home/Menu", mensagem: "Falha ao recupear a versão do Geofence" });
         });
         return () => {
             // ?

@@ -167,8 +167,8 @@ export default class Disponibilidade extends PureComponent {
     }
     render() {
         const { sd: { semana, diaSelecionado, itemsSelecionados } } = this.props;
+        if (semana.length < diaSelecionado) return null;
         const { data } = semana[diaSelecionado];
-        console.log(JSON.stringify({ semana, diaSelecionado, itemsSelecionados }));
         return <BaseScreen
             style={styl.container}
             tituloBold="MINHA"

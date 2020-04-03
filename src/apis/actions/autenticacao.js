@@ -1,5 +1,6 @@
 import firebase from "react-native-firebase";
 import { Platform, Linking, Alert} from "react-native";
+
 import { AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
 import { actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
@@ -28,7 +29,8 @@ const checarSeAppEstaAtualizado = versao_app => {
         }
     }
 }
-export const actionAutenticar = () => {
+// ?
+export const actionAutenticar = (hasDispatchRedux = true) => {
     return new Promise((_resolve, _reject) => {
         try{
             firebase.notifications().removeAllDeliveredNotifications();
@@ -40,7 +42,7 @@ export const actionAutenticar = () => {
                 const body_rsa = decodeCipherCaesar(value);
                 const { usuario: email } = body_rsa
                 Sentry.setUser({ email });
-                const _action = actionFetchItem(AUTENTICAR, "usuario/login", false);
+                const _action = actionFetchItem(AUTENTICAR, "usuario/login", false, hasDispatchRedux);
                 _action({ body_rsa }).then((_response) => {
                     const { response: { versao_app } } = _response;
                     checarSeAppEstaAtualizado(versao_app)
@@ -64,8 +66,11 @@ export const actionAutenticarFacebook = () => {
                     _reject({ mensagem: "Login facebook cancelado" })
                 } else {
                     AccessToken.getCurrentAccessToken().then((data) => {
-                        const { accessToken } = data
-                        fetch("https://graph.facebook.com/v2.5/me?fields=email,first_name,last_name&access_token=" + accessToken)
+                        const { accessToken } = data || {}
+                        if (empty(accessToken)) {
+                            _reject({ status: "erro", mensagem: `Falha ao obter dados de seu login no facebook` })
+                        } else {
+                            fetch("https://graph.facebook.com/v2.5/me?fields=email,first_name,last_name&access_token=" + accessToken)
                             .then((response) => response.json())
                             .then((_json) => {
                                 const { email, first_name, last_name, id } = _json
@@ -79,6 +84,7 @@ export const actionAutenticarFacebook = () => {
                             .catch(() => {
                                 _reject({ status:"erro", mensagem: `Falha ao obter dados de seu login no facebook` })
                             })
+                        }
                     })
                 }
             },

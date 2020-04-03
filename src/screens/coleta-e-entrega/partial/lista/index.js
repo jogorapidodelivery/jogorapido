@@ -13,7 +13,7 @@ export default class Lista extends Component {
     constructor(props){
         super(props)
         this.state = {
-            data: props.data
+            data: props.data || []
         }
     }
     _press = ({ index}) => {
