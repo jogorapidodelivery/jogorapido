@@ -46,25 +46,29 @@ const prepareParams = response => {
     }
     if (!empty(GrupoRotas.store)) {
         const state = GrupoRotas.store.getState();
-        if (!empty(state.autenticacao)) {
-            let { autenticacao: { tempo_aceite } } = state;
-            if (tempo_aceite) {
-                const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
-                const tempo_aceite_restante = tempo_aceite - mill;
-                if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
-                    return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id
+        if (!empty(state)) {
+            if (!empty(state.autenticacao)) {
+                let { autenticacao: { tempo_aceite } } = state;
+                if (tempo_aceite) {
+                    const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
+                    const tempo_aceite_restante = tempo_aceite - mill;
+                    if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
+                        return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id }
+                    } else {
+                        Sentry.addBreadcrumb({ action: "dispatchNotify::prepareParams", tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao });
+                        console.log("prepareParams:", {tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao});
                     }
                 } else {
-                    Sentry.addBreadcrumb({ action: "dispatchNotify::prepareParams", tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao });
-                    console.log("prepareParams:", {tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao});
+                    Sentry.addBreadcrumb({ action:"dispatchNotify::prepareParams", tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante });
+                    console.log("prepareParams tempo_aceite empty", { tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante})
                 }
             } else {
-                Sentry.addBreadcrumb({ action:"dispatchNotify::prepareParams", tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante });
-                console.log("prepareParams tempo_aceite empty", { tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante})
+                Sentry.captureMessage("prepareParams autenticacao empty");
+                console.log("prepareParams autenticacao empty")
             }
         } else {
-            Sentry.captureMessage("prepareParams autenticacao empty");
-            console.log("prepareParams autenticacao empty")
+            Sentry.captureMessage("prepareParams state empty");
+            console.log("prepareParams state empty")
         }
     } else {
         Sentry.captureMessage("prepareParams GrupoRotas.store empty");

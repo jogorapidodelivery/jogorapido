@@ -27,7 +27,7 @@ export default class Disponibilidade extends Component {
     }
     load(_resolve, status_periodo){
         this.status_periodo = status_periodo;
-        const { sd:{entregador_id}, navigation:{push} } = this.props;
+        const { navigation: { push }, sd:{entregador_id} } = this.props;
         if (!this.state.loading) this.setState({loading:true});
         buscarExtrato({
             body_post: {

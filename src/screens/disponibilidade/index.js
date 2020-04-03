@@ -36,7 +36,7 @@ export default class Disponibilidade extends PureComponent {
         }
     }
     load(_resolve) {
-        const { usuario_id, disponibilidade } = this.props.sd;
+        const { navigation: { push }, sd:{usuario_id, disponibilidade} } = this.props;
         buscarDisponibilidade({
             body_view:{
                 disponibilidade

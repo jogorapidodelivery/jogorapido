@@ -26,9 +26,9 @@ export default class MinhaEscalaItem extends PureComponent {
                     <Text style={[stylDefault.span, styl.titulo, { color: corTitulo}]}>{disponibilidade}</Text>
                     <Text style={[stylDefault.span, { color: corHorario}]}>{horario}</Text>
                 </View>
-                {actived && <View style={styl.warpActived}>
+                {/* {actived && <View style={styl.warpActived}>
                     <Text style={styl.actived}></Text>
-                </View>}
+                </View>} */}
             </TouchableOpacity>
         </AnimatableView>
     }
