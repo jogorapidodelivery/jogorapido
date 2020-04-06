@@ -105,20 +105,27 @@ const createNotifier = (coleta_id) => {
     }
     return notification;
 }
-const renderNotifierDisplay = (notification, tempo_aceite, coleta_id, _resolve) => {
+const renderNotifierDisplay = (notification, tempo_aceite, _tempo_aceite_restante, coleta_id, _resolve, _reject) => {
     console.log({ action: "dispatchNotify/renderNotifierDisplay", tempo_aceite, coleta_id })
     if (empty(coleta_id)) {
-        console.warn({ falha: "PARAMS BRIGATÓRIOS VAZIO", coleta_id })
+        _reject();
+        console.log({ falha: "PARAMS BRIGATÓRIOS VAZIO coleta_id = undefined" })
+        Sentry.captureMessage("PARAMS BRIGATÓRIOS VAZIO coleta_id = undefined");
         return false
     }
     
-    if (notificarColetaId !== undefined) return false;
+    if (notificarColetaId !== undefined) {
+        _reject();
+        console.log("coleta notificarColetaId = " + notificarColetaId);
+        Sentry.captureMessage("PARAMS BRIGATÓRIOS VAZIO notificarColetaId = " + notificarColetaId);
+        return false;
+    }
     const startTimer = (new Date()).getTime()
     const loopInterval = () => {
         const endtimer = (new Date()).getTime();
         const counter = (endtimer - startTimer) / 1000;
         if (counter > tempo_aceite) {
-            if (timerInProcess) clearInterval(timerInProcess);
+            if (timerInProcess !== undefined) clearInterval(timerInProcess);
             timerInProcess = undefined;
             notificarColetaId = undefined;
             _resolve()
@@ -189,7 +196,7 @@ export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
                     triggerDestroyTimerProgress();
                     SDNavigation.navegar.popToTop();
                     _resolve();
-                })
+                }, _reject)
             } else {
                 _reject();
                 Sentry.addBreadcrumb({ falha: "DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", ...post});

@@ -16,7 +16,7 @@ export const dispatchNotifierOnResultGeofenceHttp = data => {
 }
 export const setUserBackground = async usuario_id => {
     console.log("ADD USER_ID IN GEOFENCE BACKGROUND");
-    try{
+    try {
         const postdata = await RSA.encrypt(JSON.stringify(usuario_id), PUBLIC_KEY_RSA);
         BackgroundGeolocation.setConfig({
             params: {
