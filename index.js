@@ -1,4 +1,4 @@
-import { AppRegistry, Text } from "react-native";
+import { AppRegistry, Text, TextInput } from "react-native";
 import App from '@src/App';
 import { YellowBox } from 'react-native';
 import { name as appName } from '@root/app.json';
@@ -10,6 +10,9 @@ import * as Sentry from '@sentry/react-native';
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
+
+TextInput.defaultProps = TextInput.defaultProps || {};
+TextInput.defaultProps.allowFontScaling = false;
 
 YellowBox.ignoreWarnings([
     'VirtualizedLists should never be nested',

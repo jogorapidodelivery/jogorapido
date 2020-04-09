@@ -38,7 +38,7 @@ export default class Rota extends PureComponent {
         // 
         return {
             distancia: data_checkin_cliente ? undefined : dist,
-            // tempo: "20 min",
+            btnRouter: data_checkin_unidade ? false : true,
             telefone:null,
             titulo: unidade,
             destino: `${endereco_unidade}, ${bairro_unidade}, ${this.numeroUnidade} ${cidade_unidade} CEP: ${cep_unidade.replace(/\D/g, "").replace(/^(\d{2})(\d{3})(\d)/g, "$1.$2-$3")}${this.complementoUnidade}`,
@@ -64,11 +64,12 @@ export default class Rota extends PureComponent {
         return "";
     }
     get dadosCliente() {
-        const { coleta: { telefone_celular, horaChegadaCliente, horaSaidaCliente, data_checkin_unidade, cep_cliente, cidade_cliente, endereco_cliente, bairro_cliente, tempo_rota_unidade_cliente, latitude_cliente, longitude_cliente, cliente, distancia_unidade_cliente } } = this.props
+        const { coleta: { telefone_celular, horaChegadaCliente, horaSaidaCliente, data_checkout_unidade, data_checkin_unidade, cep_cliente, cidade_cliente, endereco_cliente, bairro_cliente, tempo_rota_unidade_cliente, latitude_cliente, longitude_cliente, cliente, distancia_unidade_cliente } } = this.props
         return {
             distancia: distancia_unidade_cliente + "km",
             tempo: tempo_rota_unidade_cliente,
             titulo: cliente,
+            btnRouter: !empty(data_checkout_unidade),
             telefone: telefone_celular,
             destino: `${endereco_cliente}, ${bairro_cliente}, ${this.numeroCliente} ${cidade_cliente} cep: ${cep_cliente.replace(/\D/g, "").replace(/^(\d{2})(\d{3})(\d)/g, "$1.$2-$3")} ${this.complementoCliente}`,
             latitude: data_checkin_unidade ? latitude_cliente : undefined,
@@ -78,9 +79,7 @@ export default class Rota extends PureComponent {
         }
     }
     render() {
-        const { coleta: { data_checkout_unidade, telefone_celular}} = this.props;
-
-        return [this.dadosUnidade, this.dadosCliente].map(({ telefone, distancia, tempo, titulo, destino, latitude, longitude, chegada, espera}, key) => <Fragment key={`entrega-${key}`}>
+        return [this.dadosUnidade, this.dadosCliente].map(({ btnRouter, telefone, distancia, tempo, titulo, destino, latitude, longitude, chegada, espera}, key) => <Fragment key={`entrega-${key}`}>
             <Text style={[stylDefault.p, styl.p]}><Text style={styl.strong}>{tempo || distancia}</Text> {tempo && `( ${distancia} )`} {key === 0 ? "até a coleta" : ""}</Text>
                 <View style={styl.btn}>
                     <Text style={[stylDefault.icon, styl.icon, {color: key === 0 ? cor["08"] : cor["10"]}]}>{key === 0 ? icCenter : icMarker}</Text>
@@ -99,7 +98,7 @@ export default class Rota extends PureComponent {
                         </View>}
                     </View>
                 </View>
-            {latitude && !empty(data_checkout_unidade) && <GroupButton {...{ telefone, latitude, longitude}}/>}
+            {latitude && btnRouter && <GroupButton {...{ telefone, latitude, longitude}}/>}
             </Fragment>)
     }
 }

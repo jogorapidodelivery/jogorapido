@@ -1,7 +1,7 @@
 import firebase from "react-native-firebase";
 import { Platform, Linking, Alert} from "react-native";
 
-import { AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
+import { CRIAR_CONTA, AUTENTICAR, CONECTAR, RECUPERAR_SENHA, CHECAR_SIMBOLO_EMAIL, ALTERAR_SENHA, VALIDAR_EMAIL } from "@constants/";
 import { actionFetchItem} from "@sd/uteis/CreateActions";
 import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from "@sd/uteis/CipherCaesar";
@@ -96,6 +96,8 @@ export const actionAutenticarFacebook = () => {
     })
 }
 // COLETA_NOVA
+
+export const actionCriarContaViaFormulario = actionFetchItem(CRIAR_CONTA, "usuario/criar-conta");
 export const actionLogin = actionFetchItem(CONECTAR, "usuario/login");
 export const actionRecuperarSenha = actionFetchItem(RECUPERAR_SENHA, "usuario/recuperar-senha");
 export const actionChecarTokenEmail = actionFetchItem(CHECAR_SIMBOLO_EMAIL, "usuario/checar-token-email");

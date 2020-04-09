@@ -29,7 +29,7 @@ export default class Conectar extends PureComponent {
     }
     _fetchLogin = (response, _callBackUnlock) => {
         actionLogin(response).then(() => {
-            const { body_rsa: { usuario: email } } = response
+            const { body_rsa: { usuario: email } } = response;
             Sentry.setUser({ email });
             openPageStart(this.props.navigation)
             _callBackUnlock();
@@ -45,6 +45,7 @@ export default class Conectar extends PureComponent {
             _callBackUnlock();
         })
     }
+    
     _submit = _callBackUnlock => {
         this.form.check().then((res) => {
             this._fetchLogin(res, _callBackUnlock);
@@ -54,11 +55,15 @@ export default class Conectar extends PureComponent {
         })
     }
     _facebookLogin = _callBackUnlock => {
-        actionAutenticarFacebook().then(({ social_id, email: usuario, foto}) => {
+        actionAutenticarFacebook().then(({ social_id, email, nome, foto}) => {
             this._fetchLogin({
                 body_rsa:{
                     social_id,
-                    usuario,
+                    nome,
+                    sexo:"M",
+                    usuario: email,
+                },
+                body_post:{
                     foto
                 }
             }, _callBackUnlock);
@@ -80,6 +85,12 @@ export default class Conectar extends PureComponent {
         }
         this.setState({ passWordStyle: { type, value, color }});
     }
+    _irparaRecuperarSenha = () => {
+        this.props.navigation.navigate("recuperarSenha")
+    }
+    _irparaCriarConta = () => {
+        this.props.navigation.navigate("criarConta")
+    }
     render() {
         const { passWordStyle } = this.state;
         return <BaseScreen
@@ -98,12 +109,14 @@ export default class Conectar extends PureComponent {
                 <Button nome="Entrar" text={{ value: "Entrar", color:"07" }} onPressAwait={this._submit} bg="14" />
             </AnimatableView>
             <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={700}>
-                <Button nome="Opa! esqueci minha senha?" text={{ value: "Opa! esqueci minha senha?", color:"03", style:styl.textoSenha }} onPress={() => this.props.navigation.navigate("recuperarSenha")} />
+                <Button nome="Opa! esqueci minha senha?" text={{ value: "Opa! esqueci minha senha?", color: "03", style: styl.textoSenha }} onPress={this._irparaRecuperarSenha} />
             </AnimatableView>
-            {false && <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={800}>
+            <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={800}>
                 <Button nome="Facebook" text={{ value: <Text><Text style={stylDefault.normal}>Entrar com </Text>Facebook</Text>, color: "07" }} onPressAwait={this._facebookLogin} bg="11" style={styl.btnLoginSocial} />
-            </AnimatableView>}
-            {false && <Button nome="Cadastro" text={{ value: <Text><Text style={stylDefault.normal}>Não está registrado? </Text><Text style={[styl.textCadastro]}>Cadastre-se</Text></Text>, color: "03", style: styl.textoSenha }} onPressAwait={actionUnlook => { if (false) actionUnlook() }} style={styl.btn} />}
+            </AnimatableView>
+            <AnimatableView animation="fadeInUp" useNativeDriver={true} delay={900}>
+                <Button nome="Cadastro" onPress={this._irparaCriarConta} text={{ value: <Text><Text style={stylDefault.normal}>Não está registrado? </Text><Text style={[styl.textCadastro]}>Cadastre-se</Text></Text>, color: "03", style: styl.textoSenha }} style={styl.btn} />
+            </AnimatableView>
         </BaseScreen>
     }
 }

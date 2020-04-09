@@ -13,9 +13,7 @@ export default {
     },
     reducers:{
         autenticacao: {
-            [CRIAR_CONTA]: (state, _action) => {
-                return state;
-            },
+            
             [CONECTAR_FACEBOOK]: (state, _action) => {
                 return state;
             },
@@ -37,7 +35,7 @@ export default {
                 }
                 return { ...state, ...response };
             },
-            [[ALTERAR_SENHA, CONECTAR, AUTENTICAR]]: (state, { response, posted: { senha, usuario } }) => {
+            [[ALTERAR_SENHA, CONECTAR, AUTENTICAR, CRIAR_CONTA]]: (state, { response, posted: { senha, usuario } }) => {
                 response.total_frete_semana = moeda(response.total_frete_semana, "");
                 if (response.disponibilidade) {
                     response.disponibilidade = response.disponibilidade.map(v => {
