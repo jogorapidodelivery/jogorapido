@@ -7,7 +7,8 @@ export const openPageStart = async (navigation, delay = 0) => {
     let params = {};
     const state = GrupoRotas.store.getState();
     if (getItemByKeys(state, "autenticacao.usuario_id") !== undefined) {
-        const { autenticacao: { email: usuario, usuario_id, email_verificado, coleta } } = state;
+        let { autenticacao: { email, usuario, usuario_id, email_verificado, coleta } } = state;
+        if (empty(usuario)) usuario = email;
         if (usuario_id) await setUserBackground({ usuario_id });
         if (email_verificado) {
             _router = findRenderPage(coleta)

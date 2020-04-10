@@ -35,10 +35,10 @@ export default class CadastrarPlayer extends PureComponent {
             }
         }).then(response => {
             actionCriarContaViaFormulario(response).then(() => {
+                _callBackUnlock();
                 const { body_rsa: { usuario: email } } = response;
                 Sentry.setUser({ email });
                 openPageStart(this.props.navigation)
-                _callBackUnlock();
             }).catch(_resp => {
                 const { mensagem } = _resp;
                 Sentry.addBreadcrumb({ action: "conectar/actionLogin:catch", ..._resp, ...response });

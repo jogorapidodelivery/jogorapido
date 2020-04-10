@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { actionValidarEmail } from "@actions/";
 import CapturarEmailOuTelefone from "@screens/partial/capturar-email-ou-telefone";
-import { getItemByKeys } from "@sd/uteis/ArrayUteis";
+import { empty } from "sd/uteis/StringUteis";
 export default class ValidarEmail extends PureComponent {
     static mapStateToProps = ["autenticacao"]
     _enviarCodigo = _s => {
@@ -22,7 +22,7 @@ export default class ValidarEmail extends PureComponent {
     }
 
     render() {
-        const { autenticacao: { entregador_id, usuario_id, usuario } } = this.props.sd;
+        let { autenticacao: { entregador_id, usuario_id, email: usuario } } = this.props.sd;
         return <CapturarEmailOuTelefone
             titulo="EMAIL"
             tituloBold="CONFIRMAR"
