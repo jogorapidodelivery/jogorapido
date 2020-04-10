@@ -1,4 +1,6 @@
+import { empty } from "sd/uteis/StringUteis";
 export const getItemByKeys = (_obj, _like, _empty = undefined) => {
+    if (empty(_obj)) return _empty;
     _like = _like.split(".")
     if (_obj[_like[0]] === undefined) return _empty
     return _like.reduce((xs, x) => (xs && xs[x]) ? xs[x] : _empty, _obj)

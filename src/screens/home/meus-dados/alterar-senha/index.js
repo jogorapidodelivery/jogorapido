@@ -3,6 +3,7 @@ import { actionAlterarSenha } from "@actions/";
 import CapturarEmailOuTelefone from "@screens/partial/capturar-email-ou-telefone";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 export default class MeusDadosAlterarSenha extends PureComponent {
+    
     _submit = _s => {
         actionAlterarSenha(_s).then(_r => {
             this.props.navigation.navigate("home");

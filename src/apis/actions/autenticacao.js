@@ -30,6 +30,7 @@ const checarSeAppEstaAtualizado = versao_app => {
     }
 }
 // ?
+
 export const actionAutenticar = (hasDispatchRedux = true) => {
     return new Promise((_resolve, _reject) => {
         try{
@@ -39,7 +40,9 @@ export const actionAutenticar = (hasDispatchRedux = true) => {
         }
         AsyncStorage.getItem(AUTENTICAR).then(value => {
             if(value != null) {
-                const body_rsa = decodeCipherCaesar(value);
+                let body_rsa = decodeCipherCaesar(value);
+                console.log("ANALISA AQUI EM BAIXO");
+                console.log(body_rsa);
                 const { usuario: email } = body_rsa
                 Sentry.setUser({ email });
                 const _action = actionFetchItem(AUTENTICAR, "usuario/login", false, hasDispatchRedux);

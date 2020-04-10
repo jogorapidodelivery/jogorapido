@@ -3,6 +3,7 @@ import { actionValidarEmail } from "@actions/";
 import CapturarEmailOuTelefone from "@screens/partial/capturar-email-ou-telefone";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
 export default class ValidarEmail extends PureComponent {
+    static mapStateToProps = ["autenticacao"]
     _enviarCodigo = _s => {
         actionValidarEmail(_s).then(_r => {
             this.props.navigation.navigate("checarTokenEmailGoHome", {
@@ -19,9 +20,9 @@ export default class ValidarEmail extends PureComponent {
             })
         })
     }
+
     render() {
-        const usuario = getItemByKeys(this.props, "navigation.state.params.params.usuario", "dev@jogorapido.com.br");
-        // navigation={this.props.navigation}
+        const { autenticacao: { entregador_id, usuario_id, usuario } } = this.props.sd;
         return <CapturarEmailOuTelefone
             titulo="EMAIL"
             tituloBold="CONFIRMAR"
@@ -31,6 +32,7 @@ export default class ValidarEmail extends PureComponent {
             placeHolder="Digite aqui seu email"
             valueButton="Confirmar email"
             valueInput={usuario}
+            defaultPost={{ body_rsa: { entregador_id, usuario_id} }}
             onSubmit={this._enviarCodigo}
         />
     }

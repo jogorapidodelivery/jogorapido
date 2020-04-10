@@ -62,7 +62,6 @@ export default {
                 const dataTmp = state.semana[diaSelecionado].data[index].data;
                 const data = state.semana[diaSelecionado].data[index].data = empty(dataTmp) ? moment().format() : null;
                 state.itemsSelecionados += data === null ? -1 : 1;
-                console.log({ action:"reducer", index, diaSelecionado, data});
                 return {...state}
             },
             [MUDAR_DE_ABA_EM_DISPONIBILIDADE]: (state, { index}) => {

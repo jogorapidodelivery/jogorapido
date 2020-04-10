@@ -35,7 +35,8 @@ export default {
                 }
                 return { ...state, ...response };
             },
-            [[ALTERAR_SENHA, CONECTAR, AUTENTICAR, CRIAR_CONTA]]: (state, { response, posted: { senha, usuario } }) => {
+            [[ALTERAR_SENHA, CONECTAR, AUTENTICAR, CRIAR_CONTA]]: (state, { response, posted}) => {
+                const { social_id, senha, usuario } = posted
                 response.total_frete_semana = moeda(response.total_frete_semana, "");
                 if (response.disponibilidade) {
                     response.disponibilidade = response.disponibilidade.map(v => {
@@ -44,10 +45,10 @@ export default {
                     })
                 }
                 const data = formatDateCheckIn(response.coleta);
-                response = { ...response, ...data}
-                // response.coleta = []
-                if (!empty(senha) && !empty(usuario)) {
-                    const _chifed = encodeCipherCaesar({ senha, usuario });
+                response = { ...response, ...data, social_id, senha, usuario}
+                
+                if (!empty(usuario) && (!empty(senha) || !empty(social_id))) {
+                    const _chifed = encodeCipherCaesar({ social_id, senha, usuario });
                     AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {})
                 }
                 return { ...state, ...response, usuario, senha };

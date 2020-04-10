@@ -34,9 +34,7 @@ export default class CadastrarPlayer extends PureComponent {
                 sexo: "M"
             }
         }).then(response => {
-            actionCriarContaViaFormulario(response).then(result => {
-                console.log("resposta do cadastro")
-                console.log(result);
+            actionCriarContaViaFormulario(response).then(() => {
                 const { body_rsa: { usuario: email } } = response;
                 Sentry.setUser({ email });
                 openPageStart(this.props.navigation)

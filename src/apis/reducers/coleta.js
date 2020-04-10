@@ -9,15 +9,12 @@ export default {
     reducers: {
         autenticacao:{
             [COLETA_CHECKIN]: (state, { response: { data }, posted: { coluna, index } }) => {
-                console.log({ COLETA_CHECKIN, data, coluna, index})
                 state.coleta[index][coluna] = data;
                 return { ...state};
             },
             [COLETA_CHECKOUT_UNIDADE]: (state, { response: { data }, posted: { coluna, index } }) => {
-                // console.log({ COLETA_CHECKOUT_UNIDADE, data, coluna, index})
                 state.coleta[index][coluna] = data;
                 state.lastedCheckoutUnidade = state.coleta.filter(({ data_checkout_unidade }) => empty(data_checkout_unidade)).length;
-                console.log("lastedCheckoutUnidade:", state.lastedCheckoutUnidade)
                 return { ...state};
             },
             [COLETA_CHECKIN_UNIDADE]: (state, { response: { data }, posted: { coluna } }) => {
@@ -39,10 +36,7 @@ export default {
                 return { ...state };
             },
             [COLETA_NOVA]: (state, {coleta}) => {
-                console.log(COLETA_NOVA)
-                console.log({coleta})
                 const data = formatDateCheckIn(coleta);
-                console.log({data})
                 return { ...state, ...data };
             },
             [COLETA_NOVA_TEMPO_EXPIRADO]: (state) => {

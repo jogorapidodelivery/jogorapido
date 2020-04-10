@@ -76,16 +76,18 @@ export default class Home extends PureComponent {
         triggerDestroyTimerProgress()
         this.ativarBg = true;
     }
+
     _updateColeta = (onComplete) => {
         actionAutenticar().then(({response}) => {
             dispatchNotifierOnResultGeofenceHttp(response);
             if (onComplete) onComplete()
-        }).catch(({ mensagem}) => {
+        }).catch(_err => {
+            console.log(_err);
             if (onComplete) {
                 this.props.navigation.push("alerta", {
                     params: {
                         titulo: "JogoRápido",
-                        mensagem
+                        mensagem: getItemByKeys(_err, "mensagem", "Falha ao atualizar o usuário")
                     }
                 })
                 onComplete();

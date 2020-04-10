@@ -37,6 +37,7 @@ export default class CapturarEmailOuTelefone extends PureComponent {
         this.setState({ passWordStyle: { type, value, color } });
     }
     _confirmarCodigo = () => {
+        
         const { onSubmit, defaultPost} = this.props
         this.form.check(defaultPost).then(_s => {
             onSubmit(_s)

@@ -1,10 +1,23 @@
 import React, { PureComponent } from "react";
 import { actionChecarTokenEmail } from "@actions/";
+import { AUTENTICAR } from '@constants/';
 import ChecarToken from "@screens/partial/checar-token";
 import { getItemByKeys } from "@sd/uteis/ArrayUteis";
+import { encodeCipherCaesar } from "@sd/uteis/CipherCaesar";
+import AsyncStorage from '@react-native-community/async-storage';
 export default class ChecarTokenEmailGoHome extends PureComponent {
+    static mapStateToProps = ["autenticacao"];
     _confirmarCodigo = _s => {
-        actionChecarTokenEmail(_s).then(_r => {
+        const { usuario} = _s.body_rsa;
+        const { autenticacao: { entregador_id, usuario_id, social_id, senha } } = this.props.sd;
+        actionChecarTokenEmail({
+            body_rsa: {
+                entregador_id, usuario_id,
+                ..._s.body_rsa
+            }
+        }).then(_r => {
+            const _chifed = encodeCipherCaesar({ social_id, senha, usuario });
+            AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => { })
             this.props.navigation.push("home", {
                 params: {
                     ..._s.body_rsa

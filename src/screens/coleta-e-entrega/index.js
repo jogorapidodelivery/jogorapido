@@ -139,7 +139,9 @@ export default function Coletas(props) {
     function _updateColeta(onComplete){
         actionAutenticar(false).then(({ response }) => {
             const { coleta } = response;
-            const voltarParaHome = (empty(coleta) ? [] : coleta).filter(({ status_coleta_id }) => status_coleta_id === 1).length === 0
+            const statusList = [3, 4, 5, 2];
+            const filtered = (empty(coleta) ? [] : coleta).filter(({ status_coleta_id }) => statusList.indexOf(status_coleta_id) !== -1);
+            const voltarParaHome = filtered.length === 0;
             if (voltarParaHome) {
                 let mensagem = "";
                 if (coleta_ids.length > 1) {
@@ -204,7 +206,6 @@ export default function Coletas(props) {
             style={styl.container}
             tituloBold="INFORMAÇÕES"
             onRefresh={_updateColeta}
-            navigation={props.navigation}
             titulo={` (coleta #${coleta_ids[index]})`}
             footerFix={renderMenuScroll}
         >
