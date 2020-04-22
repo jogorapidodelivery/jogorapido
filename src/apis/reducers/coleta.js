@@ -4,7 +4,7 @@ import { COLETA_CHECKOUT_UNIDADE, COLETA_CHECKIN_UNIDADE, COLETA_CHECKOUT_CLIENT
 import { empty } from "sd/uteis/StringUteis";
 export default {
     defaultProps: {
-        coleta: "nome"
+        coleta: []
     },
     reducers: {
         autenticacao:{
@@ -40,14 +40,13 @@ export default {
                 return { ...state, ...data };
             },
             [COLETA_NOVA_TEMPO_EXPIRADO]: (state) => {
-                return { ...state, coleta: {} };
+                return { ...state, coleta: [] };
             },
             [COLETA_ATUALIZAR_STATUS]: (state) => {
                 state.coleta = state.coleta.map((v) => {
                     v.status_coleta_id = 2;
                     return v;
                 });
-                // , coleta: { ...response, ...state.coleta, status_coleta_id: 2 } 
                 return { ...state};
             }
         }

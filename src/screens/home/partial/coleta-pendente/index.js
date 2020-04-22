@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { View, Text, TouchableOpacity} from "react-native";
+import { View, Text} from "react-native";
 import styl from "./styl";
 import { stylDefault } from "@src/stylDefault";
 import Button from "@sd/components/button";
@@ -14,13 +14,11 @@ export const _addressOpenMapsDefaultProps = {
     actionSheetTitle: "Escolha o App",
     actionSheetMessage: "Apps disponíveis"
 }
-
 export default class ColetaPendente extends PureComponent {
     _abrirPedido = ({ acao}) => {
         if (acao !== "cancelar") {
-            const { coleta_ids } = this.props;
-            
-            const body_rsa = { status_coleta_id: 2, coleta_id: coleta_ids.join(",") }
+            const { coleta_ids, entregador_id } = this.props;
+            const body_rsa = { entregador_id, status_coleta_id: 2, coleta_id: coleta_ids.join(",") }
             coletaAtualizarStatus({ body_rsa }).then(() => {
                 triggerDestroyTimerProgress();
                 this.props.navigation.navigate("coletar");

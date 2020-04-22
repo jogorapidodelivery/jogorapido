@@ -10,10 +10,11 @@ import { actionAutenticar } from "@actions/";
 import { dispatchNotifierOnResultGeofenceHttp } from "@libs/geofence";
 import { _addressOpenMapsDefaultProps } from "@screens/coleta-e-entrega/partial/rota/index";
 import { triggerDestroyTimerProgress } from "@libs/dispatchNotify";
+import { empty } from "sd/uteis/StringUteis";
 
 export default class Home extends PureComponent {
-    static mapStateToProps = [ "autenticacao" ]
-    static mapTransformProps = ({ autenticacao: { total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta } }) => {
+    static mapStateToProps = [ "autenticacao" ];
+    static mapTransformProps = ({ autenticacao: { entregador_id, total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta } }) => {
         let coleta_ids = [];
         let tituloColetas = "";
         const getItem = ({ coleta_id, cliente: titulo, latitude_cliente: latitude, longitude_cliente: longitude }) => {
@@ -51,7 +52,7 @@ export default class Home extends PureComponent {
                 tituloColetas += _id;
             }
         }
-        return { coleta_ids, tituloColetas, total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta, coletaFilter };
+        return { entregador_id, coleta_ids, tituloColetas, total_frete_semana, corridas_semana, disponibilidade, tempo_aceite, usuario_id, coleta, coletaFilter };
     }
     constructor(props) {
         super(props)
@@ -79,8 +80,16 @@ export default class Home extends PureComponent {
 
     _updateColeta = (onComplete) => {
         actionAutenticar().then(({response}) => {
-            dispatchNotifierOnResultGeofenceHttp(response);
-            if (onComplete) onComplete()
+            if (!empty(response.coleta) && response.coleta.length > 0) {
+                if (response.coleta[0].status_coleta_id !== 1) {
+                    this.props.navigation.navigate("coletar");
+                } else {
+                    dispatchNotifierOnResultGeofenceHttp(response);
+                }
+            } else {
+                dispatchNotifierOnResultGeofenceHttp(response);
+            }
+            if (onComplete) onComplete();
         }).catch(_err => {
             console.log(_err);
             if (onComplete) {
@@ -96,7 +105,10 @@ export default class Home extends PureComponent {
     }
     
     render() {
-        const { navigation, sd: { coletaFilter, coleta_ids, tituloColetas}} = this.props;
+        console.log("analiza aqui em baixo")
+        console.log(this.props.sd);
+        console.log("fim analiza aqui em baixo")
+        const { navigation, sd: { entregador_id, coletaFilter, coleta_ids, tituloColetas}} = this.props;
         const total = coletaFilter.length;
         const disponibilidade = getItemByKeys(this.props, "sd.disponibilidade")
         const corridas_semana = getItemByKeys(this.props, "sd.corridas_semana")
@@ -111,6 +123,7 @@ export default class Home extends PureComponent {
             <Fragment>
                 {total >= 1 && <ColetaPendente
                     coleta={coletaFilter}
+                    entregador_id={entregador_id}
                     tituloColetas={tituloColetas} 
                     coleta_ids={coleta_ids}
                     navigation={navigation}

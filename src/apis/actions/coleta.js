@@ -1,5 +1,3 @@
-// /coleta/status
-
 import { COLETA_CHECKOUT_UNIDADE, COLETA_CHECKIN_UNIDADE, COLETA_NOVA, COLETA_BUSCAR_PRODUTOS, COLETA_ATUALIZAR_STATUS, COLETA_CHECKIN, COLETA_CHECKOUT_CLIENTE } from "@constants/";
 import { actionFetchItem } from "@sd/uteis/CreateActions";
 

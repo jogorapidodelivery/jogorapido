@@ -43,6 +43,14 @@ allprojects {
             // Android JSC is installed from npm
             url("$rootDir/../node_modules/jsc-android/dist")
         }
+        // bluetooth start
+        maven {
+            url "http://dl.bintray.com/vivareal/maven"
+        }
+        flatDir {
+            dirs "$rootDir/../node_modules/react-native-mpos-native/android/libs"
+        }
+        // bluetooth end
 
         maven { url 'https://jitpack.io' }
     }

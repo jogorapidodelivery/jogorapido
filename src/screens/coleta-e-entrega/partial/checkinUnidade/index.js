@@ -7,7 +7,7 @@ import { empty } from "@sd/uteis/StringUteis";
 import { coletaCheckInUnidade } from "@actions/";
 import { View as ViewAnimatable } from "react-native-animatable";
 import { km2String } from "../../../../../sd/uteis/StringUteis";
-
+import { GrupoRotas } from "@sd/navigation/revestir";
 /*
 data_checkin_unidade:
     * Tem que estar a menos de X metros do estabelecimento
@@ -18,20 +18,36 @@ data_checkin_unidade:
 export default class CheckInUnidade extends PureComponent {
    
     _click = () => {
-        const { onChange, coleta_ids, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
+        const { onChange, coleta_ids, entregador_id, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinEstabelecimentoOk) {
             coletaCheckInUnidade({
                 body_rsa: {
+                    entregador_id,
                     coleta_id: coleta_ids,
                     coluna: "data_checkin_unidade"
                 }
-            }).then(onChange).catch(({ mensagem }) => {
-                navigation.push("alerta", {
-                    params: {
-                        titulo: "JogoRápido",
-                        mensagem
-                    }
-                })
+            }).then(onChange).catch(({ status, mensagem }) => {
+                if (status = "listapedido") {
+                    navigation.push("alerta", {
+                        params: {
+                            titulo: "JogoRápido",
+                            mensagem,
+                            onPress: () => {
+                                let store = GrupoRotas.store.getState();
+                                store.autenticacao.coleta = [];
+                                store.autenticacao.produtos = [];
+                                navigation.navigate("home");
+                            }
+                        }
+                    })
+                } else {
+                    navigation.push("alerta", {
+                        params: {
+                            titulo: "JogoRápido",
+                            mensagem
+                        }
+                    })
+                }
             })
         } else {
             navigation.push("alerta", {

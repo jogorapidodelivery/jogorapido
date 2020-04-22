@@ -28,3 +28,13 @@ const AppUpdater = codePush(codePushOptions)(App);
 AppRegistry.registerComponent(appName, () => AppUpdater);
 initFirebase(triggerNotifier);
 bgLocationFetch();
+
+// import 'react-native-gesture-handler';
+// import React from 'react';
+// import { AppRegistry } from 'react-native';
+// import { createAppContainer } from 'react-navigation';
+// import { name as appName } from './app.json';
+// import RootStack from './src-bluetooth';
+
+// const App = createAppContainer(RootStack);
+// AppRegistry.registerComponent(appName, () => App);

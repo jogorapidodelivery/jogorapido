@@ -14,7 +14,8 @@ import { useSelector } from "react-redux";
 import { moeda } from "@sd/uteis/form/MaskString";
 export default function Coleta({ route: { index, stateFence, navigation, jumpToColeta, jumpToCliente}}) {
     const fenceEstabelecimento = stateFence.estabelecimento;
-    const dados = useSelector(({ autenticacao: { usuario_id, lastedCheckoutUnidade, coleta: coletas, produtos, distancia_checkin } }) => {
+    
+    const dados = useSelector(({ autenticacao: { entregador_id, usuario_id, lastedCheckoutUnidade, coleta: coletas, produtos, distancia_checkin_cliente, distancia_checkin } }) => {
         const coleta_ids = coletas.map(({ coleta_id}) => coleta_id).join(",");
         coletas = coletas[index];
         produtos = empty(produtos) ? [] : produtos.filter(({ coleta_id }) => coleta_id === coletas.coleta_id).map(({ produto, qtd, sub_total }) => {
@@ -37,6 +38,7 @@ export default function Coleta({ route: { index, stateFence, navigation, jumpToC
         const distanciaMinEstabelecimentoOk = fenceEstabelecimento.dentroDoRaio;
         
         return {
+            entregador_id,
             distanciaMinClienteOk,
             distanciaEmLinhaCliente,
             distanciaEmLinhaEstabelecimento,
@@ -47,6 +49,7 @@ export default function Coleta({ route: { index, stateFence, navigation, jumpToC
             produtos,
             usuario_id,
             distancia_checkin,
+            distancia_checkin_cliente,
             coleta: coletas,
             coleta_ids,
             index

@@ -4,6 +4,7 @@ import { coletaCheckIn } from "@actions/";
 import Lista from "../lista/index";
 import { View as ViewAnimatable } from "react-native-animatable";
 import { km2String } from "@sd/uteis/StringUteis";
+import { GrupoRotas } from "@sd/navigation/revestir";
 /*
 data_checkout_unidade:
     * Tem que estar a menos de X metros do estabelecimento
@@ -13,7 +14,7 @@ data_checkout_unidade:
 */
 export default class CheckInCliente extends Component {
     _click = () => {
-        const { index, coleta: { coleta_id }, distanciaMinClienteOk, navigation, onChange, distancia_checkin } = this.props;
+        const { index, coleta: { coleta_id }, entregador_id, distanciaMinClienteOk, navigation, onChange, distancia_checkin, distancia_checkin_cliente } = this.props;
         if (distanciaMinClienteOk) {
             coletaCheckIn({
                 body_view: {
@@ -21,21 +22,38 @@ export default class CheckInCliente extends Component {
                 },
                 body_rsa: {
                     coleta_id,
+                    entregador_id,
                     coluna: "data_checkin_cliente"
                 }
-            }).then(onChange).catch(({ mensagem }) => {
-                navigation.push("alerta", {
-                    params: {
-                        titulo: "JogoRápido",
-                        mensagem
-                    }
-                })
+            }).then(onChange).catch(({ status, mensagem }) => {
+                if (status = "listapedido") {
+                    navigation.push("alerta", {
+                        params: {
+                            titulo: "JogoRápido",
+                            mensagem,
+                            onPress: () => {
+                                let store = GrupoRotas.store.getState();
+                                store.autenticacao.coleta = [];
+                                store.autenticacao.produtos = [];
+                                navigation.navigate("home");
+                            }
+                        }
+                    })
+                } else {
+                    navigation.push("alerta", {
+                        params: {
+                            titulo: "JogoRápido",
+                            mensagem
+                        }
+                    })
+                }
             })
         } else {
+            console.log("CheckInCliente:distancia_checkin_cliente", distancia_checkin_cliente);
             navigation.push("alerta", {
                 params: {
                     titulo: "JogoRápido",
-                    mensagem: `Só é possivel fazer checkin no cliente à uma distância máxima de ${km2String(distancia_checkin)}.`
+                    mensagem: `Só é possivel fazer checkin no cliente à uma distância máxima de ${km2String(distancia_checkin_cliente)}.`
                 }
             })
         }

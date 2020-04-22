@@ -6,6 +6,7 @@ import { View as ViewAnimatable } from "react-native-animatable";
 import { coletaCheckOutUnidade } from "@actions/";
 import Lista from "../lista/index";
 import { km2String } from "../../../../../sd/uteis/StringUteis";
+import { GrupoRotas } from "@sd/navigation/revestir";
 /*
 data_checkin_cliente:
     * Tem que estar a menos de X metros do cliente
@@ -22,7 +23,7 @@ export default class CheckOutUnidade extends Component {
     }
     _click = () => {
         const { todosOsProdutosEstaoSelecionados } = this.state;
-        const { onChange, index, coleta:{coleta_id}, coleta_ids, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
+        const { onChange, index, coleta: { coleta_id }, coleta_ids, entregador_id, distanciaMinEstabelecimentoOk, navigation, distancia_checkin } = this.props;
         if (distanciaMinEstabelecimentoOk) {
             if (todosOsProdutosEstaoSelecionados) {
                 coletaCheckOutUnidade({
@@ -30,19 +31,34 @@ export default class CheckOutUnidade extends Component {
                         index
                     },
                     body_rsa: {
+                        entregador_id,
                         coleta_id: coleta_ids,
                         coluna: "data_checkout_unidade"
                     }
                 }).then(() => {
                     onChange({ index, coleta_id });
-                }).catch(_err => {
-                    const { mensagem } = _err;
-                    navigation.push("alerta", {
-                        params: {
-                            titulo: "JogoRápido",
-                            mensagem
-                        }
-                    })
+                }).catch(({ status, mensagem }) => {
+                    if (status = "listapedido") {
+                        navigation.push("alerta", {
+                            params: {
+                                titulo: "JogoRápido",
+                                mensagem,
+                                onPress: () => {
+                                    let store = GrupoRotas.store.getState();
+                                    store.autenticacao.coleta = [];
+                                    store.autenticacao.produtos = [];
+                                    navigation.navigate("home");
+                                }
+                            }
+                        })
+                    } else {
+                        navigation.push("alerta", {
+                            params: {
+                                titulo: "JogoRápido",
+                                mensagem
+                            }
+                        })
+                    }
                 })
             } else {
                 navigation.push("alerta", {

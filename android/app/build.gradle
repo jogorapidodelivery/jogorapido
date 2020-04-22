@@ -159,8 +159,8 @@ android {
         multiDexEnabled true
         // versionCode vCode
         // versionName vName
-        versionCode 20010007
-        versionName "2.1.7"
+        versionCode 20010008
+        versionName "2.1.8"
     }
     splits {
         abi {
@@ -237,6 +237,10 @@ dependencies {
     }
     implementation 'com.google.android.gms:play-services-location:16.1.0'
     // Fim firebase
+
+    // inicio bluetooth
+    implementation 'br.com.vivareal:cuid-android:0.1.0'
+    // fim bluetooth
 
     // Inicio react-navigation
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'

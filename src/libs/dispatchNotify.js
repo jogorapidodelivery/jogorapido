@@ -30,6 +30,9 @@ const prepareParams = response => {
         response.coleta = response.coleta.replace(/[/\"]/gi, '"').replace(/(\"\[\{\")/gi, '[{"').replace(/(\"\}\]\")/gi, '}]"');
         response.coleta = JSON.parse(response.coleta);
     }
+
+    // 
+    
     let { acao, type, coleta: [{
         data_hora_atual,
         data_notificacao,
@@ -48,7 +51,16 @@ const prepareParams = response => {
         const state = GrupoRotas.store.getState();
         if (!empty(state)) {
             if (!empty(state.autenticacao)) {
-                let { autenticacao: { tempo_aceite } } = state;
+                let { autenticacao: { tempo_aceite, entregador_id } } = state;
+                let mensagemErro = [];
+                response.coleta = response.coleta.filter(({ entregador_id: entregador }) => {
+                    if (entregador != entregador_id) mensagemErro.push({ eu: entregador, intruso: entregador_id})
+                    console.log({ eu: entregador, intruso: entregador_id });
+                    return entregador == entregador_id
+                });
+                if (mensagemErro.length > 0) {
+                    Sentry.captureMessage(`Coleta com entregadores diferente:${JSON.stringify(mensagemErro)}`);
+                }
                 if (tempo_aceite) {
                     const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
                     const tempo_aceite_restante = tempo_aceite - mill;
@@ -150,6 +162,7 @@ const renderNotifierDisplay = (notification, tempo_aceite, _tempo_aceite_restant
 
 const switchActions = ({type, acao, coleta}) => {// status_coleta_id, acao, type
     const [{status_coleta_id}] = coleta;
+    
     console.log({ action: "switchActions", acao, status_coleta_id });
     switch (acao) {
         case "nova_coleta":

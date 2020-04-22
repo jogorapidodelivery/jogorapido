@@ -14,12 +14,11 @@ import { GrupoRotas } from "@sd/navigation/revestir";
 import { destroyFence, addFence, calcFence } from "@sd/uteis/permissions/index";
 const initialLayout = { width: Dimensions.get('window').width };
 export default function Coletas(props) {
-    const dados = useSelector(({ autenticacao: { distancia_checkin, coleta } }) => ({distancia_checkin, coleta}));
+    const dados = useSelector(({ autenticacao: { distancia_checkin_cliente, distancia_checkin, coleta } }) => ({ distancia_checkin, distancia_checkin_cliente, coleta}));
     if (empty(dados.coleta) || dados.coleta.length === 0) return null;
-    const { coleta, distancia_checkin } = dados;
-    
+    const { coleta, distancia_checkin, distancia_checkin_cliente } = dados;
     let stateInitial = {}
-    let unidadeFence = false
+    let unidadeFence = false;
     coleta.forEach(({latitude_unidade, longitude_unidade, latitude_cliente, longitude_cliente, coleta_id }) => {
         const _clienteKey = `clienteColetaId_${coleta_id}`
         if (unidadeFence === false) {
@@ -28,9 +27,10 @@ export default function Coletas(props) {
             stateInitial[_unidadeKey] = calcFence(dataFenceEstabelecimentoTmp);
             unidadeFence = true;
         }
-        const dataFenceClienteTmp = { name: _clienteKey, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin }
+        const dataFenceClienteTmp = { name: _clienteKey, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin_cliente }
         stateInitial[_clienteKey] = calcFence(dataFenceClienteTmp);
-    })
+    });
+    console.log("Coletas:distancia_checkin_cliente", distancia_checkin_cliente);
     const [stateFence, setStateFence] = useState(stateInitial);
     let scenes = {}
     let coleta_ids = [];
@@ -50,7 +50,7 @@ export default function Coletas(props) {
             navigation: props.navigation
         }
     })
-    
+    console.log("3) ", distancia_checkin);
     const [index, setIndex] = useState(0);
     const [routes] = useState(titles);
     const renderScene = SceneMap(scenes);

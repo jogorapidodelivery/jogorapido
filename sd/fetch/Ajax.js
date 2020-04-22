@@ -60,7 +60,10 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
             return JSON.parse(string);
         } catch (e) {
             Sentry.captureException(e);
-            Promise.reject({ body: string, type: 'unparsable' });
+            return {
+                status: "erro",
+                mensagem: `Impossível formatar o json seguinte [${string}]`
+            }
         }
 
     }).then(response => {
