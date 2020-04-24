@@ -23,7 +23,21 @@ export default class ColetaPendente extends PureComponent {
                 triggerDestroyTimerProgress();
                 this.props.navigation.navigate("coletar");
             }).catch(_err => {
-                console.warn(_err);
+                let alerta = {
+                    params:{
+                        titulo:"Alerta",
+                        mensagem: "Falha ao aceitar a coleta. Tente novamente."
+                    }
+                }
+                if(_err.status === "erro") {
+                    alerta = {
+                        params:{
+                            titulo:"Alerta",
+                            mensagem: _err.mensagem
+                        }
+                    }
+                }
+                this.props.navigation.push("alerta", alerta);
             })
         }
     }
