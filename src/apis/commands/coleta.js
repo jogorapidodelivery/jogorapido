@@ -8,6 +8,8 @@ const intervaloData = (start, end) => {
 export const formatDateCheckIn = coletaList => {
     if (empty(coletaList)) return [];
     let counterNoCheckoutUnidade = 0
+    console.log("Dados com bug aqui");
+    console.log(coletaList);
     const coleta = coletaList.map(coleta => {
         if (empty(coleta)) return null;
         if (coleta.valor_frete) {
@@ -15,9 +17,10 @@ export const formatDateCheckIn = coletaList => {
             coleta.total_pedido = moeda(coleta.total_pedido);
         }
         let horaChegadaUnidade, horaSaidaUnidade, horaChegadaCliente, horaSaidaCliente;
-        const { data_checkin_cliente, data_checkout_cliente, data_checkin_unidade, data_checkout_unidade } = coleta
+        const { data_checkin_cliente, data_checkout_cliente, data_checkin_unidade, data_checkout_unidade } = coleta;
+        const formatDate = "YYYY:MM:DD H:mm:ss";
         if (!empty(data_checkin_unidade)) {
-            horaChegadaUnidade = moment(data_checkin_unidade).format("H:mm:ss")
+            horaChegadaUnidade = moment(data_checkin_unidade, formatDate).format("H:mm:ss")
         }
         if (!empty(data_checkout_unidade)) {
             horaSaidaUnidade = intervaloData(data_checkin_unidade, data_checkout_unidade)
@@ -25,7 +28,7 @@ export const formatDateCheckIn = coletaList => {
             counterNoCheckoutUnidade++;
         }
         if (!empty(data_checkin_cliente)) {
-            horaChegadaCliente = moment(data_checkin_cliente).format("H:mm:ss")
+            horaChegadaCliente = moment(data_checkin_cliente, formatDate).format("H:mm:ss")
         }
         if (!empty(data_checkout_cliente)) {
             horaSaidaCliente = intervaloData(data_checkin_cliente, data_checkout_cliente)

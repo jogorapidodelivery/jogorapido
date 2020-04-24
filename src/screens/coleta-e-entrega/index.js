@@ -30,7 +30,6 @@ export default function Coletas(props) {
         const dataFenceClienteTmp = { name: _clienteKey, latitude: latitude_cliente, longitude: longitude_cliente, raio: distancia_checkin_cliente }
         stateInitial[_clienteKey] = calcFence(dataFenceClienteTmp);
     });
-    console.log("Coletas:distancia_checkin_cliente", distancia_checkin_cliente);
     const [stateFence, setStateFence] = useState(stateInitial);
     let scenes = {}
     let coleta_ids = [];
@@ -50,7 +49,6 @@ export default function Coletas(props) {
             navigation: props.navigation
         }
     })
-    console.log("3) ", distancia_checkin);
     const [index, setIndex] = useState(0);
     const [routes] = useState(titles);
     const renderScene = SceneMap(scenes);
@@ -165,7 +163,6 @@ export default function Coletas(props) {
             }
             if (onComplete) onComplete()
         }).catch((_err) => {
-            console.log(_err);
             if (onComplete) {
                 onComplete();
                 props.navigation.push("alerta", {

@@ -35,7 +35,7 @@ export const senha = (v) => {
 }
 export const email = (v) => {
     if (empty(v)) return false
-    return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(`${v}`)
+    return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,})*?$/.test(`${v}`)
 }
 export const upperCamelCase = (v) => {
     return min(v, 3)

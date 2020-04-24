@@ -10,7 +10,7 @@ import { cor } from "@root/app.json";
 import { Alert } from "react-native";
 export const dispatchNotifierOnResultGeofenceHttp = data => {
     if (!empty(data) && !empty(data.coleta) && data.coleta.length > 0) {
-        data.acao = "nova_coleta";
+        data.acao = "criar-coleta";
         SharedEventEmitter.emit('onMessage', new RemoteMessage({ data}));
     }
 }

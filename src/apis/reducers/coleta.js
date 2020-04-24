@@ -1,6 +1,6 @@
 
 import { formatDateCheckIn } from "../commands/coleta";
-import { COLETA_CHECKOUT_UNIDADE, COLETA_CHECKIN_UNIDADE, COLETA_CHECKOUT_CLIENTE, COLETA_BUSCAR_PRODUTOS, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, COLETA_CHECKIN, COLETA_LIMPAR } from "@constants/";
+import { COLETA_CHECKOUT_UNIDADE, COLETA_CHECKIN_UNIDADE, COLETA_CHECKOUT_CLIENTE, COLETA_BUSCAR_PRODUTOS, COLETA_ATUALIZAR_STATUS, COLETA_NOVA_TEMPO_EXPIRADO, COLETA_NOVA, COLETA_CHECKIN } from "@constants/";
 import { empty } from "sd/uteis/StringUteis";
 export default {
     defaultProps: {
@@ -30,17 +30,12 @@ export default {
             [COLETA_BUSCAR_PRODUTOS]: (state, { response: { produtos}, posted}) => {
                 return { ...state, produtos};
             },
-            [COLETA_LIMPAR]: (state) => {
-                state.coleta = [];
-                state.produtos = [];
-                return { ...state };
-            },
             [COLETA_NOVA]: (state, {coleta}) => {
                 const data = formatDateCheckIn(coleta);
                 return { ...state, ...data };
             },
             [COLETA_NOVA_TEMPO_EXPIRADO]: (state) => {
-                return { ...state, coleta: [] };
+                return { ...state, coleta: [], produtos:[] };
             },
             [COLETA_ATUALIZAR_STATUS]: (state) => {
                 state.coleta = state.coleta.map((v) => {

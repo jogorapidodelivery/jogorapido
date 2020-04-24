@@ -4,8 +4,9 @@ import { empty } from "@sd/uteis/StringUteis";
 import { LayoutAnimation} from "react-native";
 import * as Sentry from '@sentry/react-native';
 import { SDNavigation } from "@sd/navigation";
-import { COLETA_LIMPAR, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
+import { COLETA_NOVA_TEMPO_EXPIRADO, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
 import { cor } from "@root/app.json";
+import {  fetchItem } from "@sd/fetch";
 import Sound from "react-native-sound";
 import moment from "moment";
 Sound.setCategory("Playback");
@@ -24,19 +25,8 @@ if (Platform.OS === "android") {
     channel.setSound(null);
     firebase.notifications().android.createChannel(channel);
 }
-const prepareParams = response => {
-    console.log({ action:"dispatchNotify/prepareParams"})
-    if (typeof response.coleta === "string") {
-        response.coleta = response.coleta.replace(/[/\"]/gi, '"').replace(/(\"\[\{\")/gi, '[{"').replace(/(\"\}\]\")/gi, '}]"');
-        response.coleta = JSON.parse(response.coleta);
-    }
-
-    // 
-    
-    let { acao, type, coleta: [{
-        data_hora_atual,
-        data_notificacao,
-        status_coleta_id}] } = response;
+const prepareParamsDispatchNotifier = response => {
+    let { acao, tempo_aceite, type, coleta: [{ data_hora_atual, data_notificacao, status_coleta_id}] } = response;
     let coleta_id = "";
     if (response.coleta.length > 0) {
         coleta_id = response.coleta.map(({ coleta_id }) => coleta_id);
@@ -47,46 +37,13 @@ const prepareParams = response => {
             coleta_id = `A coleta ${coleta_id.join(", ")} está aguardando sua decisão`
         }
     }
-    if (!empty(GrupoRotas.store)) {
-        const state = GrupoRotas.store.getState();
-        if (!empty(state)) {
-            if (!empty(state.autenticacao)) {
-                let { autenticacao: { tempo_aceite, entregador_id } } = state;
-                let mensagemErro = [];
-                response.coleta = response.coleta.filter(({ entregador_id: entregador }) => {
-                    if (entregador != entregador_id) mensagemErro.push({ eu: entregador, intruso: entregador_id})
-                    console.log({ eu: entregador, intruso: entregador_id });
-                    return entregador == entregador_id
-                });
-                if (mensagemErro.length > 0) {
-                    Sentry.captureMessage(`Coleta com entregadores diferente:${JSON.stringify(mensagemErro)}`);
-                }
-                if (tempo_aceite) {
-                    const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
-                    const tempo_aceite_restante = tempo_aceite - mill;
-                    if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite) {
-                        return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id }
-                    } else {
-                        Sentry.addBreadcrumb({ action: "dispatchNotify::prepareParams", tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao });
-                        console.log("prepareParams:", {tempo_aceite_restante, coleta_id, tempo_aceite, status_coleta_id, data_hora_atual, data_notificacao});
-                    }
-                } else {
-                    Sentry.addBreadcrumb({ action:"dispatchNotify::prepareParams", tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante });
-                    console.log("prepareParams tempo_aceite empty", { tempo_aceite, data_notificacao, data_hora_atual, tempo_aceite_restante})
-                }
-            } else {
-                Sentry.captureMessage("prepareParams autenticacao empty");
-                console.log("prepareParams autenticacao empty")
-            }
-        } else {
-            Sentry.captureMessage("prepareParams state empty");
-            console.log("prepareParams state empty")
+    if (tempo_aceite) {
+        const mill = moment(data_hora_atual, "AAAA-MM-DD H:mm:ss").diff(moment(data_notificacao, "AAAA-MM-DD H:mm:ss")) / 1000;
+        const tempo_aceite_restante = tempo_aceite - mill;
+        if (tempo_aceite_restante > 0 && tempo_aceite_restante <= tempo_aceite && Number(status_coleta_id) === 1 ) {
+            return { response, tempo_aceite, tempo_aceite_restante, acao, type, status_coleta_id: Number(status_coleta_id), coleta_id }
         }
-    } else {
-        Sentry.captureMessage("prepareParams GrupoRotas.store empty");
-        console.log("prepareParams GrupoRotas.store empty")
     }
-    Sentry.captureMessage("prepareParamsNotificacão sem coleta, isto não deveria acontecer");
     return undefined
 }
 const createNotifier = (coleta_id) => {
@@ -158,34 +115,7 @@ const renderNotifierDisplay = (notification, tempo_aceite, _tempo_aceite_restant
     timerInProcess = setInterval(loopInterval, 1000);
     notificarColetaId = coleta_id;
     loopInterval();
-}
-
-const switchActions = ({type, acao, coleta}) => {// status_coleta_id, acao, type
-    const [{status_coleta_id}] = coleta;
-    
-    console.log({ action: "switchActions", acao, status_coleta_id });
-    switch (acao) {
-        case "nova_coleta":
-            switch (status_coleta_id) {
-                case 1:// Pendente
-                    GrupoRotas.store.dispatch({ type: COLETA_NOVA, coleta });
-                    if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
-                    return true
-                case 2:// Confirmado
-                    GrupoRotas.store.dispatch({ type: COLETA_ATUALIZAR_STATUS, coleta });
-                    if (type === "DISPLAY") SDNavigation.navegar.navigate("coletar");
-                    return false
-                default:
-                    return false
-            }
-            return false
-        case "atualizar_escala":
-            // GrupoRotas.store.dispatch({ type: ENTREGADOR_ATUALIZAR_ESCALA, {} });
-            return false
-        default:
-            return false
-    }
-    return false
+    return null;
 }
 export const triggerDestroyTimerProgress = () => {
     if (timerInProcess) clearInterval(timerInProcess);
@@ -194,35 +124,77 @@ export const triggerDestroyTimerProgress = () => {
     timerInProcess = undefined;
     notificarColetaId = undefined;
 }
-export const triggerNotifier = message => new Promise((_resolve, _reject)=>{
-    console.log({ action: "dispatchNotify/triggerNotifier"})
-    if (!empty(message)) {
-        const post = prepareParams(message);
-        if (post !== undefined) {
-            const { response, tempo_aceite, tempo_aceite_restante, coleta_id } = post;
-            const _isNotify = switchActions(response);
-            if (_isNotify) {
-                const notification = createNotifier(coleta_id, tempo_aceite, );
-                renderNotifierDisplay(notification, tempo_aceite, tempo_aceite_restante, coleta_id, () => {
-                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                    GrupoRotas.store.dispatch({ type: COLETA_LIMPAR });
-                    triggerDestroyTimerProgress();
-                    SDNavigation.navegar.popToTop();
-                    _resolve();
-                }, _reject)
-            } else {
-                _reject();
-                Sentry.addBreadcrumb({ falha: "DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", ...post});
-                console.log("DISPATCH_NOTIFY ação a ser executada não existe ou o player já possui uma coleta pendente", post);
-            }
-        } else {
-            _reject();
-            Sentry.captureMessage("DISPATCH_NOTIFY POST EMPTY");
-            console.log("DISPATCH_NOTIFY POST EMPTY", post);
-        }
-    } else {
-        _reject();
-        Sentry.captureMessage("DISPATCH_NOTIFY MESSAGE EMPTY");
-        console.log("DISPATCH_NOTIFY MESSAGE EMPTY");
-    }
+export const triggerNotifier = message => new Promise(async (_resolve, _reject) => {
+    if (!empty(GrupoRotas.store)) {
+        const state = GrupoRotas.store.getState();
+        if (!empty(state)) {
+            if (!empty(state.autenticacao)) {
+                let { autenticacao: { tempo_aceite, usuario_id, entregador_id } } = state;
+                if (!empty(message)) {
+                    let blnDispatchNotifier = undefined;
+                    const {acao, type} = message;
+                    if("criar-coleta, editar-coleta, apagar-coleta".indexOf(acao) !== -1) {
+                        try{
+                            const {status, response:coleta} = await fetchItem({
+                                type:"GET_COLETA",
+                                action:"coleta/get",
+                                method:"POST",
+                                baseUrl:"php",
+                                body_rsa: {
+                                    usuario_id,
+                                    entregador_id
+                                }
+                            });
+                            if(status ===  "sucesso" && coleta !== null && coleta !== undefined) {
+                                if(coleta.length > 0){
+                                    const [{status_coleta_id}] = coleta;
+                                    GrupoRotas.store.dispatch({ type: COLETA_NOVA, coleta });
+                                    switch (status_coleta_id) {
+                                        case 1:// Pendente
+                                        case 7:// Cancelado
+                                        case 8:// Expedindo
+                                            if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
+                                            break;
+                                        case 2:// Confirmado
+                                        case 3:// Checkin Unidade
+                                        case 4:// Checkout Unidade
+                                        case 5:// Checkin Cliente
+                                        // case 6:// Concluido ? isto deve mudar
+                                            if (type === "DISPLAY") {
+                                                triggerDestroyTimerProgress();
+                                                SDNavigation.navegar.navigate("coletar");
+                                            }
+                                            break;
+                                        default:
+                                            // ?
+                                    }
+                                    message.coleta = coleta;
+                                    message.tempo_aceite = tempo_aceite;
+                                    blnDispatchNotifier = prepareParamsDispatchNotifier(message);
+                                    if(blnDispatchNotifier) {
+                                        const { tempo_aceite, tempo_aceite_restante, coleta_id } = blnDispatchNotifier;
+                                        const notification = createNotifier(coleta_id);
+                                        return renderNotifierDisplay(notification, tempo_aceite, tempo_aceite_restante, coleta_id, () => {
+                                            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                            GrupoRotas.store.dispatch({ type: COLETA_NOVA_TEMPO_EXPIRADO });
+                                            triggerDestroyTimerProgress();
+                                            SDNavigation.navegar.popToTop();
+                                            _resolve();
+                                        }, _reject);
+                                    }
+                                } else {
+                                    triggerDestroyTimerProgress();
+                                    if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
+                                    GrupoRotas.store.dispatch({ type: COLETA_NOVA_TEMPO_EXPIRADO });
+                                }
+                            }
+                        } catch(e) {
+                            if (type === "DISPLAY") SDNavigation.navegar.navigate("home");
+                        }
+                    } else console.log("acao ERR", acao);
+                } else console.log("message EMPTY");
+            } else console.log("autenticacao EMPTY");
+        } else console.log("STATE EMPTY");
+    } else console.log("STORE EMPTY");
+    return _reject();
 })

@@ -105,9 +105,6 @@ export default class Home extends PureComponent {
     }
     
     render() {
-        console.log("analiza aqui em baixo")
-        console.log(this.props.sd);
-        console.log("fim analiza aqui em baixo")
         const { navigation, sd: { entregador_id, coletaFilter, coleta_ids, tituloColetas}} = this.props;
         const total = coletaFilter.length;
         const disponibilidade = getItemByKeys(this.props, "sd.disponibilidade")
