@@ -1,11 +1,11 @@
-import { AppRegistry, Text, TextInput } from "react-native";
+import { AppRegistry, Text, TextInput, Platform } from "react-native";
 import App from '@src/App';
 import { YellowBox } from 'react-native';
 import { name as appName } from '@root/app.json';
 import { initFirebase } from "@sd/uteis/Firebase";
 import { triggerNotifier } from '@libs/dispatchNotify';
 import { bgLocationFetch } from "@libs/geofence";
-import codePush from 'react-native-code-push';
+import CodePush from 'react-native-code-push';
 import * as Sentry from '@sentry/react-native';
 
 Text.defaultProps = Text.defaultProps || {};
@@ -21,11 +21,15 @@ YellowBox.ignoreWarnings([
 Sentry.init({
     dsn: 'https://9b5931fcc9dc405eaa228e45b3ea5f1e@sentry.io/5182924',
 });
-const codePushOptions = {
-    checkFrequency: codePush.CheckFrequency.ON_APP_START
+if(Platform.OS === "android") {
+    const codePushOptions = {
+        checkFrequency: CodePush.CheckFrequency.ON_APP_START
+    }
+    const AppUpdater = CodePush(codePushOptions)(App);
+    AppRegistry.registerComponent(appName, () => AppUpdater);
+} else {
+    AppRegistry.registerComponent(appName, () => App);
 }
-const AppUpdater = codePush(codePushOptions)(App);
-AppRegistry.registerComponent(appName, () => AppUpdater);
 initFirebase(triggerNotifier);
 bgLocationFetch();
 

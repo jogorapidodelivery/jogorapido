@@ -4,7 +4,7 @@
   "googleplayid": "com.jogorapido",
   "baseUrl": {
     "on":"https://jogorapido.delivery/app/",
-    "off":"https://jogorapido.delivery/app/"
+    "off":"https://beta.jogorapido.delivery/app/"
   },
   "baseUrlNode":{
     "on": "https://jogorapido.delivery:22600/",
@@ -21,6 +21,7 @@
     "06": "#F2F2F2",
     "26": "#F6F6F6",
     "23": "rgba(245,245,245,.8)",
+    "28": "#FCFCFC",
     "07": "#FFFFFF",
     "15": [
       "#A7A7A7",

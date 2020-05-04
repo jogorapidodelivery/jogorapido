@@ -4,7 +4,7 @@ import { empty } from "@sd/uteis/StringUteis";
 import { LayoutAnimation} from "react-native";
 import * as Sentry from '@sentry/react-native';
 import { SDNavigation } from "@sd/navigation";
-import { COLETA_NOVA_TEMPO_EXPIRADO, COLETA_ATUALIZAR_STATUS, COLETA_NOVA, ENTREGADOR_ATUALIZAR_ESCALA } from "@constants/";
+import { COLETA_NOVA_TEMPO_EXPIRADO, BUSCAR_COLETA } from "@constants/";
 import { cor } from "@root/app.json";
 import {  fetchItem } from "@sd/fetch";
 import Sound from "react-native-sound";
@@ -148,7 +148,7 @@ export const triggerNotifier = message => new Promise(async (_resolve, _reject) 
                             if(status ===  "sucesso" && coleta !== null && coleta !== undefined) {
                                 if(coleta.length > 0){
                                     const [{status_coleta_id}] = coleta;
-                                    GrupoRotas.store.dispatch({ type: COLETA_NOVA, coleta });
+                                    GrupoRotas.store.dispatch({ type: BUSCAR_COLETA, response:coleta });
                                     switch (status_coleta_id) {
                                         case 1:// Pendente
                                         case 7:// Cancelado

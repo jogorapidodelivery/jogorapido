@@ -17,12 +17,15 @@
 #import "RNFirebaseMessaging.h"
 
 #import <TSBackgroundFetch/TSBackgroundFetch.h>
-
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   TSBackgroundFetch *fetch = [TSBackgroundFetch sharedInstance];
+  
+  [[FBSDKApplicationDelegate sharedInstance] application:application
+  didFinishLaunchingWithOptions:launchOptions];
   
   // inicio instancia modulo de notificação
   [FIRApp configure];
@@ -54,6 +57,17 @@ fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHand
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
   [[RNFirebaseMessaging instance] didRegisterUserNotificationSettings:notificationSettings];
 }
+//inicio método modulo de FBSDK
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [[FBSDKApplicationDelegate sharedInstance]application:app
+                                                       openURL:url
+                                                       options:options];
+}
+//fim método modulo de FBSDK
+
 //fim método modulo de notificação
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {

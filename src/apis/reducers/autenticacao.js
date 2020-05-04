@@ -3,7 +3,6 @@ import { ENTREGADOR_GEOFENCE, ENTREGADOR_ATUALIZAR_ESCALA, ALTERAR_SENHA, AUTENT
 import { moeda } from "@sd/uteis/form/MaskString";
 import moment from "moment";
 import { menu } from "@apis/json/menu.json"
-import { formatDateCheckIn } from "../commands/coleta";
 import { encodeCipherCaesar } from "@sd/uteis/CipherCaesar";
 import { empty } from "@sd/uteis/StringUteis";
 export default {
@@ -44,8 +43,7 @@ export default {
                         return v
                     })
                 }
-                const data = formatDateCheckIn(response.coleta);
-                response = { ...response, ...data, social_id, senha, usuario}
+                response = { ...response, social_id, senha, usuario}
                 
                 if (!empty(usuario) && (!empty(senha) || !empty(social_id))) {
                     const _chifed = encodeCipherCaesar({ social_id, senha, usuario });

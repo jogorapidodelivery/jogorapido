@@ -1,5 +1,7 @@
 import { empty } from "../StringUteis"
-
+export const cep = (v) => {
+    return v.replace(/^(\d{2})(\d{3})(\d)/g, "$1.$2-$3");// .replace(/\D/g, "")
+}
 export const formataCampo = (v, m, limited) => {
     let bm
     let p = 0
