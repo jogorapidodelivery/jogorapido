@@ -17,8 +17,8 @@ function CheckoutCliente(props) {
   const {
     entregador_id,
     coleta: [{forma_pagamento}],
-  } = useSelector(({autenticacao: {coleta}}) => ({
-    entregador_id,
+  } = useSelector(({autenticacao: {entregador_id: eId, coleta}}) => ({
+    entregador_id: eId,
     coleta: coleta.filter(({coleta_id: id}) => coleta_id === id),
   }));
   // Sincronizar dados da coleta com o servidor
@@ -64,7 +64,6 @@ function CheckoutCliente(props) {
 
   // total Selecionado
   const footerData = {coleta_id, entregador_id, forma_pagamento};
-
   return (
     <CheckoutClienteComponent
       data={produtos}

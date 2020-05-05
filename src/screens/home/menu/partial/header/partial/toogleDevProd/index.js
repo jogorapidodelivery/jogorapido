@@ -4,10 +4,9 @@ import {actionAutenticar} from '@actions/';
 import {SDNavigation} from '@sd/navigation';
 import {cor} from '@root/app.json';
 import styl from './styl';
-import {getBaseUrl, setBaseUrl, hasDev} from '@sd/fetch/baseUrl';
+import {setBaseUrl, hasDev} from '@sd/fetch/baseUrl';
 export default function ToogleDevProd() {
   const [isProduction, setIsProduction] = useState(hasDev);
-  console.log(getBaseUrl({baseUrl: 'php', action: '/'}));
   const toggleBetaProduction = async () => {
     try {
       SDNavigation.navegar.push('carregando');

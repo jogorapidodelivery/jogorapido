@@ -13,7 +13,11 @@ function Footer({total, coleta_id, entregador_id, forma_pagamento}) {
     if (forma_pagamento === 'dinheiro') {
       actionClickCheckout({coleta_id, entregador_id});
     } else {
-      actionGotoPay({total, coleta_id, entregador_id});
+      console.log('PAGAMENTO COM CARTÃO AQUI');
+      actionClickCheckout({coleta_id, entregador_id});
+      if (false) {
+        actionGotoPay({total, coleta_id, entregador_id});
+      }
     }
   };
   return (

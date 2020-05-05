@@ -8,7 +8,8 @@ import {mapCliente} from './commands/mapCliente';
 import {actionBuscarColeta} from '@actions/';
 import {mapEstabelecimento} from './commands/mapEstabelecimento';
 import {GrupoRotas} from '@sd/navigation/revestir';
-export default function MinhasColetas(props) {
+import {withNavigationFocus} from 'react-navigation';
+function MinhasColetas({isFocused, navigation: {navigate}}) {
   let dados = useSelector(
     ({
       autenticacao: {
@@ -62,6 +63,7 @@ export default function MinhasColetas(props) {
     if (coletaRedux === null || coletaRedux.length === 0) {
       return clt;
     }
+    console.log('selecioneDadosDoFiltro/index', index);
     if (index === 0) {
       clt = [
         mapEstabelecimento(
@@ -77,17 +79,23 @@ export default function MinhasColetas(props) {
     }
     setColeta(clt);
     return clt;
-  }, []);
-  /*
-  coletaRedux,
-  coleta_ids,
-  distancia_checkin_cliente,
-  distancia_checkin_unidade,
-  index,
-  */
+  }, [index, coletaRedux]);
+
+  // Atualizando dados da coleta durante as interações de checkout inidade
+  useEffect(() => {
+    const estabelecimento = mapEstabelecimento(
+      coletaRedux[0],
+      distancia_checkin_unidade,
+      coleta_ids,
+    );
+    if (index === 0 && estabelecimento.horarios.length === 2) {
+      setIndex(1);
+    }
+  }, [isFocused]);
 
   // Monitorando coletas para adicionar ganchos de geolocalização
   useEffect(() => {
+    console.log('add', index);
     // Atualizando estado da coleta
     const clt = selecioneDadosDoFiltro();
 
@@ -113,10 +121,11 @@ export default function MinhasColetas(props) {
     if (isGotoHome) {
       let store = GrupoRotas.store.getState();
       store.autenticacao.coleta = [];
-      props.navigation.navigate('home');
+      navigate('home');
     }
 
     return () => {
+      console.log('remove', index);
       clt.forEach(({name, horarios}) => {
         if (horarios.length !== 2) {
           console.log(`remove:${name}`);
@@ -124,21 +133,7 @@ export default function MinhasColetas(props) {
         }
       });
     };
-  }, []);
-  // index, coletaRedux, selecioneDadosDoFiltro, filter, props.navigation
-
-  // Atualizando dados da coleta durante as interações de checkin/out
-  useEffect(() => {
-    const estabelecimento = mapEstabelecimento(
-      coletaRedux[0],
-      distancia_checkin_unidade,
-      coleta_ids,
-    );
-    if (index === 0 && estabelecimento.horarios.length === 2) {
-      setIndex(1);
-    }
-  }, []);
-  // coletaRedux, coleta_ids, distancia_checkin_unidade, index
+  }, [index, coletaRedux, refreshing]);
 
   // Buscando coleta no servidor.
   async function onRefresh() {
@@ -166,3 +161,4 @@ export default function MinhasColetas(props) {
     />
   );
 }
+export default withNavigationFocus(MinhasColetas);

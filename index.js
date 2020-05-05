@@ -1,10 +1,10 @@
-import { AppRegistry, Text, TextInput, Platform } from "react-native";
+import {AppRegistry, Text, TextInput, Platform} from 'react-native';
 import App from '@src/App';
-import { YellowBox } from 'react-native';
-import { name as appName } from '@root/app.json';
-import { initFirebase } from "@sd/uteis/Firebase";
-import { triggerNotifier } from '@libs/dispatchNotify';
-import { bgLocationFetch } from "@libs/geofence";
+import {YellowBox} from 'react-native';
+import {name as appName} from '@root/app.json';
+import {initFirebase} from '@sd/uteis/Firebase';
+import {triggerNotifier} from '@libs/dispatchNotify';
+import {bgLocationFetch} from '@libs/geofence';
 import CodePush from 'react-native-code-push';
 import * as Sentry from '@sentry/react-native';
 
@@ -15,20 +15,20 @@ TextInput.defaultProps = TextInput.defaultProps || {};
 TextInput.defaultProps.allowFontScaling = false;
 
 YellowBox.ignoreWarnings([
-    'VirtualizedLists should never be nested',
-    'Require cycle: node_modules/react-native-firebase'
+  'VirtualizedLists should never be nested',
+  'Require cycle: node_modules/react-native-firebase',
 ]);
 Sentry.init({
-    dsn: 'https://9b5931fcc9dc405eaa228e45b3ea5f1e@sentry.io/5182924',
+  dsn: 'https://9b5931fcc9dc405eaa228e45b3ea5f1e@sentry.io/5182924',
 });
-if(Platform.OS === "android") {
-    const codePushOptions = {
-        checkFrequency: CodePush.CheckFrequency.ON_APP_START
-    }
-    const AppUpdater = CodePush(codePushOptions)(App);
-    AppRegistry.registerComponent(appName, () => AppUpdater);
+if (Platform.OS === 'android') {
+  const codePushOptions = {
+    checkFrequency: CodePush.CheckFrequency.ON_APP_START,
+  };
+  const AppUpdater = CodePush(codePushOptions)(App);
+  AppRegistry.registerComponent(appName, () => AppUpdater);
 } else {
-    AppRegistry.registerComponent(appName, () => App);
+  AppRegistry.registerComponent(appName, () => App);
 }
 initFirebase(triggerNotifier);
 bgLocationFetch();

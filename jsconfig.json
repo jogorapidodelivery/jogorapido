@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@root": ["./"],
+      "@sd": ["./sd"],
+      "@src": ["./src"],
+      "@images": ["./assets/images"],
+      "@sounds": ["./assets/sounds"],
+      "@actions": ["./src/apis/actions"],
+      "@constants": ["./src/apis/constants"],
+      "@reducers": ["./src/apis/reducers"],
+      "@components": ["./src/components"],
+      "@libs": ["./src/libs"],
+      "@apis": ["./src/apis"],
+      "@screens": ["./src/screens"],
+      "@modal": ["./src/modal"]
+    }
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
+}

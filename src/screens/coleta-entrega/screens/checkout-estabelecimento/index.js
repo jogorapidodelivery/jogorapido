@@ -5,12 +5,13 @@ import CheckoutUnidadeComponent from './component';
 import {mapProdutos} from './commands/mapProdutos';
 import {SDNavigation} from '@sd/navigation';
 function CheckoutUnidade(props) {
-  const {coleta_ids, entregador_id} = useSelector(
-    ({autenticacao: {coleta}}) => ({
+  const {coleta_ids, entregador_id} = useSelector(({autenticacao}) => {
+    const {entregador_id: id, coleta} = autenticacao;
+    return {
       coleta_ids: coleta.map(({coleta_id}) => coleta_id).join(','),
-      entregador_id,
-    }),
-  );
+      entregador_id: id,
+    };
+  });
 
   // Sincronizar dados da coleta com o servidor
   const [refreshing, setRefreshing] = useState(false);
@@ -79,7 +80,6 @@ function CheckoutUnidade(props) {
     totalPedidosSelecionado,
     totalPedidos: produtos.length,
   };
-
   return (
     <CheckoutUnidadeComponent
       data={produtos}
