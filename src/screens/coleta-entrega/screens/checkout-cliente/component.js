@@ -12,7 +12,6 @@ import Footer from './partial/footer';
 import HeaderUnidade from '../checkout-estabelecimento/partial/header';
 import ItemCheckout from '../checkout-estabelecimento/partial/produto';
 import FooterTotal from '../checkout-estabelecimento/partial/total';
-import {SDNavigation} from '@sd/navigation';
 const dataVazio = [{actived: -1}];
 const dataListVazio = [
   {sectionIndex: 0, data: dataVazio},
@@ -20,6 +19,9 @@ const dataListVazio = [
   {sectionIndex: 1, data: dataVazio},
 ];
 function CheckinClienteComponent({
+  push,
+  navigate,
+  pop,
   data,
   changeCheckBox,
   footerData,
@@ -31,7 +33,6 @@ function CheckinClienteComponent({
   if (vazio) {
     data = dataListVazio;
   }
-  const {pop} = SDNavigation.navegar;
   return (
     <ImageBackground
       source={require('@images/gradiente.png')}
@@ -69,7 +70,15 @@ function CheckinClienteComponent({
             }}
             extraData={changeCheckBox}
             ListFooterComponent={
-              vazio ? null : <Footer {...data[0]} {...footerData} />
+              vazio ? null : (
+                <Footer
+                  push={push}
+                  navigate={navigate}
+                  pop={pop}
+                  {...data[0]}
+                  {...footerData}
+                />
+              )
             }
           />
         </View>

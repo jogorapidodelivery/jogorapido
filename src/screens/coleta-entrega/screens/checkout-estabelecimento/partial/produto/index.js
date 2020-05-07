@@ -50,7 +50,7 @@ function ItemCheckoutUnidade({
               <Text style={styl.titulo}>
                 {qtd} unidade{qtd > 1 ? 's' : ''}
               </Text>
-              <Text style={[styl.titulo, styl.total]}>R$ {valor}</Text>
+              <Text style={[styl.titulo, styl.total]}>{valor}</Text>
             </View>
           </Shimmer>
         </View>

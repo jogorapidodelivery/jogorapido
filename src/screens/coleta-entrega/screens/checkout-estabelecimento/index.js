@@ -3,8 +3,7 @@ import {useSelector} from 'react-redux';
 import {coletaBuscarProdutos} from '@actions/';
 import CheckoutUnidadeComponent from './component';
 import {mapProdutos} from './commands/mapProdutos';
-import {SDNavigation} from '@sd/navigation';
-function CheckoutUnidade(props) {
+function CheckoutUnidade({navigation: {navigate, pop, push}}) {
   const {coleta_ids, entregador_id} = useSelector(({autenticacao}) => {
     const {entregador_id: id, coleta} = autenticacao;
     return {
@@ -15,6 +14,9 @@ function CheckoutUnidade(props) {
 
   // Sincronizar dados da coleta com o servidor
   const [refreshing, setRefreshing] = useState(false);
+
+  // Load error
+  const [loadError, setLoadError] = useState(false);
 
   // Lista de produtos
   const [produtos, setProdutos] = useState([]);
@@ -29,6 +31,7 @@ function CheckoutUnidade(props) {
 
   // Método para produtos no servidor.
   const carregarProdutos = useCallback(async () => {
+    setLoadError(false);
     try {
       const {
         response: {produtos: prod},
@@ -41,20 +44,13 @@ function CheckoutUnidade(props) {
       setProdutos(list);
       setTotalPedidosSelecionado(0);
     } catch (_err) {
-      console.warn(_err);
+      setLoadError(true);
     }
   }, [coleta_ids]);
   // Ação para buscando produtos no servidor.
   async function onRefresh() {
     setRefreshing(true);
-    const {push} = SDNavigation.navegar;
-    try {
-      await carregarProdutos();
-    } catch ({mensagem}) {
-      // eslint-disable-next-line no-ex-assign
-      mensagem = mensagem || 'Página não encontrada status[500]';
-      push('alerta', {params: {titulo: 'JogoRápido', mensagem}});
-    }
+    await carregarProdutos();
     setRefreshing(false);
   }
 
@@ -82,9 +78,14 @@ function CheckoutUnidade(props) {
   };
   return (
     <CheckoutUnidadeComponent
+      pop={pop}
+      push={push}
+      navigate={navigate}
       data={produtos}
       footerData={footerData}
       refreshing={refreshing}
+      onErrorReload={carregarProdutos}
+      loadError={loadError}
       onRefresh={onRefresh}
       changeCheckBox={changeCheckBox}
       onChange={onChange}

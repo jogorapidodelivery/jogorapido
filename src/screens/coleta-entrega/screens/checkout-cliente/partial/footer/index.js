@@ -8,15 +8,23 @@ import {
   actionGotoPay,
 } from '../../actions/actionsCheckout';
 
-function Footer({total, coleta_id, entregador_id, forma_pagamento}) {
+function Footer({
+  push,
+  navigate,
+  pop,
+  total,
+  coleta_id,
+  entregador_id,
+  forma_pagamento,
+}) {
   const onPress = () => {
     if (forma_pagamento === 'dinheiro') {
-      actionClickCheckout({coleta_id, entregador_id});
+      actionClickCheckout({push, navigate, pop, coleta_id, entregador_id});
     } else {
       console.log('PAGAMENTO COM CARTÃO AQUI');
-      actionClickCheckout({coleta_id, entregador_id});
+      actionClickCheckout({push, navigate, pop, coleta_id, entregador_id});
       if (false) {
-        actionGotoPay({total, coleta_id, entregador_id});
+        actionGotoPay({push, navigate, pop, total, coleta_id, entregador_id});
       }
     }
   };
@@ -28,7 +36,7 @@ function Footer({total, coleta_id, entregador_id, forma_pagamento}) {
           value:
             forma_pagamento === 'dinheiro'
               ? 'Saindo cliente'
-              : 'Receber do cliente',
+              : 'Saindo do cliente',
           color: '07',
         }}
         bg={'14'}

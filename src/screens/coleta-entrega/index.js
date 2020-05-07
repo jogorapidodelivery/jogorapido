@@ -2,14 +2,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import MinhasColetasComponent from './component';
 import {useSelector} from 'react-redux';
-import {SDNavigation} from '@sd/navigation';
 import {destroyFence, addFence} from '@sd/uteis/permissions/index';
 import {mapCliente} from './commands/mapCliente';
 import {actionBuscarColeta} from '@actions/';
 import {mapEstabelecimento} from './commands/mapEstabelecimento';
 import {GrupoRotas} from '@sd/navigation/revestir';
 import {withNavigationFocus} from 'react-navigation';
-function MinhasColetas({isFocused, navigation: {navigate}}) {
+function MinhasColetas({isFocused, navigation: {navigate, push}}) {
   let dados = useSelector(
     ({
       autenticacao: {
@@ -27,6 +26,7 @@ function MinhasColetas({isFocused, navigation: {navigate}}) {
       coleta,
     }),
   );
+  console.log('feliz');
   if (dados.coleta === null || dados.coleta.length === 0) {
     dados.coleta = [];
   }
@@ -54,80 +54,65 @@ function MinhasColetas({isFocused, navigation: {navigate}}) {
   ]);
 
   // Lista de coletas
-  const [coleta, setColeta] = useState([
-    mapEstabelecimento(coletaRedux[0], distancia_checkin_unidade, coleta_ids),
-  ]);
-
+  const [coleta, setColeta] = useState(
+    mapEstabelecimento({
+      coleta: coletaRedux.length > 0 ? coletaRedux[0] : [],
+      raio: distancia_checkin_unidade,
+      coleta_ids,
+      navigate,
+      push,
+    }),
+  );
+  const finalizarColeta = () => {
+    console.log('VOLTA PARA A HOME PORRA');
+    let store = GrupoRotas.store.getState();
+    store.autenticacao.coleta = [];
+    navigate('home');
+  };
   const selecioneDadosDoFiltro = useCallback(() => {
     let clt = [];
-    if (coletaRedux === null || coletaRedux.length === 0) {
-      return clt;
-    }
-    console.log('selecioneDadosDoFiltro/index', index);
-    if (index === 0) {
-      clt = [
-        mapEstabelecimento(
-          coletaRedux[0],
-          distancia_checkin_unidade,
-          coleta_ids,
-        ),
-      ];
-    } else {
-      clt = coletaRedux.map((v, k) =>
-        mapCliente(v, distancia_checkin_cliente, k),
+    const hasColeta = coletaRedux.length > 0;
+    if (index === 0 && hasColeta) {
+      clt = mapEstabelecimento({
+        coleta: coletaRedux[0],
+        raio: distancia_checkin_unidade,
+        coleta_ids,
+        navigate,
+        push,
+      });
+      setColeta(clt);
+    } else if (index === 1 && hasColeta) {
+      clt = coletaRedux.map((c, i) =>
+        mapCliente({
+          coleta: c,
+          raio: distancia_checkin_cliente,
+          index: i,
+          push,
+          navigate,
+        }),
       );
+      setColeta(clt);
     }
-    setColeta(clt);
     return clt;
   }, [index, coletaRedux]);
 
-  // Atualizando dados da coleta durante as interações de checkout inidade
-  useEffect(() => {
-    const estabelecimento = mapEstabelecimento(
-      coletaRedux[0],
-      distancia_checkin_unidade,
-      coleta_ids,
-    );
-    if (index === 0 && estabelecimento.horarios.length === 2) {
-      setIndex(1);
-    }
-  }, [isFocused]);
-
   // Monitorando coletas para adicionar ganchos de geolocalização
   useEffect(() => {
-    console.log('add', index);
-    // Atualizando estado da coleta
     const clt = selecioneDadosDoFiltro();
-
-    // Selecionando aba
-    let copy = filter.map((v, k) => ({...v, actived: k === index}));
-    setFilter(copy);
-
-    let contarCoeltasConcluidas = 0;
-
-    clt.forEach(v => {
-      const {horarios, name} = v;
-      if (horarios.length !== 2) {
-        console.log(`add:${name}`);
-        addFence({...v, callBack: selecioneDadosDoFiltro});
-      } else {
-        contarCoeltasConcluidas++;
-      }
-    });
-
-    let isGotoHome =
-      index === 1 &&
-      (clt.length === 0 || clt.length === contarCoeltasConcluidas);
-    if (isGotoHome) {
-      let store = GrupoRotas.store.getState();
-      store.autenticacao.coleta = [];
-      navigate('home');
-    }
-
-    return () => {
-      console.log('remove', index);
-      clt.forEach(({name, horarios}) => {
+    if (clt.length > 0) {
+      clt.forEach(v => {
+        const {horarios, name} = v;
         if (horarios.length !== 2) {
+          console.log(`add:${name}`);
+          addFence({...v, callBack: selecioneDadosDoFiltro});
+        }
+      });
+    } else {
+      finalizarColeta();
+    }
+    return () => {
+      clt.forEach(({name, horarios}) => {
+        if (horarios && horarios.length !== 2) {
           console.log(`remove:${name}`);
           destroyFence(name);
         }
@@ -135,10 +120,47 @@ function MinhasColetas({isFocused, navigation: {navigate}}) {
     };
   }, [index, coletaRedux, refreshing]);
 
+  // Atualizando dados da coleta durante as interações de checkout inidade
+  useEffect(() => {
+    // console.log('useEffect(isFocused)');
+    const hasColeta = coletaRedux.length > 0;
+    if (index === 0 && hasColeta) {
+      const estabelecimento = mapEstabelecimento({
+        coleta: coletaRedux[0],
+        raio: distancia_checkin_unidade,
+        coleta_ids,
+        navigate,
+        push,
+      });
+      if (
+        estabelecimento.length > 0 &&
+        estabelecimento[0].horarios.length === 2
+      ) {
+        setIndex(1);
+      }
+    } else if (index === 1 && hasColeta) {
+      const goBackHome =
+        coletaRedux.filter(
+          ({data_checkout_cliente}) => data_checkout_cliente === null,
+        ).length === 0;
+      if (goBackHome) {
+        finalizarColeta();
+      }
+    }
+  }, [isFocused]);
+
+  // Selecionando aba
+  useEffect(() => {
+    const hasColeta = coletaRedux.length > 0;
+    if (hasColeta) {
+      let copy = filter.map((v, k) => ({...v, actived: k === index}));
+      setFilter(copy);
+    }
+  }, [index]);
+
   // Buscando coleta no servidor.
   async function onRefresh() {
     setRefreshing(true);
-    const {push} = SDNavigation.navegar;
     try {
       await actionBuscarColeta({body_rsa: {usuario_id, entregador_id}});
     } catch (err) {
@@ -150,7 +172,7 @@ function MinhasColetas({isFocused, navigation: {navigate}}) {
     }
     setRefreshing(false);
   }
-
+  // console.log({index, coleta});
   return (
     <MinhasColetasComponent
       data={coleta}

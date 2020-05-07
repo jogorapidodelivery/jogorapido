@@ -1,8 +1,13 @@
 import {coletaCheckOutUnidade} from '@actions/';
-import {SDNavigation} from '@sd/navigation';
 import {GrupoRotas} from '@sd/navigation/revestir';
-export const actionClickCheckout = async ({coleta_ids, entregador_id}) => {
-  const {push, navigate, pop} = SDNavigation.navegar;
+
+export const actionClickCheckout = async ({
+  pop,
+  navigate,
+  push,
+  coleta_ids,
+  entregador_id,
+}) => {
   try {
     await coletaCheckOutUnidade({
       body_rsa: {

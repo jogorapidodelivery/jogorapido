@@ -1,22 +1,12 @@
-import { createStore, compose, applyMiddleware, combineReducers } from 'redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
-// import thunkMiddleware from "redux-thunk"
-import { Platform, NativeModules } from 'react-native';
-let _op;
-if (__DEV__) {
-    if (Platform.OS === 'ios') {
-        NativeModules.DevSettings.setIsDebuggingRemotely(true);
-    }
-    _op = composeWithDevTools(
-        applyMiddleware()
-        // thunkMiddleware
-    );
-} else {
-    _op = compose(
-        applyMiddleware()
-        // thunkMiddleware
-    );
-}
+import {createStore, compose, applyMiddleware, combineReducers} from 'redux';
+
 export const SDCreateStore = reducers => {
-    return createStore(combineReducers(reducers), undefined, _op);
+  return createStore(
+    combineReducers(reducers),
+    undefined,
+    compose(
+      applyMiddleware(),
+      // thunkMiddleware
+    ),
+  );
 };

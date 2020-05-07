@@ -1,16 +1,13 @@
 import {cor} from '@root/app.json';
 import {calcFence} from '@sd/uteis/permissions/index';
 import {actionOpenMap} from '../actions/actionIndex';
-import {
-  actionCheckInUnidade,
-  actionCheckOutUnidade,
-} from '../actions/actionEstabelecimento';
+import {actionCheckInUnidade} from '../actions/actionEstabelecimento';
 import {cep} from '@sd/uteis/form/MaskString';
 import {hora} from './index';
-function pontoReferenciaUnidade(coleta, separator = '') {
+function pontoReferenciaUnidade(coleta, prepende = '', append = '') {
   const {ponto_referencia_unidade} = coleta;
   if (ponto_referencia_unidade !== '') {
-    return `${separator} ${ponto_referencia_unidade}`;
+    return `${prepende} ${ponto_referencia_unidade} ${append}`;
   }
   return '';
 }
@@ -19,7 +16,7 @@ function complementoUnidade(coleta) {
   if (complemento_unidade !== '') {
     return ` ( ${complemento_unidade} ${pontoReferenciaUnidade(coleta, '-')})`;
   } else {
-    return ` ( ${pontoReferenciaUnidade(coleta)} )`;
+    return pontoReferenciaUnidade(coleta, ' ( ', ' ) ');
   }
 }
 function numeroUnidade(coleta) {
@@ -30,8 +27,17 @@ function numeroUnidade(coleta) {
   return 'nº s/n';
 }
 
-export const mapEstabelecimento = (coleta, raio, coleta_ids) => {
+export const mapEstabelecimento = ({
+  coleta,
+  raio,
+  coleta_ids,
+  navigate,
+  push,
+}) => {
   let horarios = [];
+  if (!('cep_unidade' in coleta)) {
+    return [];
+  }
   const {
     cep_unidade,
     cidade_unidade,
@@ -75,33 +81,35 @@ export const mapEstabelecimento = (coleta, raio, coleta_ids) => {
         icone: '',
         titulo: 'Saindo',
         color: cor['10'],
-        action: actionCheckOutUnidade,
+        action: () => push('coletaCheckoutUnidade'),
       });
     }
   }
   const totalBtn = buttons.length;
   const name = `estabelecimento-coleta-id-${coleta_id}-status-id-${status_coleta_id}-btns-count-${totalBtn}`;
-  return {
-    name,
-    raio,
-    distancia,
-    dentroDoRaio,
-    latitude,
-    longitude,
-    aba: 0,
-    titulo: {
-      bold: `coleta${coleta_ids.indexOf(',') ? 's' : ''}`,
-      normal: `#${coleta_ids
-        .replace(/(,)([0-9]{2,})$/gi, ' e $2')
-        .replace(/,/gi, ', ')}`,
+  return [
+    {
+      name,
+      raio,
+      distancia: distancia.toLocaleString('pt-BR'),
+      dentroDoRaio,
+      latitude,
+      longitude,
+      aba: 0,
+      titulo: {
+        bold: `Coleta${coleta_ids.indexOf(',') ? 's' : ''}`,
+        normal: `#${coleta_ids
+          .replace(/(,)([0-9]{2,})$/gi, ' e $2')
+          .replace(/,/gi, ', ')}`,
+      },
+      nome: coleta.unidade,
+      endereco: `${endereco_unidade}, ${numeroUnidade(
+        coleta,
+      )}, ${bairro_unidade} ${cidade_unidade} ${cep(
+        cep_unidade,
+      )} ${complementoUnidade(coleta)}`,
+      horarios,
+      buttons,
     },
-    nome: coleta.unidade,
-    endereco: `${endereco_unidade}, ${numeroUnidade(
-      coleta,
-    )}, ${bairro_unidade} ${cidade_unidade} ${cep(
-      cep_unidade,
-    )} ${complementoUnidade(coleta)}`,
-    horarios,
-    buttons,
-  };
+  ];
 };

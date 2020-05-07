@@ -1,5 +1,4 @@
 import {coletaCheckInUnidade} from '@actions/';
-import {SDNavigation} from '@sd/navigation';
 import {km2String} from '@sd/uteis/StringUteis';
 import {GrupoRotas} from '@sd/navigation/revestir';
 export const actionCheckInUnidade = ({
@@ -7,8 +6,9 @@ export const actionCheckInUnidade = ({
   entregador_id,
   dentroDoRaio,
   raio,
+  push,
+  navigate,
 }) => {
-  const {push, navigate} = SDNavigation.navegar;
   if (dentroDoRaio) {
     coletaCheckInUnidade({
       body_rsa: {
@@ -43,7 +43,4 @@ export const actionCheckInUnidade = ({
       },
     });
   }
-};
-export const actionCheckOutUnidade = () => {
-  SDNavigation.navegar.push('coletaCheckoutUnidade');
 };

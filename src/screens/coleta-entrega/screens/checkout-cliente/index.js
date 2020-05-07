@@ -3,17 +3,18 @@ import {useSelector} from 'react-redux';
 import {coletaBuscarProdutos} from '@actions/';
 import CheckoutClienteComponent from './component';
 import {mapProdutos} from '../checkout-estabelecimento/commands/mapProdutos';
-import {SDNavigation} from '@sd/navigation';
-function CheckoutCliente(props) {
-  const {
-    navigation: {
-      state: {
-        params: {
-          params: {coleta_id},
-        },
+function CheckoutCliente({
+  navigation: {
+    push,
+    navigate,
+    pop,
+    state: {
+      params: {
+        params: {coleta_id},
       },
     },
-  } = props;
+  },
+}) {
   const {
     entregador_id,
     coleta: [{forma_pagamento}],
@@ -46,7 +47,6 @@ function CheckoutCliente(props) {
   // Ação para buscando produtos no servidor.
   async function onRefresh() {
     setRefreshing(true);
-    const {push} = SDNavigation.navegar;
     try {
       await carregarProdutos();
     } catch ({mensagem}) {
@@ -67,6 +67,9 @@ function CheckoutCliente(props) {
   return (
     <CheckoutClienteComponent
       data={produtos}
+      push={push}
+      navigate={navigate}
+      pop={pop}
       footerData={footerData}
       refreshing={refreshing}
       onRefresh={onRefresh}

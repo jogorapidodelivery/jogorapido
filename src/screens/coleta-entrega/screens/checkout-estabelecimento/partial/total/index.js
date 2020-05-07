@@ -13,7 +13,8 @@ function FooterTotal({total, frete}) {
         visible={frete !== undefined}>
         <View style={[styl.container, styl.warp]}>
           <Text style={[styl.titulo, styl.frete]}>
-            <Text style={styl.labelTotal}>Frete</Text> R$ {frete}
+            <Text style={styl.labelTotal}>Frete </Text>
+            {frete}
           </Text>
         </View>
       </Shimmer>
@@ -24,7 +25,8 @@ function FooterTotal({total, frete}) {
           autoRun={frete === undefined}
           visible={frete !== undefined}>
           <Text style={[styl.titulo, styl.total]}>
-            <Text style={styl.labelTotal}>Total</Text> R$ {total}
+            <Text style={styl.labelTotal}>Total </Text>
+            {total}
           </Text>
         </Shimmer>
       </View>

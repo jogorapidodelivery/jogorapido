@@ -2,7 +2,6 @@ import React, {memo} from 'react';
 import {View, Text} from 'react-native';
 import Button from '@sd/components/button';
 import {whatsapp} from '@screens/home/menu/partial/item/commands';
-import {SDNavigation} from '@sd/navigation';
 import styl from './styl';
 import {actionClickCheckout} from '../../actions/actionsCheckout';
 
@@ -11,12 +10,14 @@ function Footer({
   totalPedidos,
   coleta_ids,
   entregador_id,
+  pop,
+  navigate,
+  push,
 }) {
   const hasSubmit = totalPedidosSelecionado === totalPedidos;
   const onPress = () => {
-    const {push} = SDNavigation.navegar;
     if (hasSubmit) {
-      actionClickCheckout({coleta_ids, entregador_id});
+      actionClickCheckout({pop, navigate, push, coleta_ids, entregador_id});
     } else {
       push('alerta', {
         params: {

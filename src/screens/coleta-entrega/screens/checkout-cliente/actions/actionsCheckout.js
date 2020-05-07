@@ -1,8 +1,12 @@
 import {coletaCheckOutCliente} from '@actions/';
-import {SDNavigation} from '@sd/navigation';
 import {GrupoRotas} from '@sd/navigation/revestir';
-export const actionClickCheckout = async ({coleta_id, entregador_id}) => {
-  const {push, navigate, pop} = SDNavigation.navegar;
+export const actionClickCheckout = async ({
+  push,
+  navigate,
+  pop,
+  coleta_id,
+  entregador_id,
+}) => {
   try {
     await coletaCheckOutCliente({
       body_rsa: {
@@ -13,7 +17,6 @@ export const actionClickCheckout = async ({coleta_id, entregador_id}) => {
     });
     pop();
   } catch (err) {
-    console.warn(err);
     const {status, mensagem} = err;
     if (status === 'listapedido') {
       push('alerta', {
@@ -35,7 +38,6 @@ export const actionClickCheckout = async ({coleta_id, entregador_id}) => {
     }
   }
 };
-export const actionGotoPay = params => {
-  const {push} = SDNavigation.navegar;
+export const actionGotoPay = ({push, navigate, pop, ...params}) => {
   push('coletaPagamento', {params});
 };
