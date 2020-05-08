@@ -4,6 +4,9 @@ import {Linking} from 'react-native';
 import {actionRecuperarSenha} from '@actions/';
 import {getItemByKeys} from '@sd/uteis/ArrayUteis';
 import BackgroundGeolocation from 'react-native-background-geolocation';
+import {actionAutenticar} from '@actions/';
+import {SDNavigation} from '@sd/navigation';
+import {setBaseUrl, hasDev} from '@sd/fetch/baseUrl';
 export const logout = navigation => {
   BackgroundGeolocation.stop();
   let state = GrupoRotas.store.getState();
@@ -26,6 +29,19 @@ export const politicaDePrivacidade = () => {
   const link = getItemByKeys(state, 'autenticacao.politica_privacidade');
   if (link) {
     Linking.openURL(link);
+  }
+};
+
+export const toogleAdmin = async navigation => {
+  try {
+    navigation.push('carregando');
+    const isDev = !hasDev();
+    setBaseUrl(isDev);
+    await actionAutenticar(true);
+    navigation.pop();
+  } catch (_err) {
+    console.log(_err);
+    navigation.pop();
   }
 };
 export const whatsapp = () => {

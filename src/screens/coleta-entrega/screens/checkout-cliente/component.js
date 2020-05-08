@@ -10,8 +10,8 @@ import styl from './styl';
 import Header from '../../partial/header';
 import Footer from './partial/footer';
 import HeaderUnidade from '../checkout-estabelecimento/partial/header';
-import ItemCheckout from '../checkout-estabelecimento/partial/produto';
 import FooterTotal from '../checkout-estabelecimento/partial/total';
+import ItemCheckout from '../checkout-estabelecimento/partial/produto';
 const dataVazio = [{actived: -1}];
 const dataListVazio = [
   {sectionIndex: 0, data: dataVazio},
@@ -33,6 +33,8 @@ function CheckinClienteComponent({
   if (vazio) {
     data = dataListVazio;
   }
+  console.log('listagem');
+  console.log(data);
   return (
     <ImageBackground
       source={require('@images/gradiente.png')}

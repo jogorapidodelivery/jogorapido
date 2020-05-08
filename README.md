@@ -15,5 +15,3 @@ coleta_id in(261,262,263,264)
 
 Ignorar o não perturbe e aumentar volume na marra
 quando minimiza a notificação para de funcionar
-Botão de saindo não funciona
-2) coletas esta com problema de tela inicial

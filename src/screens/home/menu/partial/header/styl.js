@@ -7,7 +7,7 @@ export default StyleSheet.create({
     marginRight: normalize(spaces['01']),
     backgroundColor: cor['19'],
     borderTopEndRadius: normalize(spaces['01']),
-    paddingBottom: normalize(spaces['02']),
+    paddingVertical: normalize(spaces['02']),
   },
   btn: {
     right: -normalize(5),

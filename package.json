@@ -1,6 +1,6 @@
 {
   "name": "jogorapido",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -23,6 +23,7 @@
     "appcenter-crashes": "3.0.1",
     "base-64": "^0.1.0",
     "css-to-react-native": "^3.0.0",
+    "intl": "^1.2.5",
     "moment": "^2.24.0",
     "pad": "^3.2.0",
     "react": "16.9.0",

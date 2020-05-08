@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState, memo} from 'react';
 import {FlatList, View, Text, Platform} from 'react-native';
 import styl from './styl';
 import Header from './partial/header';
@@ -8,14 +8,15 @@ import {stylDefault} from '@src/stylDefault';
 import {useSelector} from 'react-redux';
 import codePush from 'react-native-code-push';
 
-export default function Menu({navigation}) {
+function Menu({navigation}) {
   const {menu, email, telefone, foto, nome} = useSelector(
     ({autenticacao}) => autenticacao,
   );
-  const extractItemList = useCallback((_item, index) => index.toString(), []);
-  const renderItemList = useCallback(
-    ({item, index}) => <Item {...item} index={index} navigation={navigation} />,
-    [navigation],
+  const extractItemList = ({checkbox}, index) => {
+    return `${checkbox === undefined ? -1 : checkbox ? 0 : 1}-${index}`;
+  };
+  const renderItemList = ({item, index}) => (
+    <Item {...item} index={index} navigation={navigation} />
   );
   const [versao, setVersao] = useState(version);
   useEffect(() => {
@@ -54,3 +55,4 @@ export default function Menu({navigation}) {
     </View>
   );
 }
+export default memo(Menu);

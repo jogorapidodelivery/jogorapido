@@ -1,7 +1,13 @@
 import {Dimensions, PixelRatio} from 'react-native';
+import {Platform} from 'react-native';
 
+if (Platform.OS === 'android') {
+  require('intl');
+  require('intl/locale-data/jsonp/pt-BR');
+}
 const {width: w, height: h} = Dimensions.get('window');
 const scale = Math.min(w, h) / 370;
+
 export const normalize = size => {
   const newSize = size * scale;
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
