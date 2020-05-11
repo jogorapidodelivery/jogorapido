@@ -108,7 +108,6 @@ const _currentLocation = () => {
     maximumAge: 1000 * 60 * 60, // em ms
     ...defParans,
   });
-  console.log('WATCH ATIVADO');
   Geolocation.watchPosition(_actionSuccess, _actionErr, {
     enableHighAccuracy: true,
     interval: 10000, // em ms

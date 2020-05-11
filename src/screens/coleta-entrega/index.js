@@ -26,7 +26,6 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
       coleta,
     }),
   );
-  console.log('feliz');
   if (dados.coleta === null || dados.coleta.length === 0) {
     dados.coleta = [];
   }
@@ -64,7 +63,6 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
     }),
   );
   const finalizarColeta = () => {
-    console.log('VOLTA PARA A HOME PORRA');
     let store = GrupoRotas.store.getState();
     store.autenticacao.coleta = [];
     navigate('home');

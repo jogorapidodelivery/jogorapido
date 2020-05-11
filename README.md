@@ -13,5 +13,9 @@ data_checkout_unidade=NULL
 WHERE
 coleta_id in(261,262,263,264)
 
-Ignorar o não perturbe e aumentar volume na marra
-quando minimiza a notificação para de funcionar
+=> Verificar se o não perturbe esta ativado
+=> Verificar se o volume está no 100%
+=> Verificar o rendimento da semana
+=> Noticicação de escala não esta enviando
+=> O sistema está colocando todas as coletas como concluidas se eu concluir apenas a coleta pai.
+=> Na lista de coletas finalizadas remover a coleta do app.

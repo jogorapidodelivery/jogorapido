@@ -76,7 +76,7 @@ export default (_obj, _loggerID = 0) => {
     _urlGet += `&${a}=${escape(value)}`;
     _data.append(a, value);
   }
-  console.log(`${_loggerID}) FORMAT POST`, {get: _urlGet});
+  // console.log(`${_loggerID}) FORMAT POST`, {get: _urlGet});
   // console.log("action)", _obj.action)
   return {
     body: baseUrl === 'node' ? _data.toString() : _data,
