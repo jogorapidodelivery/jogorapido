@@ -8,6 +8,7 @@ import {SDNavigation} from '@sd/navigation';
 import {COLETA_NOVA_TEMPO_EXPIRADO, BUSCAR_COLETA} from '@constants/';
 import {cor} from '@root/app.json';
 import {fetchItem} from '@sd/fetch';
+import SystemSetting from 'react-native-system-setting';
 import Sound from 'react-native-sound';
 import moment from 'moment';
 Sound.setCategory('Playback');
@@ -167,6 +168,7 @@ const renderNotifierDisplay = (
   }
   if (aguia !== undefined) {
     aguia.play(_success => {});
+    SystemSetting.setVolume(__DEV__ ? 0.1 : 1);
   }
   timerInProcess = setInterval(loopInterval, 1000);
   notificarColetaId = coleta_id;

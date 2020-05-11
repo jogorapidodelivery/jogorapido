@@ -10,6 +10,7 @@ import MinhaEscala from './partial/minha-escala';
 import MeusRendimentos from './partial/meus-rendimentos';
 import {triggerDestroyTimerProgress} from '@libs/dispatchNotify';
 import {dispatchNotifierOnResultGeofenceHttp} from '@libs/geofence';
+import SystemSetting from 'react-native-system-setting';
 const Home = ({navigation}) => {
   const {navigate} = navigation;
   let {
@@ -30,6 +31,12 @@ const Home = ({navigation}) => {
       onComplete();
     }
   };
+  const up = async () => {
+    const response = await SystemSetting.isAirplaneEnabled();
+    console.log('O avião atual é', response);
+    console.log(response);
+  };
+  up();
   useEffect(() => {
     let ativarBg = false;
     if (total > 0) {

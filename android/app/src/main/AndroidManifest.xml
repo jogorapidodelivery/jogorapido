@@ -11,6 +11,7 @@
     <!-- INICIO PERMISSOES PADRAO.-->
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <!-- INICIO PERMISSOES PADRAO.-->
     
     <!-- INICIO PERMISSOES PARA MAPAS E CAMERA.-->
@@ -42,7 +43,7 @@
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- FIM CAMERA -->
-    
+
     <!-- INICIO MAPA
     <uses-permission android:name="com.gotrainer.permission.MAPS_RECEIVE"/>
     <permission android:name="com.gotrainer.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>

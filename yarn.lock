@@ -6893,10 +6893,20 @@ react-native-shimmer-placeholder@^1.0.35:
   resolved "https://registry.yarnpkg.com/react-native-shimmer-placeholder/-/react-native-shimmer-placeholder-1.0.35.tgz#e75612297155a337690a42faf606fdcc4660bd39"
   integrity sha512-qJS+eHjOuXZAxn4tFQFnRGHq6fzJOcNHrCKhbfx2+5v/Oa/W5G9Ww9DSPLiaAqzpRl74lcVZSufKTAxiVSB4qQ==
 
+react-native-silent-switch@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-silent-switch/-/react-native-silent-switch-0.1.0.tgz#1c6f40ceca37af6673ed978c9c25c2594174181e"
+  integrity sha512-xrg6eed98o32NnizgfrlQxN4Hf9IlXPcuhElB24Y7J8ggn4KjjBy/z26oKM8IXsC1j0P94TIfTPql2w2lTa79g==
+
 react-native-sound@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-native-sound/-/react-native-sound-0.11.0.tgz#ad60b55ba8c6dc89917f381ad3713f2738de530f"
   integrity sha512-4bGAZfni6E2L695NQjOZwNLBQGXgBGYC4Sy+h99K5h0HqNZjCqR0+aLel+ezASxEJDpaH83gylNObXpiqJgdwg==
+
+react-native-system-setting@^1.7.4:
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/react-native-system-setting/-/react-native-system-setting-1.7.4.tgz#605fb21fe901e5d25f37b864326aaddde33e926b"
+  integrity sha512-hS97zoYI/pffiKWBx15X2e8y4srm8q2uCp3aO+49P+Hu3HMNi4BgOvAG+J7KRHdoKEnIapRoVV67pLQsLqjQzw==
 
 react-native-tab-view@^2.11.0, react-native-tab-view@^2.13.0:
   version "2.14.0"
