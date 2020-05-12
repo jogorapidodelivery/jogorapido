@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import styl from './styl';
 const _asa = require('@images/asa.png');
-import * as Sentry from '@sentry/react-native';
 import {SDNavigation} from '@sd/navigation';
 const requestExternalStoreageRead = async () => {
   if (Platform.OS === 'ios') {
@@ -25,10 +24,6 @@ const requestExternalStoreageRead = async () => {
     );
     return granted === PermissionsAndroid.RESULTS.GRANTED;
   } catch (_err) {
-    Sentry.addBreadcrumb({
-      action: 'home/Menu/partial/header',
-      mensagem: 'Falha na solicitação da permissão READ_EXTERNAL_STORAGE',
-    });
     console.log(_err);
     return false;
   }

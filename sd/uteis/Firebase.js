@@ -10,7 +10,7 @@ export const initFirebase = (_callBack = undefined) => {
           // console.log('INNER_NOTIFIER_THEN', new Date());
           _resolve();
         } catch (e) {
-          console.log('INNER_NOTIFIER_CATCH', new Date());
+          console.log('INNER_NOTIFIER_CATCH', new Date(), e, data);
           _reject();
         }
       } else {

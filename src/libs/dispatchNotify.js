@@ -3,7 +3,6 @@ import {GrupoRotas} from '@sd/navigation/revestir';
 import {Platform} from 'react-native';
 import {empty} from '@sd/uteis/StringUteis';
 import {LayoutAnimation} from 'react-native';
-import * as Sentry from '@sentry/react-native';
 import {SDNavigation} from '@sd/navigation';
 import {COLETA_NOVA_TEMPO_EXPIRADO, BUSCAR_COLETA} from '@constants/';
 import {cor} from '@root/app.json';
@@ -128,16 +127,12 @@ const renderNotifierDisplay = (
   if (empty(coleta_id)) {
     _reject();
     console.log({falha: 'PARAMS BRIGATÓRIOS VAZIO coleta_id = undefined'});
-    Sentry.captureMessage('PARAMS BRIGATÓRIOS VAZIO coleta_id = undefined');
     return false;
   }
 
   if (notificarColetaId !== undefined) {
     _reject();
     console.log('coleta notificarColetaId = ' + notificarColetaId);
-    Sentry.captureMessage(
-      'PARAMS BRIGATÓRIOS VAZIO notificarColetaId = ' + notificarColetaId,
-    );
     return false;
   }
   const startTimer = new Date().getTime();
@@ -168,7 +163,7 @@ const renderNotifierDisplay = (
   }
   if (aguia !== undefined) {
     aguia.play(_success => {});
-    SystemSetting.setVolume(__DEV__ ? 0.1 : 1);
+    SystemSetting.setVolume(__DEV__ ? 0 : 1);
   }
   timerInProcess = setInterval(loopInterval, 1000);
   notificarColetaId = coleta_id;

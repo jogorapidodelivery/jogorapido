@@ -51,6 +51,9 @@ export const mapEstabelecimento = ({
     status_coleta_id,
     data_checkout_unidade,
   } = coleta;
+  if (status_coleta_id === 1) {
+    return [];
+  }
   if (data_checkin_unidade !== null) {
     horarios.push(hora(data_checkin_unidade));
   }

@@ -1,7 +1,6 @@
 import {RSA} from 'react-native-rsa-native';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import {PUBLIC_KEY_RSA} from '@sd/fetch';
-import * as Sentry from '@sentry/react-native';
 import {getBaseUrl} from '@sd/fetch/baseUrl';
 import {empty} from '@sd/uteis/StringUteis';
 import RemoteMessage from 'react-native-firebase/dist/modules/messaging/RemoteMessage';
@@ -28,10 +27,6 @@ export const setUserBackground = async usuario_id => {
       },
     });
   } catch (_err) {
-    Sentry.addBreadcrumb({
-      action: 'geofence/setUserBackground',
-      mensagem: 'RSA or BackgroundGeolocation.setConfig failed',
-    });
     Alert.alert('Erro', `${_err}`);
   }
 };
@@ -43,17 +38,10 @@ export const bgLocationFetch = () => {
           const {data} = JSON.parse(response.responseText);
           dispatchNotifierOnResultGeofenceHttp(data);
         } catch (_err) {
-          Sentry.captureMessage(
-            'GEOFENCE CATCH PARSE: ' + response.responseText,
-          );
+          //
         }
-      } else {
-        Sentry.captureMessage(
-          'GEOFENCE DADOS INVÁLIDOS: ' + response.responseText,
-        );
       }
     } else {
-      Sentry.captureMessage('GEOFENCE AJAX ERROR:' + response.responseText);
       console.log(response.responseText);
     }
   });

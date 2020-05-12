@@ -15,7 +15,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {decodeCipherCaesar} from '@sd/uteis/CipherCaesar';
 import {version} from '@root/package.json';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
-import * as Sentry from '@sentry/react-native';
 const {applestoryid, googleplayid} = require('@root/app.json');
 import pad from 'pad';
 import {empty} from '@sd/uteis/StringUteis';
@@ -64,8 +63,6 @@ export const actionAutenticar = (hasDispatchRedux = true) => {
       .then(value => {
         if (value != null) {
           let body_rsa = decodeCipherCaesar(value);
-          const {usuario: email} = body_rsa;
-          Sentry.setUser({email});
           const _action = actionFetchItem(
             AUTENTICAR,
             'usuario/login',

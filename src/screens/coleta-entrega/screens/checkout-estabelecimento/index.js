@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux';
 import {coletaBuscarProdutos} from '@actions/';
 import CheckoutUnidadeComponent from './component';
 import {mapProdutos} from './commands/mapProdutos';
-function CheckoutUnidade({navigation: {navigate, pop, push}}) {
+function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
   const {coleta_ids, entregador_id} = useSelector(({autenticacao}) => {
     const {entregador_id: id, coleta} = autenticacao;
     return {
@@ -31,22 +31,26 @@ function CheckoutUnidade({navigation: {navigate, pop, push}}) {
 
   // Método para produtos no servidor.
   const carregarProdutos = useCallback(async () => {
-    setLoadError(false);
-    try {
-      const {
-        response: {produtos: prod},
-      } = await coletaBuscarProdutos({
-        body_rsa: {
-          coleta_id: coleta_ids,
-        },
-      });
-      const list = mapProdutos(prod);
-      setProdutos(list);
-      setTotalPedidosSelecionado(0);
-    } catch (_err) {
-      setLoadError(true);
+    if (coleta_ids.length > 0) {
+      setLoadError(false);
+      try {
+        const {
+          response: {produtos: prod},
+        } = await coletaBuscarProdutos({
+          body_rsa: {
+            coleta_id: coleta_ids,
+          },
+        });
+        const list = mapProdutos(prod);
+        setProdutos(list);
+        setTotalPedidosSelecionado(0);
+      } catch (_err) {
+        setLoadError(true);
+      }
+    } else {
+      popToTop('home');
     }
-  }, [coleta_ids]);
+  }, [coleta_ids, popToTop]);
   // Ação para buscando produtos no servidor.
   async function onRefresh() {
     setRefreshing(true);

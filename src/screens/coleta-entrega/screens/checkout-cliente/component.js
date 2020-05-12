@@ -33,8 +33,6 @@ function CheckinClienteComponent({
   if (vazio) {
     data = dataListVazio;
   }
-  console.log('listagem');
-  console.log(data);
   return (
     <ImageBackground
       source={require('@images/gradiente.png')}

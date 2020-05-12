@@ -6,7 +6,6 @@ import {initFirebase} from '@sd/uteis/Firebase';
 import {triggerNotifier} from '@libs/dispatchNotify';
 import {bgLocationFetch} from '@libs/geofence';
 import CodePush from 'react-native-code-push';
-import * as Sentry from '@sentry/react-native';
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
@@ -18,9 +17,6 @@ YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested',
   'Require cycle: node_modules/react-native-firebase',
 ]);
-Sentry.init({
-  dsn: 'https://9b5931fcc9dc405eaa228e45b3ea5f1e@sentry.io/5182924',
-});
 if (Platform.OS === 'android') {
   const codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.ON_APP_START,

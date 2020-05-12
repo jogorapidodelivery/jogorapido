@@ -8,7 +8,7 @@ import {actionBuscarColeta} from '@actions/';
 import {mapEstabelecimento} from './commands/mapEstabelecimento';
 import {GrupoRotas} from '@sd/navigation/revestir';
 import {withNavigationFocus} from 'react-navigation';
-function MinhasColetas({isFocused, navigation: {navigate, push}}) {
+function MinhasColetas({isFocused, navigation: {navigate, popToTop, push}}) {
   let dados = useSelector(
     ({
       autenticacao: {
@@ -39,7 +39,6 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
 
   // Id de todas as coletas para checkin na undade
   const coleta_ids = coletaRedux.map(({coleta_id}) => coleta_id).join(',');
-
   // Identidicando qual aba esta
   const [index, setIndex] = useState(0);
 
@@ -78,18 +77,28 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
         navigate,
         push,
       });
-      setColeta(clt);
+      if (clt.length > 0) {
+        setColeta(clt);
+      } else {
+        finalizarColeta();
+      }
     } else if (index === 1 && hasColeta) {
-      clt = coletaRedux.map((c, i) =>
-        mapCliente({
-          coleta: c,
-          raio: distancia_checkin_cliente,
-          index: i,
-          push,
-          navigate,
-        }),
-      );
-      setColeta(clt);
+      clt = coletaRedux
+        .map((c, i) =>
+          mapCliente({
+            coleta: c,
+            raio: distancia_checkin_cliente,
+            index: i,
+            push,
+            navigate,
+          }),
+        )
+        .filter(v => v !== null);
+      if (clt.length > 0) {
+        setColeta(clt);
+      } else {
+        finalizarColeta();
+      }
     }
     return clt;
   }, [index, coletaRedux]);
@@ -120,7 +129,6 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
 
   // Atualizando dados da coleta durante as interações de checkout inidade
   useEffect(() => {
-    // console.log('useEffect(isFocused)');
     const hasColeta = coletaRedux.length > 0;
     if (index === 0 && hasColeta) {
       const estabelecimento = mapEstabelecimento({
@@ -149,10 +157,11 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
 
   // Selecionando aba
   useEffect(() => {
-    const hasColeta = coletaRedux.length > 0;
-    if (hasColeta) {
+    if (coletaRedux.length > 0) {
       let copy = filter.map((v, k) => ({...v, actived: k === index}));
       setFilter(copy);
+    } else {
+      finalizarColeta();
     }
   }, [index]);
 
@@ -160,7 +169,10 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
   async function onRefresh() {
     setRefreshing(true);
     try {
-      await actionBuscarColeta({body_rsa: {usuario_id, entregador_id}});
+      const coletasRefresh = await actionBuscarColeta({
+        body_rsa: {usuario_id, entregador_id},
+      });
+      console.log(coletasRefresh);
     } catch (err) {
       let {mensagem} = err;
       if (mensagem === undefined) {
@@ -170,7 +182,6 @@ function MinhasColetas({isFocused, navigation: {navigate, push}}) {
     }
     setRefreshing(false);
   }
-  // console.log({index, coleta});
   return (
     <MinhasColetasComponent
       data={coleta}

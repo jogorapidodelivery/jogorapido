@@ -1,4 +1,4 @@
-import React, {useEffect, memo} from 'react';
+import React, {useEffect, useState} from 'react';
 import {AppState} from 'react-native';
 import HeaderLogo from '@screens/partial/header-logo';
 import BaseScreen from '@screens/partial/base';
@@ -10,8 +10,10 @@ import MinhaEscala from './partial/minha-escala';
 import MeusRendimentos from './partial/meus-rendimentos';
 import {triggerDestroyTimerProgress} from '@libs/dispatchNotify';
 import {dispatchNotifierOnResultGeofenceHttp} from '@libs/geofence';
-import SystemSetting from 'react-native-system-setting';
-const Home = ({navigation}) => {
+import RingerMode from 'react-native-ringer-mode';
+import {withNavigationFocus} from 'react-navigation';
+import NaoPerturbe from './partial/nao-perturbe';
+const Home = ({isFocused, navigation}) => {
   const {navigate} = navigation;
   let {
     total,
@@ -25,25 +27,32 @@ const Home = ({navigation}) => {
     coletaPendente,
     coleta,
   } = useSelector(selectProps);
+  const [hasRingerMode, setHasRingerMode] = useState(false);
+  // useState
   const updateLogin = async (onComplete = null) => {
+    const mode = await RingerMode.getRingerMode();
     await actionColeta({navigate});
+    setHasRingerMode(mode !== 'NORMAL');
     if (onComplete) {
       onComplete();
     }
   };
-  const up = async () => {
-    const response = await SystemSetting.isAirplaneEnabled();
-    console.log('O avião atual é', response);
-    console.log(response);
-  };
-  up();
   useEffect(() => {
-    let ativarBg = false;
+    const _effRinger = async () => {
+      const mode = await RingerMode.getRingerMode();
+      setHasRingerMode(mode !== 'NORMAL');
+    };
+    _effRinger();
+  }, [hasRingerMode, coleta_ids, isFocused]);
+  useEffect(() => {
     if (total > 0) {
       dispatchNotifierOnResultGeofenceHttp({coleta});
     }
-    const handlerMinimized = status => {
+    let ativarBg = false;
+    const handlerMinimized = async status => {
       triggerDestroyTimerProgress();
+      const mode = await RingerMode.getRingerMode();
+      setHasRingerMode(mode !== 'NORMAL');
       if (ativarBg && status === 'active') {
         updateLogin();
       }
@@ -60,6 +69,7 @@ const Home = ({navigation}) => {
       onRefresh={updateLogin}
       header={<HeaderLogo navigation={navigation} />}
       headerHeight={HeaderLogo.heightContainer}>
+      {hasRingerMode && <NaoPerturbe />}
       {total >= 1 && (
         <ColetaPendente
           coleta={coletaPendente}
@@ -88,4 +98,4 @@ const Home = ({navigation}) => {
     </BaseScreen>
   );
 };
-export default memo(Home);
+export default withNavigationFocus(Home);

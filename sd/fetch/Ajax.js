@@ -1,6 +1,5 @@
 import mountFormData from './DataFormat';
 import {empty, str2slug} from '@sd/uteis/StringUteis';
-import * as Sentry from '@sentry/react-native';
 
 const obj = {
   ignorarError: false,
@@ -55,7 +54,6 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
       try {
         return JSON.parse(string);
       } catch (e) {
-        Sentry.captureException(e);
         return {
           status: 'erro',
           mensagem: `Impossível formatar o json seguinte [${string}]`,
@@ -91,12 +89,10 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
       if ('sucesso'.indexOf(response.status) !== -1) {
         _resolve(_r);
       } else {
-        Sentry.addBreadcrumb(_r);
         _reject(_r);
       }
     })
     .catch(_err => {
-      Sentry.captureException(_err);
       if (!empty(interval)) {
         clearTimeout(interval);
         interval = undefined;

@@ -40,6 +40,7 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
     data_checkin_cliente,
     data_checkout_cliente,
     data_checkout_unidade,
+    status_coleta_id,
   } = coleta;
   let endereco = 'Para visualizar e necessário dar saída no estabelecimento';
   let horarios = [];
@@ -48,6 +49,9 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
   }
   if (data_checkout_cliente !== null) {
     horarios.push(hora(data_checkout_cliente));
+  }
+  if (horarios.length === 2 || status_coleta_id === 1) {
+    return null;
   }
   if (data_checkout_unidade !== null) {
     endereco = `${endereco_cliente}, ${numeroCliente(
@@ -123,7 +127,6 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
   const name = `cliente-coleta-id-${coleta.coleta_id}-status-id-${
     coleta.status_coleta_id
   }-btns-count-${buttons.length}`;
-
   return {
     name,
     distancia,
