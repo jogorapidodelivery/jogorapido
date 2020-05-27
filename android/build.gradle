@@ -45,7 +45,7 @@ allprojects {
         }
         // bluetooth start
         maven {
-            url "http://dl.bintray.com/vivareal/maven"
+            url "https://dl.bintray.com/vivareal/maven"
         }
         flatDir {
             dirs "$rootDir/../node_modules/react-native-mpos-native/android/libs"

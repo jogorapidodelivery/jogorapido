@@ -4,23 +4,19 @@ import {spaces, radius, font, cor, size} from '@root/app.json';
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginVertical: normalize(spaces['03']),
+    marginTop: normalize(spaces['03']),
   },
   titulo: {
+    fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: font[Platform.OS],
     fontSize: normalize(size['03']),
     color: cor['04'],
     marginBottom: normalize(spaces['01']),
-    fontWeight: 'normal',
-  },
-  groupItens: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: normalize(60),
   },
   warpInput: {
-    width: normalize(115),
+    height: normalize(80),
+    width: normalize(300),
     borderRadius: normalize(radius['02']),
     backgroundColor: cor['26'],
   },
@@ -28,8 +24,15 @@ export default StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontFamily: font[Platform.OS],
-    fontSize: normalize(size['07']),
+    fontSize: normalize(size['08']),
     color: cor['08'],
-    fontWeight: 'normal',
+  },
+  detalhe: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: font[Platform.OS],
+    fontSize: normalize(size['02']),
+    color: cor['04'],
+    marginTop: normalize(spaces['01']),
   },
 });

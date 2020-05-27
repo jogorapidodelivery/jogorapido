@@ -50,8 +50,9 @@
     
     FIM MAPA -->
 
+      <!-- android:networkSecurityConfig="@xml/react_native_config" -->
     <application
-      android:networkSecurityConfig="@xml/network_security_config"
+      tools:targetApi="28"
       android:usesCleartextTraffic="true"
       android:allowBackup="false"
       tools:replace="android:allowBackup"

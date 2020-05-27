@@ -10,6 +10,15 @@ export default StyleSheet.create({
     fontFamily: font[Platform.OS],
     fontSize: normalize(size['04']),
     fontWeight: 'bold',
+    color: cor['08'],
+    marginTop: normalize(spaces['02']),
+  },
+  subtitulo: {
+    textAlign: 'center',
+    fontFamily: font[Platform.OS],
+    fontSize: normalize(size['02']),
+    fontWeight: 'bold',
     color: cor['20'],
+    marginTop: normalize(spaces['02']),
   },
 });

@@ -8,7 +8,7 @@ import {actionBuscarColeta} from '@actions/';
 import {mapEstabelecimento} from './commands/mapEstabelecimento';
 import {GrupoRotas} from '@sd/navigation/revestir';
 import {withNavigationFocus} from 'react-navigation';
-function MinhasColetas({isFocused, navigation: {navigate, popToTop, push}}) {
+function MinhasColetas({isFocused, navigation: {navigate, push}}) {
   let dados = useSelector(
     ({
       autenticacao: {

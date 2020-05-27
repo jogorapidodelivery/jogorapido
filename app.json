@@ -6,10 +6,12 @@
     "on":"https://jogorapido.delivery/app/",
     "off":"https://beta.jogorapido.delivery/app/"
   },
-  "baseUrlNode":{
+  "baseUrlNode": {
     "on": "https://jogorapido.delivery:22600/",
     "off": "https://jogorapido.delivery:22600/"
   },
+  "taxApiKey":"ak_test_dMh36Tfs8WR8uuSbBU4KNVZ1LyxVtA",
+  "taxEncryptionKey":"ek_test_Pf8ZLndl37m9SgPh5rYsXuhIZ90nzX",
   "tempoParaAceite": 60,
   "cor": {
     "01": "rgba(69,69,69,.1)",

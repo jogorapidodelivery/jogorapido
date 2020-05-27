@@ -5,6 +5,12 @@ export default StyleSheet.create({
   minhaEscala: {
     color: cor['20'],
   },
+  warpDisponibilidade: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   btnDisponibilizar: {
     marginTop: normalize(spaces['01']),
     marginBottom: normalize(spaces['01']),

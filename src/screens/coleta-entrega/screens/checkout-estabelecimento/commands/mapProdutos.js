@@ -3,9 +3,9 @@ export const mapProdutos = produtos => {
   let data = [];
   let ids = {};
   produtos.forEach(v => {
+    console.log(v);
     const {coleta_id} = v;
     if (ids[coleta_id] === undefined) {
-      const frete = moeda(v.sub_total - v.valor);
       const coleta = {
         titulo: v.produto,
         actived: false,
@@ -18,7 +18,7 @@ export const mapProdutos = produtos => {
         data: [coleta],
         total: moeda(v.sub_total),
         sub_total: moeda(v.valor),
-        frete,
+        frete: moeda(v.valor_frete),
       });
       ids[coleta_id] = data.length - 1;
     } else {

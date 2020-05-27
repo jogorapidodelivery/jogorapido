@@ -1,62 +1,55 @@
-import React, {PureComponent} from 'react';
+import React, {memo} from 'react';
+import ChecarToken from '@screens/partial/checar-token';
 import {actionChecarTokenEmail} from '@actions/';
 import {AUTENTICAR} from '@constants/';
-import ChecarToken from '@screens/partial/checar-token';
-import {getItemByKeys} from '@sd/uteis/ArrayUteis';
+import {useSelector} from 'react-redux';
 import {encodeCipherCaesar} from '@sd/uteis/CipherCaesar';
 import AsyncStorage from '@react-native-community/async-storage';
-export default class ChecarTokenEmailGoHome extends PureComponent {
-  static mapStateToProps = ['autenticacao'];
-  _confirmarCodigo = async _s => {
-    const {usuario} = _s.body_rsa;
-    const {
-      autenticacao: {entregador_id, usuario_id, social_id, senha},
-    } = this.props.sd;
+function ChecarTokenEmailGoHome({navigation}) {
+  const {entregador_id, usuario_id, social_id, senha} = useSelector(
+    ({autenticacao}) => autenticacao,
+  );
+  const {
+    state: {
+      params: {
+        params: {usuario},
+      },
+    },
+  } = navigation;
+  const typeReceiver = usuario.charAt(0) === '(' ? 'via sms' : 'no email';
+  const info = [
+    `Digite o código de verificação que você recebeu ${typeReceiver} `,
+    usuario,
+    '\npara alterar sua senha.',
+  ];
+  async function onSubmit(_s) {
     try {
       await actionChecarTokenEmail({
-        body_rsa: {
-          entregador_id,
-          usuario_id,
-          ..._s.body_rsa,
-        },
+        body_rsa: {entregador_id, usuario_id, ..._s.body_rsa},
       });
       const _chifed = encodeCipherCaesar({social_id, senha, usuario});
       AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {});
-      this.props.navigation.push('home', {
+      navigation.push('home', {
         params: {
           ..._s.body_rsa,
         },
       });
-    } catch (_err) {
-      this.props.navigation.push('alerta', {
+    } catch ({mensagem}) {
+      navigation.push('alerta', {
         params: {
           titulo: 'JogoRápido',
-          mensagem:
-            _err.mensagem ||
-            'Falha no webservice de recuperação do token de email',
+          mensagem,
         },
       });
     }
-  };
-  render() {
-    const usuario = getItemByKeys(
-      this.props,
-      'navigation.state.params.params.usuario',
-      'dev@jogorapido.com.br',
-    );
-    const typeReceiver = usuario.charAt(0) === '(' ? 'via sms' : 'no email';
-    const info = [
-      `Digite o código de verificação que você recebeu ${typeReceiver} `,
-      usuario,
-      '\npara validar seu cadastro.',
-    ];
-    return (
-      <ChecarToken
-        info={info}
-        usuario={usuario}
-        onSubmit={this._confirmarCodigo}
-        navigation={this.props.navigation}
-      />
-    );
   }
+  return (
+    <ChecarToken
+      info={info}
+      usuario={usuario}
+      onSubmit={onSubmit}
+      navigation={navigation}
+    />
+  );
 }
+export default memo(ChecarTokenEmailGoHome);

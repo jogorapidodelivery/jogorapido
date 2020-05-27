@@ -18,7 +18,7 @@ const dataListVazio = [
   {sectionIndex: 0, data: dataVazio},
   {sectionIndex: 1, data: dataVazio},
 ];
-function CheckinClienteComponent({
+function CheckoutClienteComponent({
   push,
   navigate,
   pop,
@@ -86,4 +86,4 @@ function CheckinClienteComponent({
     </ImageBackground>
   );
 }
-export default memo(CheckinClienteComponent);
+export default memo(CheckoutClienteComponent);

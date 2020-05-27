@@ -30,8 +30,9 @@ export default (_obj, _loggerID = 0) => {
   _obj.body_post = {..._obj.body_post, ..._getDefaultParams()};
   const {baseUrl, method} = _obj;
   let _data = baseUrl === 'node' ? new URLSearchParams() : new FormData();
-
   let timeout = timeoutSlow;
+  /*
+  [ { dia_semana: '0', disponibilidade_id: '1' }] */
   for (const a in _obj.body_post) {
     const value = _obj.body_post[a];
     if (empty(value)) {
@@ -50,11 +51,13 @@ export default (_obj, _loggerID = 0) => {
               continue;
             }
             _urlGet += `&${a}[${b}][${c}]=${escape(v3)}`;
+            // console.log(`${a}[${b}][${c}]=${escape(v3)}`);
             _data.append(`${a}[${b}][${c}]`, v3);
           }
           continue;
         }
         _urlGet += `&${a}[${b}]=${escape(v2)}`;
+        // console.log(`${a}[${b}]=${escape(v2)}`);
         _data.append(`${a}[${b}]`, v2);
       }
       continue;
@@ -66,6 +69,7 @@ export default (_obj, _loggerID = 0) => {
             continue;
           }
           _urlGet += `&${a}[${d}]=${escape(v4)}`;
+          // console.log(`${a}[${d}]=${escape(v4)}`);
           _data.append(`${a}[${d}]`, v4);
         }
         continue;
@@ -74,8 +78,10 @@ export default (_obj, _loggerID = 0) => {
       }
     }
     _urlGet += `&${a}=${escape(value)}`;
+    // console.log(`${a}=${escape(value)}`);
     _data.append(a, value);
   }
+  // console.log(url);
   console.log(`${_loggerID}) FORMAT POST`, {get: _urlGet});
   // console.log("action)", _obj.action)
   return {

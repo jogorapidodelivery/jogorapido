@@ -26,13 +26,16 @@ export default class Conectar extends PureComponent {
       },
     };
   }
+
   _fetchLogin = (response, _callBackUnlock) => {
     actionLogin(response)
       .then(() => {
+        console.log('logado');
         openPageStart(this.props.navigation);
         _callBackUnlock();
       })
       .catch(_resp => {
+        console.log('falha a logar');
         const {mensagem} = _resp;
         this.props.navigation.push('alerta', {
           params: {

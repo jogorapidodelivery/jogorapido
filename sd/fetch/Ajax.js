@@ -21,6 +21,8 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
   }
   const {body, timeout, url} = mountFormData(_obj, _loggerID);
+  console.log('BODY FETCH');
+  console.log(body);
   // eslint-disable-next-line no-eval
   let controller = eval('new AbortController()');
   const {signal} = controller;
@@ -37,28 +39,7 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
   }, timeout);
   fetch(url, _params)
     .then(response => {
-      if (!empty(interval)) {
-        clearTimeout(interval);
-        interval = undefined;
-        controller = undefined;
-      }
-      if (response.status === 200) {
-        return response.text();
-      }
-      return JSON.stringify({
-        status: 'erro',
-        mensagem: `Página não encontrada status[${response.status}]`,
-      });
-    })
-    .then(string => {
-      try {
-        return JSON.parse(string);
-      } catch (e) {
-        return {
-          status: 'erro',
-          mensagem: `Impossível formatar o json seguinte [${string}]`,
-        };
-      }
+      return response.json();
     })
     .then(response => {
       if (!empty(interval)) {
@@ -99,7 +80,7 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
         controller = undefined;
       }
 
-      console.warn(`${_loggerID}) LOAD FAILED`, {
+      console.log(`${_loggerID}) LOAD FAILED`, {
         stack: _err.stack,
         mensagem: _err.message,
       });

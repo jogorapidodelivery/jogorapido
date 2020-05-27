@@ -7,6 +7,7 @@ import {
   COLETA_ATUALIZAR_STATUS,
   COLETA_NOVA_TEMPO_EXPIRADO,
   COLETA_CHECKIN_CLIENTE,
+  COLETA_PAGAMENTO,
 } from '@constants/';
 export default {
   defaultProps: {
@@ -14,6 +15,9 @@ export default {
   },
   reducers: {
     autenticacao: {
+      [COLETA_PAGAMENTO]: (state, {response: coleta}) => {
+        return {...state};
+      },
       [BUSCAR_COLETA]: (state, {response: coleta}) => {
         return {...state, coleta};
       },

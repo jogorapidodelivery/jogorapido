@@ -43,6 +43,7 @@ function CheckoutCliente({
       }
     }
   }, [coleta_id, forma_pagamento]);
+
   // Ação para buscando produtos no servidor.
   async function onRefresh() {
     if (forma_pagamento) {

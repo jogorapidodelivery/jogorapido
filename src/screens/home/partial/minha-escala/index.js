@@ -1,5 +1,4 @@
 import React, {PureComponent, Fragment} from 'react';
-import {FlatList} from 'react-native';
 import Button from '@sd/components/button';
 import {stylDefault} from '@src/stylDefault';
 import {
@@ -8,7 +7,7 @@ import {
 } from 'react-native-animatable';
 import styl from './styl';
 import {empty} from '@sd/uteis/StringUteis';
-import MinhaEscalaItem from '@screens/disponibilidade/partial/index';
+import MinhaEscalaItem from '@screens/disponibilidade/partial/minhaescala/index';
 export default class MinhaEscala extends PureComponent {
   _renderScale = ({
     item: {icone, cor, data, disponibilidade, horario},
@@ -40,7 +39,7 @@ export default class MinhaEscala extends PureComponent {
     this.props.navigation.push('disponibilidade');
   };
   render() {
-    const {disponibilidade} = this.props;
+    const {disponibilidade: disponibilidades} = this.props;
     return (
       <Fragment>
         <AnimatableText
@@ -50,14 +49,28 @@ export default class MinhaEscala extends PureComponent {
           style={[stylDefault.h1, styl.minhaEscala]}>
           Minha escala para hoje
         </AnimatableText>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          extraData={disponibilidade}
-          data={disponibilidade}
-          numColumns={2}
-          keyExtractor={this._extract}
-          renderItem={this._renderScale}
-        />
+        <AnimatableView
+          style={styl.warpDisponibilidade}
+          animation="flipInX"
+          useNativeDriver={true}
+          delay={1500}>
+          {disponibilidades.map(
+            ({icone, cor, data, disponibilidade, horario}, index) => (
+              <MinhaEscalaItem
+                {...{
+                  index,
+                  icone,
+                  cor,
+                  data,
+                  disponibilidade,
+                  horario,
+                  delay: 1000 + 200 * index,
+                  actived: !empty(data),
+                }}
+              />
+            ),
+          )}
+        </AnimatableView>
         <AnimatableView animation="flipInX" useNativeDriver={true} delay={1800}>
           <Button
             style={styl.btnDisponibilizar}

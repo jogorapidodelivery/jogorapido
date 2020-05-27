@@ -1,79 +1,63 @@
-import React, { Component } from "react";
-import { FlatList, View, Text } from "react-native";
-import BaseScreen from "@screens/partial/base";
-import styl from "./styl";
-import Header from "./partial/header/index";
-import Footer from "./partial/footer/index";
-import Item from "./partial/item/index";
-import { buscarExtrato } from "@actions/extrato";
-export default class Disponibilidade extends Component {
-    static mapStateToProps = ["extrato", "extrato.filtros", "autenticacao.entregador_id"];
-    status_periodo = 1;
-    constructor(props){
-        super(props);
-        this.load = this.load.bind(this)
-        this.state = {
-            loading:true
-        }
-        this.refresh = this.refresh.bind(this);
+import React, {useState, useEffect} from 'react';
+import {useSelector} from 'react-redux';
+import {buscarExtrato} from '@actions/extrato';
+import Component from './Component';
+export default function Disponibilidade({navigation}) {
+  const [loading, setLoading] = useState(true);
+  const [status_periodo, setStatus_periodo] = useState(1);
+  let {filtros, extrato, entregador_id} = useSelector(
+    // eslint-disable-next-line no-shadow
+    ({autenticacao: {entregador_id}, extrato: {extrato, filtros}}) => ({
+      filtros,
+      extrato,
+      entregador_id,
+    }),
+  );
+  async function onRefresh(_resolve = null, statusPediodo = null) {
+    if (statusPediodo !== null) {
+      setStatus_periodo(statusPediodo);
     }
-    componentDidMount(){
-        this.refresh(()=> {
-            // ?
-        })
+    setLoading(true);
+    try {
+      console.log('status_periodo==>', statusPediodo || status_periodo);
+      await buscarExtrato({
+        body_post: {
+          status_periodo: statusPediodo || status_periodo,
+          entregador_id,
+        },
+      });
+    } catch ({mensagem}) {
+      navigation.push('alerta', {
+        params: {
+          titulo: 'JogoRápido',
+          mensagem,
+        },
+      });
     }
-    refresh(_resolve){
-        this.load(_resolve, this.status_periodo);
+    setLoading(false);
+    if (_resolve !== null) {
+      _resolve();
     }
-    load(_resolve, status_periodo){
-        this.status_periodo = status_periodo;
-        const { navigation: { push }, sd:{entregador_id} } = this.props;
-        if (!this.state.loading) this.setState({loading:true});
-        buscarExtrato({
-            body_post: {
-                status_periodo,
-                entregador_id
-            }
-        }).then(() => {
-            this.setState({ loading: false }, _resolve);
-        }).catch(({ mensagem }) => {
-            this.setState({ loading: false }, _resolve);
-            push("alerta", {
-                params: {
-                    titulo: "JogoRápido",
-                    mensagem
-                }
-            })
-        })
+  }
+  useEffect(() => {
+    async function loadInit() {
+      await onRefresh();
     }
-    componentWillUnmount(){
-        
-    }
-
-    _renderCorrida = ({ item}) => <Item {...item}/>
-    _extract = (_item, index) => `index-${index}`;
-    render() {
-        const { loading} = this.state;
-        const { navigation, sd: { entregador_id, filtros, extrato: { extrato, mes_atual, totalPeriodo, total_mes_atual}}} = this.props;
-        let data = loading ? [undefined, undefined, undefined] : extrato
-        return <BaseScreen
-            style={styl.container}
-            tituloBold="MINHAS"
-            onRefresh={this.refresh}
-            navigation={this.props.navigation}
-            titulo="CORRIDAS"
-        >
-            <FlatList
-                ListHeaderComponent={<Header {...{ load: this.load, navigation, filtros, entregador_id, mes_atual, total_mes_atual }}/>}
-                ListFooterComponent={!loading && <Footer totalPeriodo={totalPeriodo}/>}
-                ListEmptyComponent={<View style={styl.warpEmpty}>
-                    <Text style={styl.textEmpty}>Nenhuma atividade{"\n"}registrada neste periodo</Text>
-                </View>}
-                showsVerticalScrollIndicator={false}
-                data={data}
-                keyExtractor={this._extract}
-                renderItem={this._renderCorrida}
-            />
-        </BaseScreen>
-    }
+    loadInit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const {mes_atual, totalPeriodo, total_mes_atual} = extrato;
+  const dados = {
+    entregador_id,
+    loading,
+    mes_atual,
+    totalPeriodo,
+    total_mes_atual,
+    navigation,
+    load: onRefresh,
+    refresh: onRefresh,
+    data: loading ? [undefined, undefined, undefined] : extrato.extrato,
+    filtros,
+  };
+  return <Component {...dados} />;
 }

@@ -3,19 +3,16 @@ import {View} from 'react-native';
 import Button from '@sd/components/button';
 import {whatsapp} from '@screens/home/menu/partial/item/commands';
 import styl from './styl';
-function Footer(props) {
-  const onPress = () => {
-    // ?
-  };
+function Footer({onPress, titulo: value, actived}) {
   return (
     <View style={styl.container}>
       <Button
         onPress={onPress}
         text={{
-          value: 'Parear com maquininha',
+          value,
           color: '07',
         }}
-        bg={'14'}
+        bg={actived ? '14' : '15'}
       />
       <Button
         onPress={whatsapp}
@@ -23,7 +20,7 @@ function Footer(props) {
         text={{value: 'Preciso de ajuda', color: '07'}}
         leftIcon={{value: '', color: '07'}}
         styleName="pequeno"
-        bg="09"
+        bg={'09'}
       />
     </View>
   );

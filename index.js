@@ -17,6 +17,7 @@ YellowBox.ignoreWarnings([
   'VirtualizedLists should never be nested',
   'Require cycle: node_modules/react-native-firebase',
 ]);
+console.disableYellowBox = true;
 if (Platform.OS === 'android') {
   const codePushOptions = {
     checkFrequency: CodePush.CheckFrequency.ON_APP_START,

@@ -109,9 +109,10 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
         if (coleta.forma_pagamento === 'cartão') {
           buttons.push({
             icone: '',
-            titulo: 'Saindo', // Receber
+            titulo: 'Receber',
             color: cor['10'],
-            action: () => push('coletaCheckoutCliente', {params: {coleta_id}}),
+            action: () =>
+              push('coletaPagamento', {params: {coleta_id, entregador_id}}),
           });
         } else {
           buttons.push({

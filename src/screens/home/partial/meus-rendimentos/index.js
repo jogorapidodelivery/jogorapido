@@ -21,7 +21,7 @@ export default class MeusRendimentos extends PureComponent {
           useNativeDriver={true}
           delay={1800}
           style={[stylDefault.h1, styl.meusRendimentos]}>
-          Nesta semana
+          Últimos 7 dias
         </AnimatableText>
         <View style={styl.container}>
           <AnimatableView

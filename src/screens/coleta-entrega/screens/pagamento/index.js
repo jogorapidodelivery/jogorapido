@@ -1,35 +1,50 @@
-import React, {Fragment, memo} from 'react';
+import React, {useEffect} from 'react'; // useState
 import {
-  FlatList,
   SafeAreaView,
   ImageBackground,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import styl from './styl';
-import Header from '../../partial/header';
-import Item from './partial/item';
-import Footer from './partial/footer';
-import HeaderList from './partial/header';
-import Input from './partial/input';
-import Mensagem from './partial/mensagem';
-import TotalPago from './partial/totalPago';
+import {useSelector} from 'react-redux';
+import {mapSelector} from './commands/mapSelector';
+import PinPad from './Pinpad';
+import Payment from './Payment';
+import {useBluetoothPair} from './hooks/useBluetoothPair';
+import {useBluetoothTransaction} from './hooks/useBluetoothTransaction';
 const behavior = Platform.select({
   android: 'height',
   ios: 'padding',
 });
-function Pagamento(props) {
-  const {
-    navigation: {
-      pop,
-      state: {
-        params: {
-          params: {total, coleta_id, entregador_id},
-        },
+function Pagamento({
+  navigation: {
+    push,
+    pop,
+    popToTop,
+    state: {
+      params: {
+        params: {coleta_id}, // entregador_id
       },
     },
-  } = props;
-  console.log({total, coleta_id, entregador_id});
+  },
+}) {
+  const coleta = useSelector(mapSelector({coleta_id}));
+  const dataBluetoothPair = useBluetoothPair({
+    pop,
+  });
+  const dataBluetoothTransaction = useBluetoothTransaction({
+    coleta_id,
+    push,
+    pop,
+    popToTop,
+    ...coleta,
+  });
+  const {selectedDevice, requestPermission, destroy} = dataBluetoothPair;
+  useEffect(() => {
+    requestPermission();
+    return destroy;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <KeyboardAvoidingView style={styl.container} behavior={behavior} enabled>
       <ImageBackground
@@ -37,26 +52,19 @@ function Pagamento(props) {
         style={styl.warpBackground}
         imageStyle={styl.imageBackground}>
         <SafeAreaView style={styl.container}>
-          <Header titulo="Pagamento" goto={pop} />
-          <FlatList
-            ListFooterComponentStyle={styl.footer}
-            ListHeaderComponent={<HeaderList />}
-            ListFooterComponent={
-              <Fragment>
-                <TotalPago />
-                <Mensagem />
-                <Input />
-                <Footer />
-              </Fragment>
-            }
-            data={[{id: 'a'}, {id: 'b'}, {id: 'c'}]}
-            renderItem={({item, index}) => <Item index={index} {...item} />}
-            keyExtractor={item => item.id}
-            style={styl.lista}
-          />
+          {selectedDevice === null ? (
+            <PinPad {...dataBluetoothPair} />
+          ) : (
+            <Payment
+              {...{
+                ...dataBluetoothPair,
+                ...dataBluetoothTransaction,
+              }}
+            />
+          )}
         </SafeAreaView>
       </ImageBackground>
     </KeyboardAvoidingView>
   );
 }
-export default memo(Pagamento);
+export default Pagamento;

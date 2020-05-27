@@ -51,7 +51,7 @@ export const initFirebase = (_callBack = undefined) => {
       }
     });
     firebase.messaging().onMessage(async ({_data: data}) => {
-      console.log('ON_DISPLAY_MESSAGING', new Date());
+      console.log('ON_DISPLAY_MESSAGING', new Date(), data);
       try {
         return await _dataNotification({
           ...data,
