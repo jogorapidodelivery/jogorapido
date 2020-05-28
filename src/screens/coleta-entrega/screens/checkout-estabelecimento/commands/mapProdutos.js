@@ -1,40 +1,39 @@
 import {moeda} from '@sd/uteis/NumberUteis';
-export const mapProdutos = produtos => {
-  let data = [];
-  let ids = {};
-  produtos.forEach(v => {
-    console.log(v);
-    const {coleta_id} = v;
-    if (ids[coleta_id] === undefined) {
-      const coleta = {
-        titulo: v.produto,
-        actived: false,
-        qtd: parseFloat(v.qtd),
-        valor: moeda(v.valor),
-      };
-      data.push({
-        titulo: `#${coleta_id}`,
-        sectionIndex: data.length,
-        data: [coleta],
-        total: moeda(v.sub_total),
-        sub_total: moeda(v.valor),
-        frete: moeda(v.valor_frete),
-      });
-      ids[coleta_id] = data.length - 1;
-    } else {
-      const key = ids[coleta_id];
-      data[key].sub_total_produtos += v.valor;
-      const frete = moeda(data[key].total - data[key].sub_total_produtos);
-      data[key].frete = frete;
-      const coleta = {
-        titulo: v.produto,
-        sectionIndex: data.length,
-        actived: false,
-        qtd: parseFloat(v.qtd),
-        valor: moeda(v.valor),
-      };
-      data[key].data.push(coleta);
-    }
+const mapProdutosDaColeta = produtos => {
+  let sub_total = 0;
+  const data = produtos.map(v => {
+    sub_total += Number(v.valor);
+    return {
+      titulo: v.produto,
+      actived: false,
+      qtd: `${v.qtd} ${v.embalagem_saida}`,
+      valor: moeda(v.valor),
+    };
   });
-  return data;
+  return {
+    data,
+    totalDeProdutos: data.length,
+    total: moeda(sub_total + Number(produtos[0].valor_frete)), // v.sub_total
+    sub_total: moeda(sub_total), // v.valor
+    frete: moeda(produtos[0].valor_frete), // v.valor_frete
+  };
+};
+export const mapColetas = produtos => {
+  let arrayColection = {};
+  produtos.forEach(v => {
+    arrayColection[v.coleta_id] = arrayColection[v.coleta_id] || [];
+    arrayColection[v.coleta_id].push(v);
+  });
+  let coletas = [];
+  let totalDeProdutosNasColetas = 0;
+  Object.keys(arrayColection).forEach((coleta_id, sectionIndex) => {
+    const item = mapProdutosDaColeta(arrayColection[coleta_id]);
+    totalDeProdutosNasColetas += item.totalDeProdutos;
+    coletas.push({
+      sectionIndex,
+      titulo: `#${coleta_id}`,
+      ...item,
+    });
+  });
+  return {coletas, totalDeProdutosNasColetas};
 };

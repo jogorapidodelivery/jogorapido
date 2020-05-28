@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import styl from './styl';
 import Header from '../../partial/header';
-import Footer from './partial/footer';
 import HeaderUnidade from './partial/header';
 import ItemCheckout from './partial/produto';
 import FooterTotal from './partial/total';
@@ -30,6 +29,7 @@ function CheckoutUnidadeComponent({
   onChange,
   pop,
   navigate,
+  ListFooterComponent,
   push,
 }) {
   let vazio = data.length === 0;
@@ -75,7 +75,7 @@ function CheckoutUnidadeComponent({
               extraData={changeCheckBox}
               ListFooterComponent={
                 vazio ? null : (
-                  <Footer
+                  <ListFooterComponent
                     pop={pop}
                     navigate={navigate}
                     push={push}

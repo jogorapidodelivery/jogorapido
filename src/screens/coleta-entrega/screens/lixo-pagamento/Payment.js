@@ -8,6 +8,7 @@ import HeaderList from './partial/header';
 import Input from './partial/input';
 import TotalPago from './partial/totalPago';
 import CreditoOuDebito from './partial/creditoOuDebito';
+import ModalNotificacao from './partial/modalNotificacao';
 function Payment({
   pop,
   numeroDeCartoesNaTransacao,
@@ -16,10 +17,13 @@ function Payment({
   creditoOuDebito,
   onSubmitAmount,
   total_pedido,
+  transactionStatus,
+  transactionError,
 }) {
   return (
     <Fragment>
       <Header titulo="Pagamento" goto={pop} />
+      <ModalNotificacao erro={transactionError} info={transactionStatus} />
       <FlatList
         ListFooterComponentStyle={styl.footer}
         ListHeaderComponent={

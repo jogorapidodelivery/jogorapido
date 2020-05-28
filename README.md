@@ -1,17 +1,62 @@
-# jogorapido
-Aplicativo de Delivery
-Query para colocar uma coleta para mim:
+# coleta confirmada
 UPDATE sd_coleta SET
-data_agendamento='2020-05-07',
-data_cadastro='2020-05-07 21:01:27-03',
-data_notificacao='2020-05-07 21:01:27-03',
+data_agendamento=now()::timestamp::date,
+data_cadastro=now(),
+data_notificacao=now(),
 status_coleta_id=2,
 data_checkin_cliente=NULL,
 data_checkout_cliente=NULL,
 data_checkin_unidade=NULL,
-data_checkout_unidade=NULL
+data_checkout_unidade=NULL,
+unidade_id=3,
+cep='74355-150',
+endereco='Via Graça Aranha',
+bairro='Condomínio Amin Camargo',
+total_pago='0.00'
 WHERE
-coleta_id in(261,262,263,264)
+coleta_id in(567, 568);
+
+# coleta checkout unidade
+UPDATE sd_coleta SET
+data_agendamento=now()::timestamp::date,
+data_cadastro=now(),
+data_notificacao=now(),
+status_coleta_id=4,
+data_checkin_cliente=NULL,
+data_checkout_cliente=NULL,
+data_checkin_unidade=now(),
+data_checkout_unidade=now(),
+unidade_id=3,
+cep='74355-150',
+endereco='Via Graça Aranha',
+bairro='Condomínio Amin Camargo',
+total_pago='0.00'
+WHERE
+coleta_id in(567, 568);
+
+# coleta checkin cliente
+UPDATE sd_coleta SET
+data_agendamento=now()::timestamp::date,
+data_cadastro=now(),
+data_notificacao=now(),
+status_coleta_id=5,
+data_checkin_cliente=now(),
+data_checkout_cliente=NULL,
+data_checkin_unidade=now(),
+data_checkout_unidade=now(),
+unidade_id=3,
+cep='74355-150',
+endereco='Via Graça Aranha',
+bairro='Condomínio Amin Camargo',
+total_pago='0.00'
+WHERE
+coleta_id in(567, 568);
+
+# coleta delete
+DELETE FROM sd_coleta_pagamento WHERE coleta_id in(567, 568);
+
+# coleta select
+select * from sd_coleta WHERE coleta_id in(567, 568);
 
 => Verificar o rendimento dos ultimos 7 dias do login, parece que ele não esta pegando apenas os ultimos 7 dias
 => Criar metodo separado de rendimento dos ultimos 7 dias (Trazer apenas total de rendimentos e total de corridas)

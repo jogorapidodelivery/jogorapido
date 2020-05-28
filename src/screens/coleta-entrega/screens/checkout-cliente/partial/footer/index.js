@@ -3,44 +3,108 @@ import {View} from 'react-native';
 import Button from '@sd/components/button';
 import {whatsapp} from '@screens/home/menu/partial/item/commands';
 import styl from './styl';
-import {
-  actionClickCheckout,
-  actionGotoPay,
-} from '../../actions/actionsCheckout';
-
+import {actionClickCheckout} from '../../actions/actionsCheckout';
+import Counter from '../../../checkout-estabelecimento/partial/footer/counter';
 function Footer({
   push,
   navigate,
   pop,
-  total,
   coleta_id,
   entregador_id,
   forma_pagamento,
+  totalPedidosSelecionado,
+  totalPedidos,
 }) {
-  const onPress = () => {
-    if (forma_pagamento === 'dinheiro') {
+  const hasSubmit = totalPedidosSelecionado === totalPedidos;
+  const actionAlert = mensagem => {
+    push('alerta', {
+      params: {
+        titulo: 'JogoRápido',
+        mensagem,
+      },
+    });
+  };
+  const handlerSaindoCliente = () => {
+    if (hasSubmit) {
       actionClickCheckout({push, navigate, pop, coleta_id, entregador_id});
     } else {
-      console.log('PAGAMENTO COM CARTÃO AQUI');
-      actionClickCheckout({push, navigate, pop, coleta_id, entregador_id});
-      if (false) {
-        actionGotoPay({push, navigate, pop, total, coleta_id, entregador_id});
-      }
+      actionAlert(
+        'Para sair do cliente é necessário selecionar todos os produtos da coleta.',
+      );
+    }
+  };
+  const handlerCredito = () => {
+    if (hasSubmit) {
+      push('coletaPagamento', {
+        params: {
+          tipoPagamentoValue: 'CreditCard',
+          tipoPagamentoLabel: 'Crédito',
+          coleta_id,
+        },
+      });
+    } else {
+      actionAlert(
+        'Para receber do cliente é necessário selecionar todos os produtos da coleta.',
+      );
+    }
+  };
+  const handlerDebito = () => {
+    if (hasSubmit) {
+      push('coletaPagamento', {
+        params: {
+          tipoPagamentoValue: 'DebitCard',
+          tipoPagamentoLabel: 'Débito',
+          coleta_id,
+        },
+      });
+    } else {
+      actionAlert(
+        'Para receber do cliente é necessário selecionar todos os produtos da coleta.',
+      );
     }
   };
   return (
     <View style={styl.container}>
-      <Button
-        onPress={onPress}
-        text={{
-          value:
-            forma_pagamento === 'dinheiro'
-              ? 'Saindo cliente'
-              : 'Saindo do cliente',
-          color: '07',
-        }}
-        bg={'14'}
+      <Counter
+        totalPedidosSelecionado={totalPedidosSelecionado}
+        totalPedidos={totalPedidos}
       />
+      {forma_pagamento === 'dinheiro' && (
+        <Button
+          onPress={handlerSaindoCliente}
+          text={{
+            value: 'Saindo cliente',
+            color: '07',
+          }}
+          bg={hasSubmit ? '14' : '15'}
+        />
+      )}
+      {forma_pagamento !== 'dinheiro' && (
+        <Button
+          onPress={handlerCredito}
+          text={{
+            value: 'Receber no crédito',
+            color: '07',
+          }}
+          bg={hasSubmit ? '14' : '15'}
+        />
+      )}
+      {forma_pagamento !== 'dinheiro' && (
+        <Counter
+          totalPedidosSelecionado={totalPedidosSelecionado}
+          totalPedidos={totalPedidos}
+        />
+      )}
+      {forma_pagamento !== 'dinheiro' && (
+        <Button
+          onPress={handlerDebito}
+          text={{
+            value: 'Receber no débito',
+            color: '07',
+          }}
+          bg={hasSubmit ? '14' : '15'}
+        />
+      )}
       <Button
         onPress={whatsapp}
         style={styl.btnAjuda}

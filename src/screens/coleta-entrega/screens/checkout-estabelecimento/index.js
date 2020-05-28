@@ -2,7 +2,8 @@ import React, {useEffect, useCallback, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {coletaBuscarProdutos} from '@actions/';
 import CheckoutUnidadeComponent from './component';
-import {mapProdutos} from './commands/mapProdutos';
+import {mapColetas} from './commands/mapProdutos';
+import Footer from './partial/footer';
 function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
   const {coleta_ids, entregador_id} = useSelector(({autenticacao}) => {
     const {entregador_id: id, coleta} = autenticacao;
@@ -23,6 +24,7 @@ function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
 
   // Lista de produtos
   const [totalPedidosSelecionado, setTotalPedidosSelecionado] = useState(0);
+  const [totalDeProdutosNasColetas, setTotalDeProdutosNasColetas] = useState(0);
 
   // Variavel de controle para atualizar o SectionList
   const [changeCheckBox, setChangeCheckBox] = useState(
@@ -41,8 +43,9 @@ function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
             coleta_id: coleta_ids,
           },
         });
-        const list = mapProdutos(prod);
-        setProdutos(list);
+        const {coletas, totalDeProdutosNasColetas: total} = mapColetas(prod);
+        setTotalDeProdutosNasColetas(total);
+        setProdutos(coletas);
         setTotalPedidosSelecionado(0);
       } catch (_err) {
         setLoadError(true);
@@ -78,7 +81,7 @@ function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
     coleta_ids,
     entregador_id,
     totalPedidosSelecionado,
-    totalPedidos: produtos.length,
+    totalPedidos: totalDeProdutosNasColetas,
   };
   return (
     <CheckoutUnidadeComponent
@@ -93,6 +96,7 @@ function CheckoutUnidade({navigation: {navigate, pop, popToTop, push}}) {
       onRefresh={onRefresh}
       changeCheckBox={changeCheckBox}
       onChange={onChange}
+      ListFooterComponent={Footer}
     />
   );
 }

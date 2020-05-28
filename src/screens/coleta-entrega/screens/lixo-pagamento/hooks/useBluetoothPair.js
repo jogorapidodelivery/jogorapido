@@ -3,10 +3,14 @@ import {Platform, PermissionsAndroid} from 'react-native';
 import requestBluetoothPermission from '../commands/request-bluetooth-permission';
 import {bluetooth, mpos} from 'react-native-mpos-native';
 import {taxEncryptionKey} from '@root/app.json';
+import {GrupoRotas} from '@sd/navigation/revestir';
 const {BLUETOOTH_STATES} = bluetooth;
-export const useBluetoothPair = (props = {}) => {
+export const useBluetoothPair = ({numeroDeCartoesNaTransacao}) => {
+  // Ganbiarra do redux global
+  let stateGlobal = GrupoRotas.store.getState();
+  stateGlobal.tax = stateGlobal.tax || [];
   // Lista de devices conectados no bluetooth
-  const [devices, setDevices] = useState([]);
+  const [devices, setDevices] = useState(stateGlobal.tax);
   // Device selecionado no onclick
   const [selectedDevice, setSelectedDevice] = useState(null);
 
@@ -26,9 +30,11 @@ export const useBluetoothPair = (props = {}) => {
         device => device.address === deviceItem.address,
       );
       if (!isDeviceAdded) {
-        return [...prevDevices, deviceItem];
+        stateGlobal.tax = [...prevDevices, deviceItem];
+        return stateGlobal.tax;
       }
-      return prevDevices;
+      stateGlobal.tax = prevDevices;
+      return stateGlobal.tax;
     });
   };
 
@@ -39,19 +45,19 @@ export const useBluetoothPair = (props = {}) => {
       bluetooth.pairWith(devices[index]);
     }
   };
-
   // Estabelecendo conexão segura com o PAX
   useEffect(() => {
     if (resultDeviceID !== null) {
       bluetooth.stopScan();
+      console.log('useBluetoothPair::mpos.createMpos()');
       mpos.createMpos(selectedDevice, taxEncryptionKey);
     }
-    return () => {
+    () => {
       console.log('useBluetoothPair::mpos.dispose()');
       mpos.dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resultDeviceID]);
+  }, [resultDeviceID, numeroDeCartoesNaTransacao]);
 
   // Executando configuração da PAX após sua seleção
   const handleOnPairResult = ({result}) => {
@@ -106,7 +112,6 @@ export const useBluetoothPair = (props = {}) => {
   };
   return {
     destroy,
-    ...props,
     selectedDevice,
     requestPermission,
     devices,

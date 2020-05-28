@@ -1,10 +1,10 @@
 import React, {memo} from 'react';
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import Button from '@sd/components/button';
 import {whatsapp} from '@screens/home/menu/partial/item/commands';
 import styl from './styl';
 import {actionClickCheckout} from '../../actions/actionsCheckout';
-
+import Counter from './counter';
 function Footer({
   totalPedidosSelecionado,
   totalPedidos,
@@ -30,12 +30,10 @@ function Footer({
   };
   return (
     <View style={styl.container}>
-      <View style={styl.warpFase} pointerEvents="none">
-        <Text style={styl.icon}></Text>
-        <Text style={styl.parte}>
-          {totalPedidosSelecionado}/{totalPedidos}
-        </Text>
-      </View>
+      <Counter
+        totalPedidosSelecionado={totalPedidosSelecionado}
+        totalPedidos={totalPedidos}
+      />
       <Button
         onPress={onPress}
         text={{

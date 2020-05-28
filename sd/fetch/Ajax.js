@@ -21,8 +21,6 @@ export default (_obj = obj, _resolve, _reject, _loggerID = 0) => {
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
   }
   const {body, timeout, url} = mountFormData(_obj, _loggerID);
-  console.log('BODY FETCH');
-  console.log(body);
   // eslint-disable-next-line no-eval
   let controller = eval('new AbortController()');
   const {signal} = controller;

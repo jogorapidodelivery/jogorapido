@@ -47,9 +47,7 @@ function ItemCheckoutUnidade({
             autoRun={actived === -1}
             visible={actived !== -1}>
             <View style={styl.col}>
-              <Text style={styl.titulo}>
-                {qtd} unidade{qtd > 1 ? 's' : ''}
-              </Text>
+              <Text style={styl.titulo}>{qtd}</Text>
               <Text style={[styl.titulo, styl.total]}>{valor}</Text>
             </View>
           </Shimmer>

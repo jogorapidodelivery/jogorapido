@@ -1,5 +1,6 @@
 import {coletaCheckOutCliente} from '@actions/';
 import {GrupoRotas} from '@sd/navigation/revestir';
+
 export const actionClickCheckout = async ({
   push,
   navigate,
@@ -37,7 +38,4 @@ export const actionClickCheckout = async ({
       push('alerta', {params: {titulo: 'JogoRápido', mensagem}});
     }
   }
-};
-export const actionGotoPay = ({push, navigate, pop, ...params}) => {
-  push('coletaPagamento', {params});
 };

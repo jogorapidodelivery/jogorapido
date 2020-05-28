@@ -41,6 +41,7 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
     data_checkout_cliente,
     data_checkout_unidade,
     status_coleta_id,
+    forma_pagamento,
   } = coleta;
   let endereco = 'Para visualizar e necessário dar saída no estabelecimento';
   let horarios = [];
@@ -100,28 +101,22 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
               coleta_id,
               entregador_id,
               dentroDoRaio,
+              forma_pagamento,
               raio,
               push,
               navigate,
             }),
         });
       } else if (data_checkout_cliente === null) {
-        if (coleta.forma_pagamento === 'cartão') {
-          buttons.push({
-            icone: '',
-            titulo: 'Receber',
-            color: cor['10'],
-            action: () =>
-              push('coletaPagamento', {params: {coleta_id, entregador_id}}),
-          });
-        } else {
-          buttons.push({
-            icone: '',
-            titulo: 'Saindo',
-            color: cor['10'],
-            action: () => push('coletaCheckoutCliente', {params: {coleta_id}}),
-          });
-        }
+        buttons.push({
+          icone: '',
+          titulo: 'Checkout cliente',
+          color: cor['10'],
+          action: () =>
+            push('coletaCheckoutCliente', {
+              params: {forma_pagamento, coleta_id, entregador_id},
+            }),
+        });
       }
     }
   }

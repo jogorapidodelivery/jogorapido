@@ -1,14 +1,16 @@
 import {StyleSheet} from 'react-native';
 import {normalize} from '@sd/uteis/NumberUteis';
-import {cor, radius} from '@root/app.json';
+import {spaces, cor} from '@root/app.json';
 export default StyleSheet.create({
   container: {
     flexGrow: 1,
   },
-  modal: {
-    flexGrow: 1,
-    backgroundColor: cor['23'],
+  warpList: {
+    flex: 1,
+    backgroundColor: cor['07'],
+    paddingHorizontal: normalize(spaces['02']),
   },
+  list: {},
   warpBackground: {
     flex: 1,
   },
@@ -16,13 +18,10 @@ export default StyleSheet.create({
     resizeMode: 'cover',
     bottom: null,
     flexGrow: 1,
-    minHeight: 300,
+    minHeight: 350,
   },
-  lista: {
+  warpRoutes: {
+    flexGrow: 1,
     backgroundColor: cor['07'],
-    marginBottom: 10,
-  },
-  footer: {
-    marginBottom: normalize(50),
   },
 });

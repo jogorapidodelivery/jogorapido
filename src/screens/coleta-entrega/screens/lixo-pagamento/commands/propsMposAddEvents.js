@@ -1,5 +1,6 @@
 import {mpos} from 'react-native-mpos-native';
 import {Platform} from 'react-native';
+import {logerro, logsucesso} from '@sd/uteis/log';
 const tiposPagamento = {
   CreditCard: 'Crédito',
   DebitCard: 'Débito',
@@ -8,7 +9,7 @@ const tiposPagamento = {
 export const propsMposAddEvents = ({
   setTransactionStatus,
   setTransactionError,
-  receber,
+  amount,
   transactionError,
   receiveCardHash: receiveCardHashResponse,
   creditoOuDebito,
@@ -16,14 +17,14 @@ export const propsMposAddEvents = ({
   const onTransactionSuccess = (transaction, shouldFinishTransaction) => {
     // Caso o sinalizador seja mapeado para `true ', você deve chamar` finishTransaction` no pinpad.
     if (shouldFinishTransaction) {
-      console.log('onTransactionSuccess/shouldFinishTransaction');
+      logsucesso('onTransactionSuccess/shouldFinishTransaction');
       mpos.finishTransaction(
         true,
         parseInt(transaction.acquirer_response_code, 10),
         transaction.card_emv_response,
       );
     } else {
-      console.log('onTransactionSuccess/PAGAMENTO FINALIZADO');
+      logsucesso('onTransactionSuccess/PAGAMENTO FINALIZADO');
       // Lembre-se de sempre chamar `mpos.close` quando a transação terminar.
       mpos.close('PAGAMENTO FINALIZADO');
     }
@@ -32,10 +33,10 @@ export const propsMposAddEvents = ({
 
   const onTransactionError = shouldFinishTransaction => {
     if (shouldFinishTransaction) {
-      console.log('onTransactionError/shouldFinishTransaction');
+      logerro('onTransactionError/shouldFinishTransaction');
       mpos.finishTransaction(false, 0, null);
     } else {
-      console.log('onTransactionError/PAGAMENTO RECUSADO');
+      logerro('onTransactionError/PAGAMENTO RECUSADO');
       mpos.close('PAGAMENTO RECUSADO');
     }
 
@@ -44,14 +45,14 @@ export const propsMposAddEvents = ({
   return {
     // A implementação deste ouvinte é necessária apenas para Android.
     bluetoothConnected: () => {
-      setTransactionStatus('Bluetooth conectado, inicializando o TAX...');
+      setTransactionStatus('Bluetooth conectado.\nInicializando o pagamento');
       mpos.initialize();
     },
     bluetoothDisconnected: () => {
-      setTransactionStatus('Conexão bluetooth perdida...');
+      setTransactionStatus('Conexão bluetooth perdida');
     },
     bluetoothErrored: error => {
-      setTransactionStatus(`Um erro ocorreu: ${error}`);
+      setTransactionStatus(`Erro na conexão bluetooth: [ code ${error} ]`);
     },
     // Esta função é chamada assim que o pinpad estiver conectado e pronto para iniciar [recebendo mensagens].
     receiveInitialization: () => {
@@ -61,37 +62,37 @@ export const propsMposAddEvents = ({
     },
     // Chamado como resultado de `downloadEmvTablesToDevice` quando houver uma confirmação de que as tabelas emv dentro do TAX estão atualizadas ou foram recarregadas.
     receiveTableUpdated: () => {
-      setTransactionStatus(
-        'As tabelas TAX estão atualizadas. Inserir cartão de crédito...',
-      );
+      setTransactionStatus('Inserir cartão de crédito');
 
       const method = mpos.PaymentMethod[creditoOuDebito]; // `CreditCard` ou  `DebitCard`.
-      mpos.payAmount(receber, method);
+      mpos.payAmount(amount, method);
     },
     // Chamado após a geração do hash do cartão. Aqui é onde uma transação deve ser criada na API do pagar.me.
     receiveCardHash: async response => {
       const tipo_pagamento = tiposPagamento[creditoOuDebito];
       mpos.displayText('PROCESSANDO...');
-      setTransactionStatus('Hash do cartão recebido. Criando transação...');
-      try {
-        const transaction = await receiveCardHashResponse({
-          body_rsa: {
-            maquina_tid: response.result.localTransactionId,
-            tipo_pagamento: tipo_pagamento,
-            valor: receber,
-            operadora: response.result.cardBrand,
-          },
-          transaction: {
-            receber,
-            tipo_pagamento,
-            ...response.result,
-          },
-        });
-        onTransactionSuccess(transaction, response.shouldFinishTransaction);
-      } catch (_err) {
-        setTransactionError(_err);
-        onTransactionError(response.shouldFinishTransaction);
-      }
+      setTransactionStatus('Dados do cartão recebido.\nCriando transação…');
+      receiveCardHashResponse({
+        body_rsa: {
+          maquina_tid: response.result.localTransactionId,
+          tipo_pagamento: tipo_pagamento,
+          valor: amount,
+          operadora: response.result.cardBrand,
+        },
+        transaction: {
+          amount,
+          tipo_pagamento,
+          ...response.result,
+        },
+        callBack: ({type, result}) => {
+          if (type === 'sucesso') {
+            onTransactionSuccess(result, response.shouldFinishTransaction);
+          } else {
+            setTransactionError(result);
+            onTransactionError(response.shouldFinishTransaction);
+          }
+        },
+      });
     },
     // Chamado como resultado de `finishTransaction`.
     receiveFinishTransaction: () => {
@@ -104,16 +105,17 @@ export const propsMposAddEvents = ({
     },
     receiveError: error => {
       const errorCode = Platform.OS === 'ios' ? error.code : error;
-      setTransactionStatus(`Um erro ocorreu [code ${errorCode}]`);
+      logerro(`Um erro ocorreu [ code = ${errorCode}]`);
+      setTransactionStatus(`Um erro ocorreu [ code = ${errorCode}]`);
       mpos.close(`ERROR: ${errorCode}`);
     },
     receiveClose: () => {
-      console.log('receiveClose/mpos.dispose()');
+      logerro('receiveClose/mpos.dispose()');
       // Descarte recursos e invalide retornos de chamada após concluir uma transação.
       mpos.dispose();
     },
     // Chamado toda vez que o TAX envia uma notificação de volta para o aplicativo..
-    receiveNotification: notification => null,
+    receiveNotification: _notification => null,
     // Esses são ouvintes opcionais.
     receiveOperationCancelled: () => null,
     receiveOperationCompleted: () => null,

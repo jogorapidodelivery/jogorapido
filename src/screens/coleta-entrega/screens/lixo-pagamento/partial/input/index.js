@@ -16,8 +16,9 @@ function ItensPagos({setReceber, totalRestante}) {
   }
   useEffect(() => {
     if (value && value.length > 0) {
-      const parsedAmountInput =
-        parseFloat(value.replace(/[R|$|\s]/gi, '').replace(/,+/g, '.')) * 100;
+      const parsedAmountInput = parseFloat(
+        value.replace(/[R|$|\s]/gi, '').replace(/,+/g, '.'),
+      );
       if (!isNaN(parsedAmountInput)) {
         setReceber(parsedAmountInput);
       }
