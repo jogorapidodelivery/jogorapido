@@ -16,9 +16,9 @@ async function requestBluetoothPermission() {
 
   if (!isPermissionGranted) {
     return PermissionsAndroid.request(bluetoothPermission, {
-      title: 'Allow bluetooth',
+      title: 'Permitir Bluetooth',
       message:
-        'In order to connect a pinpad you must accept bluetooth permissions for this app.',
+        'Para conectar uma maquininha, você deve aceitar permissões de bluetooth para este aplicativo.',
       buttonPositive: 'OK',
       buttonNegative: 'Cancel',
     });

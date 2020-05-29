@@ -6,7 +6,7 @@ const frase = [
   'O Servidor não está dando conta do recado e os dados que você quer carregar está com instabilidade momentânea.\n',
   'Clique no botão abaixo para tentar novamente.',
 ];
-export default function AjaxLoad({hasErro, callBack, post, children}) {
+export default function AjaxLoad({hasErro, callBack, post = null, children}) {
   if (!hasErro) {
     return children;
   }

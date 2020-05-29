@@ -7,7 +7,6 @@ import {
   COLETA_ATUALIZAR_STATUS,
   COLETA_NOVA_TEMPO_EXPIRADO,
   COLETA_CHECKIN_CLIENTE,
-  COLETA_PAGAMENTO,
 } from '@constants/';
 export default {
   defaultProps: {
@@ -15,9 +14,6 @@ export default {
   },
   reducers: {
     autenticacao: {
-      [COLETA_PAGAMENTO]: (state, {response: coleta}) => {
-        return {...state};
-      },
       [BUSCAR_COLETA]: (state, {response: coleta}) => {
         return {...state, coleta};
       },
@@ -30,10 +26,8 @@ export default {
         state.coleta[index].status_coleta_id = 5;
         return {...state, coleta: [...state.coleta]};
       },
-      [COLETA_CHECKOUT_CLIENTE]: (
-        state,
-        {response: {data}, posted: {coleta_id}},
-      ) => {
+      [COLETA_CHECKOUT_CLIENTE]: (state, {posted: {coleta_id}}) => {
+        console.log({COLETA_CHECKOUT_CLIENTE, coleta_id});
         // Procurando indice a ser colocado no fim do array
         const indice = state.coleta.findIndex(v => v.coleta_id === coleta_id);
 

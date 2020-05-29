@@ -3,15 +3,15 @@ import {ImageBackground, SafeAreaView, View} from 'react-native';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import {createAppContainer} from 'react-navigation';
 import {AutenticarProvider} from './api';
-import ListarMaquininhas from './ListarMaquininhas';
+import ListarMaquininhas from './screens/listarMaquininhas';
 import Header from '../../partial/header';
-import Receber from './Receber';
+import ReceberPagamento from './screens/receberPagamento';
 import styl from './styl';
 const gradiente = require('@images/gradiente.png');
 const RoutePagamento = createAppContainer(
   createAnimatedSwitchNavigator({
     ListarMaquininhas,
-    Receber,
+    ReceberPagamento,
   }),
 );
 function Pagamento({

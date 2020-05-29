@@ -48,7 +48,8 @@ unidade_id=3,
 cep='74355-150',
 endereco='Via Graça Aranha',
 bairro='Condomínio Amin Camargo',
-total_pago='0.00'
+total_pago='0.00',
+forma_pagamento='cartão'
 WHERE
 coleta_id in(567, 568);
 

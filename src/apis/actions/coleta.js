@@ -6,7 +6,6 @@ import {
   COLETA_ATUALIZAR_STATUS,
   COLETA_CHECKIN_CLIENTE,
   COLETA_CHECKOUT_CLIENTE,
-  COLETA_PAGAMENTO,
 } from '@constants/';
 import {actionFetchItem} from '@sd/uteis/CreateActions'; // actionObjectPostStatic
 
@@ -52,8 +51,7 @@ export const actionBuscarColeta = actionFetchItem(
   false,
 );
 export const actionPagar = actionFetchItem(
-  COLETA_PAGAMENTO,
+  COLETA_CHECKOUT_CLIENTE,
   'coleta/pagar',
-  false,
   false,
 );

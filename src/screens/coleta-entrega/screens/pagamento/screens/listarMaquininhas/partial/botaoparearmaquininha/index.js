@@ -12,7 +12,7 @@ function BotaoParearMaquininha({chave, nome, onPress}) {
       <Button
         style={styl.btn}
         text={{
-          value: 'Conectar',
+          value: 'Conectar e receber',
           color: '07',
         }}
         rightIcon={{

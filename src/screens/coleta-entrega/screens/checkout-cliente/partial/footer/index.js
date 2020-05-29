@@ -12,6 +12,7 @@ function Footer({
   coleta_id,
   entregador_id,
   forma_pagamento,
+  valorTotal,
   totalPedidosSelecionado,
   totalPedidos,
 }) {
@@ -39,6 +40,7 @@ function Footer({
         params: {
           tipoPagamentoValue: 'CreditCard',
           tipoPagamentoLabel: 'Crédito',
+          valorTotal,
           coleta_id,
         },
       });
@@ -54,6 +56,7 @@ function Footer({
         params: {
           tipoPagamentoValue: 'DebitCard',
           tipoPagamentoLabel: 'Débito',
+          valorTotal,
           coleta_id,
         },
       });

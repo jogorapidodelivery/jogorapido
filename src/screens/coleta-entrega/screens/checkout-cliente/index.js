@@ -28,6 +28,7 @@ function CheckoutCliente({
 
   // Lista de produtos
   const [totalPedidosSelecionado, setTotalPedidosSelecionado] = useState(0);
+  const [valorTotal, setValorTotal] = useState(0);
   const [totalDeProdutosNasColetas, setTotalDeProdutosNasColetas] = useState(0);
 
   // Variavel de controle para atualizar o SectionList
@@ -46,8 +47,13 @@ function CheckoutCliente({
           coleta_id,
         },
       });
-      const {coletas, totalDeProdutosNasColetas: total} = mapColetas(prod);
-      setTotalDeProdutosNasColetas(total);
+      const {
+        coletas,
+        valorTotal: vt,
+        totalDeProdutosNasColetas: tpc,
+      } = mapColetas(prod);
+      setTotalDeProdutosNasColetas(tpc);
+      setValorTotal(vt);
       setProdutos(coletas);
       setTotalPedidosSelecionado(0);
     } catch (_err) {
@@ -81,6 +87,7 @@ function CheckoutCliente({
     coleta_id,
     forma_pagamento,
     totalPedidosSelecionado,
+    valorTotal,
     entregador_id,
     totalPedidos: totalDeProdutosNasColetas,
   };

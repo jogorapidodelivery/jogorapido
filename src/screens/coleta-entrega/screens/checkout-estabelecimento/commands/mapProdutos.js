@@ -13,6 +13,7 @@ const mapProdutosDaColeta = produtos => {
   return {
     data,
     totalDeProdutos: data.length,
+    valorTotal: sub_total + Number(produtos[0].valor_frete),
     total: moeda(sub_total + Number(produtos[0].valor_frete)), // v.sub_total
     sub_total: moeda(sub_total), // v.valor
     frete: moeda(produtos[0].valor_frete), // v.valor_frete
@@ -26,14 +27,16 @@ export const mapColetas = produtos => {
   });
   let coletas = [];
   let totalDeProdutosNasColetas = 0;
+  let valorTotal = 0;
   Object.keys(arrayColection).forEach((coleta_id, sectionIndex) => {
     const item = mapProdutosDaColeta(arrayColection[coleta_id]);
     totalDeProdutosNasColetas += item.totalDeProdutos;
+    valorTotal += item.valorTotal;
     coletas.push({
       sectionIndex,
       titulo: `#${coleta_id}`,
       ...item,
     });
   });
-  return {coletas, totalDeProdutosNasColetas};
+  return {coletas, totalDeProdutosNasColetas, valorTotal};
 };
