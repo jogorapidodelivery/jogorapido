@@ -6,28 +6,20 @@ import ConexaoStatus from '../partial/conexaoStatus';
 import AutenticarContext from '../../api';
 import Button from '@sd/components/button';
 import {cor} from '@root/app.json';
+import {useBluetoothPair} from '../../api/hooks/useBluetoothPair';
 function ListarMaquininhas({navigation: {navigate}}) {
+  const context = useContext(AutenticarContext);
   const {
-    listaDeMaquininhas,
-    handlerSelectDevice,
-    msg,
-    ic,
-    icCor,
-    loading,
     conectadoBluetooth,
+    handlerSelectDevice,
     cancelPair,
-    pop,
-  } = useContext(AutenticarContext);
+  } = useBluetoothPair(context);
+  const {listaDeMaquininhas, msg, ic, icCor, loading, pop} = context;
   useEffect(() => {
     if (conectadoBluetooth) {
-      console.log('useEffect/ReceberPagamento');
       navigate('ReceberPagamento');
-    } else {
-      console.log('useEffect/ListarMaquininhas');
-      navigate('ListarMaquininhas');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [conectadoBluetooth]);
+  }, [conectadoBluetooth, navigate]);
   return (
     <ConexaoStatus msg={msg} ic={ic} icCor={icCor}>
       {loading ? (

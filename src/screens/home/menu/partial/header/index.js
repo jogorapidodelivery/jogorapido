@@ -3,10 +3,13 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styl from './styl';
 import {stylDefault} from '@src/stylDefault';
 import Avatar from './partial/avatar';
-export default function Header({data: {email, telefone, foto, nome}}) {
+export default function Header({
+  navigation: {push},
+  data: {email, telefone, foto, nome},
+}) {
   return (
     <View style={styl.container}>
-      <Avatar foto={foto} />
+      <Avatar foto={foto} push={push} />
       <TouchableOpacity style={styl.btn}>
         <Text style={[stylDefault.p, styl.p]}>{email}</Text>
         <Text style={styl.icon}></Text>

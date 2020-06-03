@@ -15,12 +15,10 @@ function ReceberPagamento() {
     icCor,
     loading,
     reconect,
-    setConectadoBluetooth,
     receberEmJogoRapido,
     erroHttpJogoRapido,
   } = useTransaction(data);
   const handlerReconect = () => {
-    setConectadoBluetooth(false);
     data.pop();
   };
   return (

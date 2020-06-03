@@ -198,8 +198,9 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://facebook.github.io/react-native/docs/signed-apk-android.
             signingConfig signingConfigs.release
-            shrinkResources true
+            shrinkResources enableProguardInReleaseBuilds
             minifyEnabled enableProguardInReleaseBuilds
+            zipAlignEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             //Inicio geofence
             proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
@@ -225,6 +226,11 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
+
+    
+    compile (name:'mpos-android', ext:'aar') {
+        transitive = true
+    }
 
     // Inicio firebase
     implementation "com.google.android.gms:play-services-base:16.1.0"

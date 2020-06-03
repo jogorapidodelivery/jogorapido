@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import styl from './styl';
 const _asa = require('@images/asa.png');
-import {SDNavigation} from '@sd/navigation';
 const requestExternalStoreageRead = async () => {
   if (Platform.OS === 'ios') {
     return true;
@@ -28,8 +27,7 @@ const requestExternalStoreageRead = async () => {
     return false;
   }
 };
-export default function AvatarViewUpdate({foto}) {
-  const {push} = SDNavigation.navegar;
+export default function AvatarViewUpdate({foto, push}) {
   const upDateFotos = async () => {
     if (await requestExternalStoreageRead()) {
       push('camera');

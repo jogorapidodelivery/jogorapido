@@ -1,8 +1,9 @@
 {
     "files.exclude": {
         "android/app/build": true,
-        "android/build": true,
-        "android/gradle": true,
-        "node_modules": true
+        "android/build": true
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": false
     }
 }

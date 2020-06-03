@@ -5,7 +5,6 @@ import {actionRecuperarSenha} from '@actions/';
 import {getItemByKeys} from '@sd/uteis/ArrayUteis';
 import BackgroundGeolocation from 'react-native-background-geolocation';
 import {actionAutenticar} from '@actions/';
-import {SDNavigation} from '@sd/navigation';
 import {setBaseUrl, hasDev} from '@sd/fetch/baseUrl';
 export const logout = navigation => {
   BackgroundGeolocation.stop();
@@ -31,7 +30,7 @@ export const politicaDePrivacidade = () => {
     Linking.openURL(link);
   }
 };
-
+import {openPageStart} from '../../../../autenticacao/command';
 export const toogleAdmin = async navigation => {
   try {
     navigation.push('carregando');
@@ -39,6 +38,7 @@ export const toogleAdmin = async navigation => {
     setBaseUrl(isDev);
     await actionAutenticar(true);
     navigation.pop();
+    openPageStart(navigation, 500);
   } catch (_err) {
     console.log(_err);
     navigation.pop();
