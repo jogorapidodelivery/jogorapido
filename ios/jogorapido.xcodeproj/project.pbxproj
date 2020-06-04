@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* jogorapidoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* jogorapidoTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -29,6 +28,7 @@
 		BACCAA6923E6000F007A3DE3 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BA56D5AB23E5A8A400A5BC0A /* icomoon.ttf */; };
 		E5F7AD601EC1959D8225DA38 /* Pods_jogorapidoTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE86545BD5111772D4D61E8D /* Pods_jogorapidoTests.framework */; };
 		18E6F571A9F24592AFA359F9 /* libRNIntl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EE5876AB44A4D6580ECE41F /* libRNIntl.a */; };
+		429F2CD3302144089B7A4E09 /* TSLocationManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D70916D588B444F3820B187B /* TSLocationManager.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +97,7 @@
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		FE86545BD5111772D4D61E8D /* Pods_jogorapidoTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_jogorapidoTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EE5876AB44A4D6580ECE41F /* libRNIntl.a */ = {isa = PBXFileReference; name = "libRNIntl.a"; path = "libRNIntl.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		D70916D588B444F3820B187B /* TSLocationManager.framework */ = {isa = PBXFileReference; name = "TSLocationManager.framework"; path = "../node_modules/react-native-background-geolocation/ios/RNBackgroundGeolocation/TSLocationManager.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +117,7 @@
 				BA39F76C2459BCDD00A71706 /* Result.framework in Frameworks */,
 				BA39F7702459CA6200A71706 /* MposSDK.framework in Frameworks */,
 				18E6F571A9F24592AFA359F9 /* libRNIntl.a in Frameworks */,
+				429F2CD3302144089B7A4E09 /* TSLocationManager.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,6 +180,7 @@
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				BCFE5CC6E8F9834FA3861E7B /* Pods_jogorapido.framework */,
 				FE86545BD5111772D4D61E8D /* Pods_jogorapidoTests.framework */,
+				D70916D588B444F3820B187B /* TSLocationManager.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -339,6 +342,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = SM77L5RNLU;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = true;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -717,6 +725,9 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+				);
 			};
 			name = Debug;
 		};
@@ -824,6 +835,9 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
 				);
 			};
 			name = Release;
@@ -1090,6 +1104,9 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+				);
 			};
 			name = Debug;
 		};
@@ -1122,6 +1139,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+				);
+				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 				);
 			};
@@ -1157,6 +1177,9 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+				);
 			};
 			name = Debug;
 		};
@@ -1188,6 +1211,9 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+				);
+				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 				);
 			};

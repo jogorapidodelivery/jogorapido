@@ -2,6 +2,7 @@
 
 buildscript {
     ext {
+        googlePlayServicesLocationVersion = "16.0.0" // react-native-background-geolocation
         buildToolsVersion = "28.0.3"
         minSdkVersion = 21
         compileSdkVersion = 28
@@ -13,8 +14,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:3.4.2")
+        classpath("com.android.tools.build:gradle:3.5.1")
         classpath('com.google.gms:google-services:4.3.3')
+
+        
     }
 }
 allprojects {
@@ -36,7 +39,7 @@ allprojects {
             url("https://dl.bintray.com/vivareal/maven")
         }
 
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://www.jitpack.io' }
 
         flatDir {
             dirs "$rootDir/../node_modules/react-native-mpos-native/android/libs"

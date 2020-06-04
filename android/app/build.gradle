@@ -5,6 +5,7 @@ import com.android.build.OutputFile
 //Biblioteca para atualizar a versão do APP automaticamente
 import groovy.json.JsonSlurper
 
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -77,13 +78,10 @@ import groovy.json.JsonSlurper
  *   extraPackagerArgs: []
  * ]
  */
-
+// def useIntlJsc = false
 project.ext.react = [
-    entryFile: "index.js",
     enableHermes: true,  // clean and rebuild if changing
 ]
-
-apply from: "../../node_modules/react-native/react.gradle"
 
 // Iniciando geofence
 Project background_geolocation = project(':react-native-background-geolocation')
@@ -202,10 +200,15 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             zipAlignEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            //Inicio geofence
-            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro"
+            proguardFiles "${background_geolocation.projectDir}/proguard-rules.pro" // react-native-background-geolocation
             //Fim geofence
         }
+    }
+    packagingOptions {
+        pickFirst "lib/armeabi-v7a/libc++_shared.so"
+        pickFirst "lib/arm64-v8a/libc++_shared.so"
+        pickFirst "lib/x86/libc++_shared.so"
+        pickFirst "lib/x86_64/libc++_shared.so"
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
@@ -227,21 +230,24 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
-    
-    compile (name:'mpos-android', ext:'aar') {
-        transitive = true
-    }
+    // if (useIntlJsc) {
+    //     implementation 'org.webkit:android-jsc-intl:+'
+    // } else {
+    //     implementation 'org.webkit:android-jsc:+'
+    // }
 
     // Inicio firebase
     implementation "com.google.android.gms:play-services-base:16.1.0"
     implementation "com.google.firebase:firebase-core:16.0.9"
-    implementation "com.google.firebase:firebase-messaging:18.0.0"
+
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+
     implementation "me.leolin:ShortcutBadger:1.1.21@aar"
 
     // implementation(project(':react-native-geolocation-service')) {
     //     exclude group: 'com.google.android.gms', module: 'play-services-location'
     // }
-    implementation 'com.google.android.gms:play-services-location:16.1.0'
+    // implementation 'com.google.android.gms:play-services-location:16.0.9'
     // Fim firebase
 
     // inicio bluetooth
@@ -253,6 +259,17 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
     // Fim react-navigation
 
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
+      exclude group:'com.facebook.fbjni'
+    }
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+        exclude group:'com.facebook.flipper'
+    }
+    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
+        exclude group:'com.facebook.flipper'
+    }
+    
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")
@@ -270,7 +287,9 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: "../../node_modules/react-native/react.gradle"
 apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply plugin: 'com.google.gms.google-services'
+
 // com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
 googleServices {disableVersionCheck = true}
