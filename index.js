@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import {AppRegistry, Text, TextInput, Platform} from 'react-native';
 import App from '@src/App';
 import {YellowBox} from 'react-native';
@@ -31,11 +32,10 @@ initFirebase(triggerNotifier);
 bgLocationFetch();
 
 // import 'react-native-gesture-handler';
-// import React from 'react';
-// import { AppRegistry } from 'react-native';
-// import { createAppContainer } from 'react-navigation';
-// import { name as appName } from './app.json';
-// import RootStack from './src-bluetooth';
+// import {AppRegistry} from 'react-native';
+// import {createAppContainer} from 'react-navigation';
+// import {name as appName} from './app.json';
+// import RootStack from './pagarme-exemplo';
 
 // const App = createAppContainer(RootStack);
 // AppRegistry.registerComponent(appName, () => App);

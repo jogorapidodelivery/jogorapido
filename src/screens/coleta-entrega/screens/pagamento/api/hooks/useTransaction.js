@@ -126,13 +126,14 @@ export const useTransaction = ({
               split_rules: [
                 {
                   recipient_id: 're_ckaso8sn309ms826d9q0zx0md',
-                  percentage: 12,
-                  liable: true,
-                  charge_processing_fee: true,
+                  percentage: 92, // pagar valor fixo
+                  // amount:10, // Pagar em percentagem
+                  liable: true, // indica se o recebedor atrelado assumirá os riscos de chargeback da transação
+                  charge_processing_fee: true, // indica se o recebedor vinculado à regra será cobrado pelas taxas da transação
                 },
                 {
                   recipient_id: 're_ck8pzsni300ax496e4y3duqix',
-                  percentage: 88,
+                  percentage: 8,
                   liable: true,
                   charge_processing_fee: true,
                 },

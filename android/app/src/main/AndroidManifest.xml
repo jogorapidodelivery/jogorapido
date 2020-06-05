@@ -15,7 +15,6 @@
     <!-- INICIO PERMISSOES PADRAO.-->
     
     <!-- INICIO PERMISSOES PARA MAPAS E CAMERA.-->
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -44,13 +43,6 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <!-- FIM CAMERA -->
 
-    <!-- INICIO MAPA
-    <uses-permission android:name="com.gotrainer.permission.MAPS_RECEIVE"/>
-    <permission android:name="com.gotrainer.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
-    
-    FIM MAPA -->
-
-      <!-- android:networkSecurityConfig="@xml/react_native_config" -->
     <application
       tools:targetApi="28"
       android:usesCleartextTraffic="true"
@@ -64,10 +56,6 @@
       <!-- INICIO GEOFENCE-->
       <meta-data android:name="com.transistorsoft.locationmanager.license" android:value="@string/licenseGeofence" />
       <!--FIM GEOFENCE -->
-      <meta-data
-        android:name="com.google.firebase.messaging.default_notification_icon"
-        android:resource="@drawable/notifier"
-      />
       <meta-data
         android:name="com.google.firebase.messaging.default_notification_color"
         android:resource="@color/colorAccent"
