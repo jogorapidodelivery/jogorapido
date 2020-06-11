@@ -70,6 +70,9 @@ export default class ColetaPendente extends PureComponent {
   render() {
     const {coleta, tituloColetas} = this.props;
     const total = coleta.length - 1;
+    coleta[0].titulo =
+      'Para visualizar o ponto de coleta, é necessário clicar em "Aceitar corrida"';
+    coleta[0].mapa = null;
     return (
       <View style={styl.container}>
         <AnimatableText

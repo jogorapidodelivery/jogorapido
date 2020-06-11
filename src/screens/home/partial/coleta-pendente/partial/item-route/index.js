@@ -9,7 +9,9 @@ export default ({titulo, mapa, index, total}) => {
   const color = cor[index === 0 ? '08' : '10'];
   const icone = index === 0 ? '' : '';
   const openMaps = () => {
-    OpenMap.show(mapa);
+    if (mapa !== null) {
+      OpenMap.show(mapa);
+    }
   };
   return (
     <Fragment>

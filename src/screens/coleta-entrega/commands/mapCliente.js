@@ -41,7 +41,9 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
     data_checkout_cliente,
     data_checkout_unidade,
     status_coleta_id,
+    pinpad,
     forma_pagamento,
+    split_rules,
   } = coleta;
   let endereco = 'Para visualizar e necessário dar saída no estabelecimento';
   let horarios = [];
@@ -102,6 +104,7 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
               entregador_id,
               dentroDoRaio,
               forma_pagamento,
+              pinpad,
               raio,
               push,
               navigate,
@@ -114,7 +117,13 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
           color: cor['10'],
           action: () =>
             push('coletaCheckoutCliente', {
-              params: {forma_pagamento, coleta_id, entregador_id},
+              params: {
+                forma_pagamento,
+                split_rules,
+                pinpad,
+                coleta_id,
+                entregador_id,
+              },
             }),
         });
       }

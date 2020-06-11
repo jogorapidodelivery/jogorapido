@@ -3,7 +3,6 @@ import {useNavigation, useFocusEffect} from 'react-navigation-hooks';
 import {Alert, Platform, PermissionsAndroid} from 'react-native';
 import {bluetooth} from 'react-native-mpos-native';
 
-console.log(bluetooth);
 import requestBluetoothPermission from '../../utils/request-bluetooth-permission';
 import BluetoothDevicesContainer from '../../containers/BluetoothDevices';
 
@@ -121,6 +120,7 @@ function BluetoothDevices() {
         setDevices([]);
         bluetooth.stopScan();
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []),
   );
 

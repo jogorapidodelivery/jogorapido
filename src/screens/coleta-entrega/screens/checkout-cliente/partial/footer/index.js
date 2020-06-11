@@ -12,10 +12,13 @@ function Footer({
   coleta_id,
   entregador_id,
   forma_pagamento,
+  pinpad,
+  split_rules,
   valorTotal,
   totalPedidosSelecionado,
   totalPedidos,
 }) {
+  console.log({pinpad});
   const hasSubmit = totalPedidosSelecionado === totalPedidos;
   const actionAlert = mensagem => {
     push('alerta', {
@@ -38,6 +41,7 @@ function Footer({
     if (hasSubmit) {
       push('coletaPagamento', {
         params: {
+          split_rules,
           tipoPagamentoValue: 'CreditCard',
           tipoPagamentoLabel: 'Crédito',
           valorTotal,
@@ -54,6 +58,7 @@ function Footer({
     if (hasSubmit) {
       push('coletaPagamento', {
         params: {
+          split_rules,
           tipoPagamentoValue: 'DebitCard',
           tipoPagamentoLabel: 'Débito',
           valorTotal,
@@ -72,7 +77,7 @@ function Footer({
         totalPedidosSelecionado={totalPedidosSelecionado}
         totalPedidos={totalPedidos}
       />
-      {forma_pagamento === 'dinheiro' && (
+      {!pinpad && (
         <Button
           onPress={handlerSaindoCliente}
           text={{
@@ -82,7 +87,7 @@ function Footer({
           bg={hasSubmit ? '14' : '15'}
         />
       )}
-      {forma_pagamento !== 'dinheiro' && (
+      {pinpad && (
         <Button
           onPress={handlerCredito}
           text={{
@@ -92,13 +97,13 @@ function Footer({
           bg={hasSubmit ? '14' : '15'}
         />
       )}
-      {forma_pagamento !== 'dinheiro' && (
+      {pinpad && (
         <Counter
           totalPedidosSelecionado={totalPedidosSelecionado}
           totalPedidos={totalPedidos}
         />
       )}
-      {forma_pagamento !== 'dinheiro' && (
+      {pinpad && (
         <Button
           onPress={handlerDebito}
           text={{

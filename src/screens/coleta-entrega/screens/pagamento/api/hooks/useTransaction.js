@@ -1,3 +1,4 @@
+// import {Alert} from 'react-native';
 import {useEffect, useState, useCallback} from 'react';
 import {mpos} from 'react-native-mpos-native';
 import {taxEncryptionKey} from '@root/app.json';
@@ -15,7 +16,8 @@ export const useTransaction = ({
   tipoPagamentoValue,
   tipoPagamentoLabel,
   coleta_id,
-  pop,
+  split_rules,
+  push,
   ...props
 }) => {
   const amount = valorTotal * 100;
@@ -30,9 +32,20 @@ export const useTransaction = ({
         await actionPagar({
           body_rsa: postPagarJogoRapido,
         });
-        console.log('PAGAMENTO EFETUADO COM SUCESSO');
+        push('alerta', {
+          params: {
+            titulo: 'JogoRápido',
+            mensagem:
+              'Pagamento realizado com sucesso.\nEm caso de solicitação de reembolso oriente o cliente a entrar em contato através do <b>WhatsApp ( 62 ) 9 9268.9000</b>',
+          },
+        });
+        // Alert.alert(
+        //   'JogoRápido',
+        //   'Pagamento realizado com sucesso. Em caso de solicitação de reembolso por parte do cliente oriente-o a entrar em contato através do WhatsApp ( 62 ) 9 9268.9000',
+        //   [{text: 'OK'}],
+        //   {cancelable: true},
+        // );
         setPostPagarJogoRapido(null);
-        pop(2);
       } catch (_err) {
         // {mensagem}
         console.log('PAGAMENTO COM ERRO');
@@ -44,7 +57,7 @@ export const useTransaction = ({
       console.log('TENTOU PAGAR CORRETAMENTE');
       _receberEmJogoRapido();
     }
-  }, [pop, postPagarJogoRapido]);
+  }, [postPagarJogoRapido, push]);
 
   // Neste momento o pagamento já foi feito, e é hora de atualizar o pagamento na plataforma jogorapido
   useEffect(() => {
@@ -123,21 +136,7 @@ export const useTransaction = ({
               api_key,
               card_hash,
               local_time: new Date().toString(),
-              split_rules: [
-                {
-                  recipient_id: 're_ckaso8sn309ms826d9q0zx0md',
-                  percentage: 92, // pagar valor fixo
-                  // amount:10, // Pagar em percentagem
-                  liable: true, // indica se o recebedor atrelado assumirá os riscos de chargeback da transação
-                  charge_processing_fee: true, // indica se o recebedor vinculado à regra será cobrado pelas taxas da transação
-                },
-                {
-                  recipient_id: 're_ck8pzsni300ax496e4y3duqix',
-                  percentage: 8,
-                  liable: true,
-                  charge_processing_fee: true,
-                },
-              ],
+              split_rules,
             };
             const request = {
               method: 'POST',
@@ -235,5 +234,10 @@ export const useTransaction = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return {...props, erroHttpJogoRapido, receberEmJogoRapido, reconect};
+  return {
+    ...props,
+    erroHttpJogoRapido,
+    receberEmJogoRapido,
+    reconect,
+  };
 };

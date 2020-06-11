@@ -1,7 +1,10 @@
+import React from 'react';
+import {Text} from 'react-native';
 import {useEffect, useState, useCallback} from 'react';
 import requestBluetoothPermission from '../commands/request-bluetooth-permission';
 import {bluetooth} from 'react-native-mpos-native';
 import {Platform, PermissionsAndroid} from 'react-native';
+import {stylDefault} from '@src/stylDefault';
 const {BLUETOOTH_STATES} = bluetooth;
 export const useBluetoothPair = props => {
   const {
@@ -31,15 +34,20 @@ export const useBluetoothPair = props => {
       );
       if (!isDeviceAdded) {
         setMsg(
-          'Estes são os equipamentos\nque estão disponíveis para conectar.',
+          <Text>
+            Estes são os equipamentos{'\n'}que estão disponíveis para conectar.
+            {'\n'}
+            <Text style={{...stylDefault.span}}>
+              Se o seu equipamento não está listado. Não se preocupe, estamos
+              procurando mais equipamentos!
+            </Text>
+          </Text>,
         );
         setIc('');
         setIcColor('22');
         setLoading(false);
         return [...prevDevices, deviceItem];
       }
-      console.log('2) dados da conexão');
-      console.log(prevDevices);
       return prevDevices;
     });
   };

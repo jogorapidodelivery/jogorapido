@@ -16,6 +16,14 @@ import {menu} from '@apis/json/menu.json';
 import {encodeCipherCaesar} from '@sd/uteis/CipherCaesar';
 import {empty} from '@sd/uteis/StringUteis';
 import {hasDev} from '@sd/fetch/baseUrl';
+/*
+{
+    "icone": "",
+    "space": false,
+    "checkbox":false,
+    "titulo": "Admin Beta",
+    "commandAction": "toogleAdmin"
+}, */
 export default {
   defaultProps: {
     menu,

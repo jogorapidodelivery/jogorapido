@@ -19,13 +19,14 @@ function Pagamento({
     popToTop,
     pop,
     navigate,
+    push,
     state: {
       params: {params},
     },
   },
 }) {
   const [titulo, setTitulo] = useState('LISTAR MAQUININHA');
-  const data = {...params, popToTop, pop, navigate, setTitulo};
+  const data = {...params, popToTop, pop, push, navigate, setTitulo};
   return (
     <AutenticarProvider {...data}>
       <ImageBackground

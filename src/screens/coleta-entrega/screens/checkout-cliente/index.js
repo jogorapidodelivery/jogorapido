@@ -12,7 +12,13 @@ function CheckoutCliente({
     push,
     state: {
       params: {
-        params: {coleta_id, forma_pagamento, entregador_id},
+        params: {
+          coleta_id,
+          split_rules,
+          forma_pagamento,
+          pinpad,
+          entregador_id,
+        },
       },
     },
   },
@@ -86,6 +92,8 @@ function CheckoutCliente({
   const footerData = {
     coleta_id,
     forma_pagamento,
+    pinpad,
+    split_rules,
     totalPedidosSelecionado,
     valorTotal,
     entregador_id,

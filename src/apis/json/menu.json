@@ -1,13 +1,6 @@
 {
     "menu": [
     {
-        "icone": "",
-        "space": false,
-        "checkbox":false,
-        "titulo": "Admin Beta",
-        "commandAction": "toogleAdmin"
-    },
-    {
         "icone": "",
         "space": false,
         "titulo": "Financeiro",

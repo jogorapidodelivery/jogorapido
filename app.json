@@ -10,6 +10,8 @@
     "on": "https://jogorapido.delivery:22600/",
     "off": "https://jogorapido.delivery:22600/"
   },
+  "prodTaxApiKey":"ak_live_4EcZcCgUCee6O2DzAQbFKZV9i6q9Ts",
+  "prodTaxEncryptionKey":"ek_live_ddvAsotfuLjim9RISfGDUEjW8NXxcI",
   "taxApiKey":"ak_test_dMh36Tfs8WR8uuSbBU4KNVZ1LyxVtA",
   "taxEncryptionKey":"ek_test_Pf8ZLndl37m9SgPh5rYsXuhIZ90nzX",
   "tempoParaAceite": 60,
