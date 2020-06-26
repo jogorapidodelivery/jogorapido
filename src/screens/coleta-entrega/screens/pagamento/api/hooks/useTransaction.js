@@ -1,10 +1,12 @@
 // import {Alert} from 'react-native';
 import {useEffect, useState, useCallback} from 'react';
 import {mpos} from 'react-native-mpos-native';
-import {taxEncryptionKey} from '@root/app.json';
 import {Platform} from 'react-native';
-import {taxApiKey as api_key} from '@root/app.json';
+import {on} from '@root/app.json';
 import {actionPagar} from '@actions/';
+
+const api_key = on.taxApiKey;
+const taxEncryptionKey = on.taxEncryptionKey;
 export const useTransaction = ({
   maquininhaSelecionada,
   setTitulo,

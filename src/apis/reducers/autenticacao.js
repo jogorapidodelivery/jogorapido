@@ -9,6 +9,7 @@ import {
   CONECTAR,
   CRIAR_CONTA,
   CONECTAR_FACEBOOK,
+  SALVAR_DISPONIBILIDADE,
 } from '@constants/';
 import {moeda} from '@sd/uteis/form/MaskString';
 import moment from 'moment';
@@ -16,14 +17,6 @@ import {menu} from '@apis/json/menu.json';
 import {encodeCipherCaesar} from '@sd/uteis/CipherCaesar';
 import {empty} from '@sd/uteis/StringUteis';
 import {hasDev} from '@sd/fetch/baseUrl';
-/*
-{
-    "icone": "",
-    "space": false,
-    "checkbox":false,
-    "titulo": "Admin Beta",
-    "commandAction": "toogleAdmin"
-}, */
 export default {
   defaultProps: {
     menu,
@@ -31,6 +24,31 @@ export default {
   },
   reducers: {
     autenticacao: {
+      [SALVAR_DISPONIBILIDADE]: (state, {posted}) => {
+        const weekDayNumber = new Date().getDay().toString();
+        const list = posted.disponibilidade.filter(
+          ({dia_semana}) => dia_semana === weekDayNumber,
+        );
+        const ids = list.map(({disponibilidade_id}) =>
+          Number(disponibilidade_id),
+        );
+        const disponibilidade = state.disponibilidade.map(v => {
+          const _idUpdate = ids.indexOf(v.disponibilidade_id);
+          if (_idUpdate >= 0) {
+            const item = list[_idUpdate];
+            v.actived = true;
+            v.ativo = item.ativo === '1';
+            v.data = new Date().toString();
+          } else {
+            v.actived = false;
+            v.ativo = false;
+            v.data = null;
+          }
+          return v;
+        });
+        console.log('atualizando reducer de disponibilidade para a home');
+        return {...state, disponibilidade};
+      },
       [CONECTAR_FACEBOOK]: (state, _action) => {
         return state;
       },
@@ -75,9 +93,14 @@ export default {
           AsyncStorage.setItem(AUTENTICAR, _chifed).catch(_err => {});
         }
         let menuClone = [...state.menu];
-        const beta = hasDev();
-        menuClone[0].checkbox = beta;
-        menuClone[0].titulo = beta ? 'Admin Beta' : 'Admin produção';
+        const indice = menuClone.findIndex(
+          ({commandAction}) => commandAction === 'toogleAdmin',
+        );
+        if (indice >= 0) {
+          const beta = hasDev();
+          menuClone[indice].checkbox = beta;
+          menuClone[indice].titulo = beta ? 'Admin Beta' : 'Admin produção';
+        }
         return {...state, ...response, menu: menuClone, usuario, senha};
       },
     },

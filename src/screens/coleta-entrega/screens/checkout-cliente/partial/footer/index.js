@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {View} from 'react-native';
+import {ScrollView} from 'react-native';
 import Button from '@sd/components/button';
 import {whatsapp} from '@screens/home/menu/partial/item/commands';
 import styl from './styl';
@@ -18,7 +18,6 @@ function Footer({
   totalPedidosSelecionado,
   totalPedidos,
 }) {
-  console.log({pinpad});
   const hasSubmit = totalPedidosSelecionado === totalPedidos;
   const actionAlert = mensagem => {
     push('alerta', {
@@ -72,21 +71,23 @@ function Footer({
     }
   };
   return (
-    <View style={styl.container}>
+    <ScrollView style={styl.container}>
       <Counter
         totalPedidosSelecionado={totalPedidosSelecionado}
         totalPedidos={totalPedidos}
       />
-      {!pinpad && (
-        <Button
-          onPress={handlerSaindoCliente}
-          text={{
-            value: 'Saindo cliente',
-            color: '07',
-          }}
-          bg={hasSubmit ? '14' : '15'}
-        />
-      )}
+      <Button
+        onPress={handlerSaindoCliente}
+        text={{
+          value: 'Saindo cliente',
+          color: '07',
+        }}
+        bg={hasSubmit ? '14' : '15'}
+      />
+      <Counter
+        totalPedidosSelecionado={totalPedidosSelecionado}
+        totalPedidos={totalPedidos}
+      />
       {pinpad && (
         <Button
           onPress={handlerCredito}
@@ -121,7 +122,7 @@ function Footer({
         styleName="pequeno"
         bg="09"
       />
-    </View>
+    </ScrollView>
   );
 }
 export default memo(Footer);

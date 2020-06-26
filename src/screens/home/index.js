@@ -30,9 +30,7 @@ const Home = ({isFocused, navigation}) => {
   const [hasRingerMode, setHasRingerMode] = useState(false);
   // useState
   const updateLogin = async (onComplete = null) => {
-    console.log('login update aqui');
     const mode = await RingerMode.getRingerMode();
-    console.log('segunda opção');
     await actionColeta({navigate});
     setHasRingerMode(mode !== 'NORMAL');
     if (onComplete) {

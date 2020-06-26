@@ -7,33 +7,8 @@ import {
 } from 'react-native-animatable';
 import styl from './styl';
 import {empty} from '@sd/uteis/StringUteis';
-import MinhaEscalaItem from '@screens/disponibilidade/partial/minhaescala/index';
+import MinhaEscalaItem from '@screens/disponibilidade/partial/minhaescala';
 export default class MinhaEscala extends PureComponent {
-  _renderScale = ({
-    item: {icone, cor, data, disponibilidade, horario},
-    index,
-  }) => {
-    return (
-      <MinhaEscalaItem
-        {...{
-          index,
-          icone,
-          cor,
-          data,
-          disponibilidade,
-          horario,
-          delay: 1000 + 200 * index,
-          actived: !empty(data),
-        }}
-      />
-    );
-  };
-  _extract = ({data, horario}, index) => {
-    if (data !== undefined) {
-      return `${data}-${index}`;
-    }
-    return `${horario}-${index}`;
-  };
   _loadedData = false;
   _submit = () => {
     this.props.navigation.push('disponibilidade');
@@ -55,20 +30,20 @@ export default class MinhaEscala extends PureComponent {
           useNativeDriver={true}
           delay={1500}>
           {disponibilidades.map(
-            ({icone, cor, data, disponibilidade, horario}, index) => (
-              <MinhaEscalaItem
-                {...{
-                  index,
-                  icone,
-                  cor,
-                  data,
-                  disponibilidade,
-                  horario,
-                  delay: 1000 + 200 * index,
-                  actived: !empty(data),
-                }}
-              />
-            ),
+            ({icone, cor, data, ativo, disponibilidade, horario}, index) => {
+              const props = {
+                index,
+                icone,
+                ativo,
+                cor,
+                disponibilidade,
+                horario,
+                delay: 100 * index,
+                hasDelay: false, // activedDelay,
+                actived: !empty(data),
+              };
+              return <MinhaEscalaItem {...props} />;
+            },
           )}
         </AnimatableView>
         <AnimatableView animation="flipInX" useNativeDriver={true} delay={1800}>

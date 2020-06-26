@@ -2,18 +2,18 @@
   "name": "jogorapido",
   "displayName": "JogoRápido",
   "googleplayid": "com.jogorapido",
-  "baseUrl": {
-    "on":"https://jogorapido.delivery/app/",
-    "off":"https://beta.jogorapido.delivery/app/"
+  "on": {
+    "baseUrlNode": "https://jogorapido.delivery:22600/",
+    "baseUrl": "https://jogorapido.delivery/app/",
+    "taxApiKey": "ak_live_4EcZcCgUCee6O2DzAQbFKZV9i6q9Ts",
+    "taxEncryptionKey": "ek_live_ddvAsotfuLjim9RISfGDUEjW8NXxcI"
   },
-  "baseUrlNode": {
-    "on": "https://jogorapido.delivery:22600/",
-    "off": "https://jogorapido.delivery:22600/"
+  "off": {
+    "baseUrlNode": "https://jogorapido.delivery:22601/",
+    "baseUrl": "https://beta.jogorapido.delivery/app/",
+    "taxApiKey": "ak_live_4EcZcCgUCee6O2DzAQbFKZV9i6q9Ts",
+    "taxEncryptionKey": "ek_live_ddvAsotfuLjim9RISfGDUEjW8NXxcI"
   },
-  "prodTaxApiKey":"ak_live_4EcZcCgUCee6O2DzAQbFKZV9i6q9Ts",
-  "prodTaxEncryptionKey":"ek_live_ddvAsotfuLjim9RISfGDUEjW8NXxcI",
-  "taxApiKey":"ak_test_dMh36Tfs8WR8uuSbBU4KNVZ1LyxVtA",
-  "taxEncryptionKey":"ek_test_Pf8ZLndl37m9SgPh5rYsXuhIZ90nzX",
   "tempoParaAceite": 60,
   "cor": {
     "01": "rgba(69,69,69,.1)",
@@ -27,38 +27,20 @@
     "23": "rgba(245,245,245,.8)",
     "28": "#FCFCFC",
     "07": "#FFFFFF",
-    "15": [
-      "#A7A7A7",
-      "#DEDEDE"
-    ],
+    "15": ["#A7A7A7", "#DEDEDE"],
     "08": "#893691",
     "19": "rgba(69, 74, 157, .9)",
-    "14": [
-      "#84168E",
-      "#486EC8"
-    ],
+    "14": ["#84168E", "#486EC8"],
     "13": "#58BEFF",
     "22": "#74D0FF",
-    "16": [
-      "#F03800",
-      "#E68523"
-    ],
-    "18": [
-      "#A32626",
-      "#FF4040"
-    ],
+    "16": ["#F03800", "#E68523"],
+    "18": ["#A32626", "#FF4040"],
     "09": "#E40500",
     "12": "#EC5F23",
     "10": "#40D100",
-    "24":[
-      "#6763DE",
-      "#6C63FF"
-    ],
-    "25":"rgba(215,250,250,.2)",
-    "17": [
-      "#15D11D",
-      "#0B690F"
-    ],
+    "24": ["#6763DE", "#6C63FF"],
+    "25": "rgba(215,250,250,.2)",
+    "17": ["#15D11D", "#0B690F"],
     "11": "#38508F",
     "27": ["#f9f9f9", "#ebebeb", "#f9f9f9"]
   },

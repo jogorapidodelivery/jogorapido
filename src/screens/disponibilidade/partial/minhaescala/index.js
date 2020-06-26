@@ -4,6 +4,27 @@ import {stylDefault} from '@src/stylDefault';
 import {View as AnimatableView} from 'react-native-animatable';
 import styl from './styl';
 import {cor as corApp} from '@root/app.json';
+const _aprovado = {
+  ic: '',
+  icColor: corApp['10'],
+};
+const _descanso = {
+  ic: '',
+  icColor: corApp['04'],
+};
+const _pendente = {
+  ic: '',
+  icColor: corApp['12'],
+};
+const getColor = (data, ativo, actived, index) => {
+  if (ativo) {
+    return _aprovado;
+  }
+  if (actived) {
+    return _pendente;
+  }
+  return _descanso;
+};
 export default class MinhaEscalaItem extends PureComponent {
   _press = () => {
     const {onPress, index} = this.props;
@@ -13,6 +34,7 @@ export default class MinhaEscalaItem extends PureComponent {
   };
   render() {
     let {
+      data,
       delay,
       hasDelay,
       icone,
@@ -20,12 +42,14 @@ export default class MinhaEscalaItem extends PureComponent {
       disponibilidade,
       horario,
       actived,
+      ativo,
+      index,
     } = this.props;
     cor = actived ? cor : corApp['05'];
     const corTitulo = actived ? corApp['08'] : corApp['05'];
     const corHorario = actived ? corApp['20'] : corApp['05'];
     const backgroundColor = actived ? corApp['06'] : corApp['26'];
-    // console.log(delay)
+    let {ic, icColor} = getColor(data, ativo, actived, index);
     return (
       <AnimatableView
         animation={hasDelay ? 'fadeInUp' : ''}
@@ -45,9 +69,9 @@ export default class MinhaEscalaItem extends PureComponent {
               {horario}
             </Text>
           </View>
-          {/* {actived && <View style={styl.warpActived}>
-                    <Text style={styl.actived}></Text>
-                </View>} */}
+          {ativo !== undefined && (
+            <Text style={[styl.actived, {color: icColor}]}>{ic}</Text>
+          )}
         </TouchableOpacity>
       </AnimatableView>
     );

@@ -1,10 +1,11 @@
-import {baseUrl, baseUrlNode} from '@root/app.json';
+import {on, off} from '@root/app.json';
 let _dev = __DEV__;
-const baseAppNode = _dev ? baseUrlNode.off : baseUrlNode.on;
-let baseUrlApp = _dev ? baseUrl.off : baseUrl.on;
+let baseAppNode = _dev ? off.baseUrlNode : on.baseUrlNode;
+let baseUrlApp = _dev ? off.baseUrl : on.baseUrl;
 export const setBaseUrl = dev => {
   _dev = dev;
-  baseUrlApp = dev ? baseUrl.off : baseUrl.on;
+  baseUrlApp = dev ? off.baseUrl : on.baseUrl;
+  baseAppNode = dev ? off.baseUrlNode : on.baseUrlNode;
 };
 export const hasDev = () => {
   return _dev;

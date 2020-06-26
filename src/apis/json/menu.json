@@ -1,69 +1,77 @@
 {
     "menu": [
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Financeiro",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Meus dados",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": true,
-        "titulo": "Dados bancários",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": true,
-        "titulo": "Dados pessoais",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": true,
-        "titulo": "Endereço",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": true,
-        "titulo": "Alterar senha",
-        "commandAction": "alterarSenha"
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Disponibilidade",
-        "commandAction": ""
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Termos de uso",
-        "commandAction": "termosDeUso"
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Politica de privacidade",
-        "commandAction": "politicaDePrivacidade"
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Fale conosco",
-        "commandAction": "whatsapp"
-    },
-    {
-        "icone": "",
-        "space": false,
-        "titulo": "Sair",
-        "commandAction": "logout"
-    }
-]}
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Financeiro",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Meus dados",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": true,
+            "titulo": "Dados bancários",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": true,
+            "titulo": "Dados pessoais",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": true,
+            "titulo": "Endereço",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": true,
+            "titulo": "Alterar senha",
+            "commandAction": "alterarSenha"
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Disponibilidade",
+            "commandAction": ""
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Termos de uso",
+            "commandAction": "termosDeUso"
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Politica de privacidade",
+            "commandAction": "politicaDePrivacidade"
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Fale conosco",
+            "commandAction": "whatsapp"
+        },
+        {
+            "icone": "",
+            "space": false,
+            "checkbox": false,
+            "titulo": "Admin Beta",
+            "commandAction": "toogleAdmin"
+        },
+        {
+            "icone": "",
+            "space": false,
+            "titulo": "Sair",
+            "commandAction": "logout"
+        }
+    ]
+}

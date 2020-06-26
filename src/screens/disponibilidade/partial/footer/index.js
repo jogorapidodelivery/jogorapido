@@ -1,30 +1,19 @@
 import React, {memo, Fragment} from 'react';
 import styl from './styl';
-import {Text} from 'react-native';
 import Button from '@sd/components/button';
-import {stylDefault} from '@src/stylDefault';
-import {
-  View as AnimatableView,
-  Text as AnimatableText,
-} from 'react-native-animatable';
+import {View as AnimatableView} from 'react-native-animatable';
 import Shimmer from 'react-native-shimmer-placeholder';
 import {cor as corApp} from '@root/app.json';
 import {submit} from '../../actions/actionDisponibilidade';
+import FooterLegenda from './legenda';
 function Footer({data}) {
-  const loaded = data.semana[0].sigla !== '';
+  const loaded = data.semana[1].sigla !== '';
   const _submit = () => {
     submit(data);
   };
   return (
     <Fragment>
-      <AnimatableText
-        animation="fadeIn"
-        useNativeDriver={true}
-        delay={150}
-        style={[stylDefault.p, styl.info]}>
-        Após marcar sua disponibilidade,{'\n'}as alterações só ocorrerão após
-        <Text style={stylDefault.bold}>{'\n'}24 horas.</Text>
-      </AnimatableText>
+      <FooterLegenda />
       <AnimatableView animation="flipInX" useNativeDriver={true} delay={250}>
         <Shimmer
           colorShimmer={corApp['27']}

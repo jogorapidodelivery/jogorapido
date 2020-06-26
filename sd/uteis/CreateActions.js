@@ -87,9 +87,13 @@ export const actionFetchItem = (
 };
 
 export const actionObject = type => _response =>
-  new Promise(resolve => {
-    GrupoRotas.store.dispatch({type, ..._response});
-    resolve();
+  new Promise((resolve, reject) => {
+    try {
+      GrupoRotas.store.dispatch({type, ..._response});
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
 export const actionObjectPostStatic = (type, ..._args) => _posted =>
   new Promise(resolve => {

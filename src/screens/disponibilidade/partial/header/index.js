@@ -12,6 +12,9 @@ function Header({toogleDay, dia, semana, diaSelecionado}) {
     return `index-${index}-${diaSelecionado || '0'}`;
   };
   const _renderDay = ({item, index}) => {
+    if (item === null) {
+      return null;
+    }
     return (
       <MenuItem
         onPress={toogleDay}
@@ -28,7 +31,7 @@ function Header({toogleDay, dia, semana, diaSelecionado}) {
         useNativeDriver={true}
         style={[stylDefault.p, styl.p]}>
         Clique no dia da semana e marque a{'\n'}
-        <Text style={stylDefault.bold}>escala</Text> que deseja estar
+        <Text style={stylDefault.bold}>escala</Text> que deseja ficar
         disponível.
       </AnimatableText>
       <AnimatableText
@@ -36,7 +39,8 @@ function Header({toogleDay, dia, semana, diaSelecionado}) {
         useNativeDriver={true}
         delay={50}
         style={[stylDefault.span, styl.span]}>
-        Repita esta ação para todos os dias{'\n'}da semana e clique em salvar
+        Repita esta ação para todos os próximos dias{'\n'}da semana e clique em
+        salvar
       </AnimatableText>
       <AnimatableView animation="flipInX" useNativeDriver={true}>
         <FlatList
@@ -52,7 +56,7 @@ function Header({toogleDay, dia, semana, diaSelecionado}) {
         useNativeDriver={true}
         delay={50}
         style={[stylDefault.p, styl.dia]}>
-        Escala de todas as {dia}
+        Estala para {dia}
       </AnimatableText>
     </Fragment>
   );

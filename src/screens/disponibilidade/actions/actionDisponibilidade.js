@@ -1,31 +1,34 @@
 import {salvarDisponibilidade} from '@actions/disponibilidade';
-export const submit = async ({usuario_id, semana, push, popToTop}) => {
+export const submit = async ({entregador_id, semana, push, popToTop}) => {
   const disponibilidade = Array.prototype.concat(
     ...semana
       .map(({data}, key) => {
         return data
           .filter(({data: dataFilter}) => dataFilter !== null)
-          .map(({disponibilidade_id}) => ({
-            dia_semana: key.toString(),
+          .map(({disponibilidade_id, ativo}) => ({
+            dia_semana: `${key + 1}`,
+            ativo: ativo ? '1' : '0',
             disponibilidade_id: disponibilidade_id.toString(),
           }));
       })
       .filter(v => v.length > 0),
   );
+
   try {
     await salvarDisponibilidade({
       body_post: {
         disponibilidade,
       },
       body_rsa: {
-        usuario_id,
+        usuario_id: entregador_id,
+        entregador_id,
       },
     });
     push('alerta', {
       params: {
         titulo: 'JogoRápido',
         mensagem:
-          'Disponibilidade atualizada com sucesso. Lembre-se elas só terão efeito após 24 horas.',
+          'Sua escala foi atualizada com sucesso. <b>Nosso moderador irá analisar sua solicitação.</b> Sua escala tem validade de uma semana e você deverá <b>atualizá-la toda segunda-feira.</b>',
         onPress: popToTop,
       },
     });

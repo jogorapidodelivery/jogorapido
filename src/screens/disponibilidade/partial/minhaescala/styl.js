@@ -18,19 +18,10 @@ export default StyleSheet.create({
   titulo: {
     fontWeight: 'bold',
   },
-  warpActived: {
+  actived: {
     position: 'absolute',
     right: normalize(5),
     top: normalize(5),
-    width: normalize(20),
-    height: normalize(20),
-    backgroundColor: cor['07'],
-    borderRadius: normalize(10),
-  },
-  actived: {
-    color: cor['10'],
-    left: -normalize(5),
-    top: -normalize(5),
     fontSize: normalize(30),
     fontFamily: 'icomoon',
   },

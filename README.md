@@ -1,3 +1,5 @@
+Sua escala foi atualizada com sucesso. Logo nosso moderador ira analisar sua solicitação.
+Sua escala tem validade de uma semana. Ou seja, na próxima segunda-feira se quiser ser trabalhar terá que escolher seus dias e horários novamente.
 # coleta confirmada
 UPDATE sd_coleta SET
 data_agendamento=now()::timestamp::date,

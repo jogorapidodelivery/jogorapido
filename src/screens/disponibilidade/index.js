@@ -13,15 +13,20 @@ const semanaVazio = [
   diaSemanaVazio,
   diaSemanaVazio,
 ];
+/*
+ ou  para reprovado
+ ou   para aprovado
+*/
 function Disponibilidade({navigation: {popToTop, pop, push}}) {
   const data = useSelector(
     ({
       disponibilidade: {
         semana = semanaVazio,
         diaSelecionado = 0,
+        hojeDiaSemana = 0,
         itemsSelecionados = undefined,
       },
-      autenticacao: {usuario_id, disponibilidade},
+      autenticacao: {entregador_id, disponibilidade},
     }) => {
       return {
         popToTop,
@@ -29,8 +34,9 @@ function Disponibilidade({navigation: {popToTop, pop, push}}) {
         push,
         semana,
         diaSelecionado,
+        hojeDiaSemana,
         itemsSelecionados,
-        usuario_id,
+        entregador_id,
         disponibilidade,
       };
     },
@@ -43,14 +49,18 @@ function Disponibilidade({navigation: {popToTop, pop, push}}) {
             disponibilidade: data.disponibilidade,
           },
           body_post: {
-            usuario_id: data.usuario_id,
+            usuario_id: data.entregador_id, // Deprecated, apagar depois de alguns dias
+            entregador_id: data.entregador_id,
           },
         });
-      } catch ({mensagem}) {
+      } catch (erro) {
+        const {mensagem} = erro;
         push('alerta', {
           params: {
             titulo: 'JogoRápido',
-            mensagem,
+            mensagem:
+              mensagem ||
+              'Falha ao carregar os dados. Favor tente novamente mais tarde',
           },
         });
       }
