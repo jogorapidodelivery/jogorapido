@@ -1,6 +1,6 @@
 {
   "name": "jogorapido",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -79,6 +79,36 @@
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.58.0",
     "react-test-renderer": "16.11.0"
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "root": [
+            "./src"
+          ],
+          "alias": {
+            "@icons": "./src/components/icons",
+            "@atom": "./src/components/atoms",
+            "@molecule": "./src/components/molecules",
+            "@organism": "./src/components/organisms",
+            "@template": "./src/components/templates",
+            "@image": "./src/assets/images",
+            "@assets": "./src/assets",
+            "@page": "./src/pages",
+            "@route": "./src/routes",
+            "@service": "./src/services",
+            "@src": "./src",
+            "@context": "./src/context",
+            "@lib": "./src/lib"
+          }
+        }
+      ]
+    ]
   },
   "jest": {
     "preset": "react-native"

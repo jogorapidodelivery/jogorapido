@@ -39,6 +39,7 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
     endereco_cliente,
     data_checkin_cliente,
     data_checkout_cliente,
+    data_checkin_unidade,
     data_checkout_unidade,
     status_coleta_id,
     pinpad,
@@ -56,7 +57,7 @@ export const mapCliente = ({coleta, raio, index, push, navigate}) => {
   if (horarios.length === 2 || status_coleta_id === 1) {
     return null;
   }
-  if (data_checkout_unidade !== null) {
+  if (data_checkin_unidade !== null) {
     endereco = `${endereco_cliente}, ${numeroCliente(
       coleta,
     )}, ${bairro_cliente}, ${cidade_cliente} ${cep(
